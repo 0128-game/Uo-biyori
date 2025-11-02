@@ -7,7 +7,6 @@
 <style>
 /* ----------------------------------------------------- */
 /* 0. 変数とリセット */
-    
 /* ----------------------------------------------------- */
 :root{
     --bg:#f6f7fb;
@@ -37,13 +36,11 @@ body{
 /* 1. ヘッダーとコントロール */
 /* ----------------------------------------------------- */
 header{
-    /* header自体のデザインは元のCSSと合わせる */
     background:var(--card);
     padding:15px 25px;
-    border-radius:10px; /* テーブルと合わせる */
-    box-shadow:0 4px 12px rgba(20,20,40,0.05); /* 影を追加 */
+    border-radius:10px;
+    box-shadow:0 4px 12px rgba(20,20,40,0.05);
     margin-bottom:20px;
-    
     display:flex;
     gap:12px;
     align-items:flex-end;
@@ -57,13 +54,13 @@ header h1{margin:0;font-size:1.6rem; color:var(--accent);}
     align-items:center;
 }
 input[type="search"], select{
-    padding:9px 12px; /* 少し大きく */
+    padding:9px 12px;
     border-radius:8px;
     border:1px solid #d6d8df;
     background:white;
 }
 button{
-    padding:9px 14px; /* 少し大きく */
+    padding:9px 14px;
     border-radius:8px;
     border:none;
     background:var(--accent);
@@ -72,7 +69,7 @@ button{
     transition:background-color 0.2s;
 }
 button:hover:not(:disabled){
-    background: #23548f; /* アクセントカラーより少し濃く */
+    background: #23548f;
 }
 button:disabled{opacity:.6;cursor:not-allowed}
 
@@ -88,8 +85,8 @@ main{
 }
 table{
     width:100%;
-    border-collapse:separate; /* 角丸のためにseparateに変更 */
-    border-spacing: 0;
+    border-collapse:separate;
+    border-spacing:0;
     background:var(--card);
     border-radius:10px;
     overflow:hidden;
@@ -100,486 +97,236 @@ thead th{
     padding:12px 14px;
     font-size:0.9rem;
     background:#f1f5f9;
-    border-bottom:1px solid #e2e8f0; /* 少し濃い線 */
+    border-bottom:1px solid #e2e8f0;
     font-weight:600;
 }
 tbody td{
     padding:12px 14px;
-    border-bottom:1px dashed #e2e8f0; /* dashed線を採用 */
+    border-bottom:1px dashed #e2e8f0;
     vertical-align:top;
     font-size:0.95rem;
 }
 tbody tr:hover{background:rgba(43,108,176,0.03)}
 
 .muted{color:var(--muted);font-size:0.85rem}
-
 .recipe-thumb{
-    width: 80px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 4px;
-    display: block;
+    width:80px;
+    height:60px;
+    object-fit:cover;
+    border-radius:4px;
+    display:block;
 }
 
-/* タイプタグの色を元のCSSの雰囲気に合わせる */
-.tag-type{padding:4px 8px;border-radius:6px;font-size:0.8rem; font-weight: 500;}
+/* タイプタグ */
+.tag-type{padding:4px 8px;border-radius:6px;font-size:0.8rem;font-weight:500;}
 .type-recipe{background:#fff7ed;color:#b45309;border:1px solid #f6e7d0}
 .type-pre{background:#f0fff4;color:var(--success);border:1px solid #d6f7df}
 
 .actions button{
     margin-right:6px;
-    padding: 6px 10px;
-    font-size: 0.9rem;
-    margin-bottom: 4px;
+    padding:6px 10px;
+    font-size:0.9rem;
+    margin-bottom:4px;
 }
-/* 詳細ボタン（青） */
-.actions button:first-child{
-    background:var(--accent);
-}
-/* 印刷ボタン（グレー） */
-.actions button:nth-child(2){
-    background:#a0aec0; 
-}
-
+.actions button:first-child{background:var(--accent);}
+.actions button:nth-child(2){background:#a0aec0;}
 
 /* ----------------------------------------------------- */
 /* 3. 詳細ビュー */
 /* ----------------------------------------------------- */
 .detail-container{
-    padding: 25px;
-    background: var(--card);
-    border-radius: 10px;
-    box-shadow: var(--shadow);
+    padding:25px;
+    background:var(--card);
+    border-radius:10px;
+    box-shadow:var(--shadow);
 }
+.list-view #recipeTable{display:table;}
+.list-view #detailContainer{display:none;}
+.detail-view #recipeTable{display:none;}
+.detail-view #detailContainer{display:block;}
 
-/* ビューの切り替え (JSクラス) */
-.list-view #recipeTable { display: table; }
-.list-view #detailContainer { display: none; }
-.detail-view #recipeTable { display: none; }
-.detail-view #detailContainer { display: block; }
-
-.detail-header {
-    padding-bottom: 15px;
-    border-bottom: 1px solid #e2e8f0;
-    margin-bottom: 20px;
-    position: relative;
+.detail-header{
+    padding-bottom:15px;
+    border-bottom:1px solid #e2e8f0;
+    margin-bottom:20px;
+    position:relative;
 }
-
-.back-button {
-    background: #909090 !important; /* 目立ちすぎないグレー */
-    color: white;
-    padding: 8px 15px;
-    border-radius: 4px;
-    font-size: 1em;
-    position: absolute;
-    top: 0;
-    right: 0;
+.back-button{
+    background:#909090 !important;
+    color:white;
+    padding:8px 15px;
+    border-radius:4px;
+    font-size:1em;
+    position:absolute;
+    top:0;
+    right:0;
 }
-
-.detail-header h2 {
-    font-size: 1.5rem;
-    color: #343a40;
-    margin-top: 0;
-    margin-bottom: 5px;
-    padding-right: 150px; 
+.detail-header h2{
+    font-size:1.5rem;
+    color:#343a40;
+    margin-top:0;
+    margin-bottom:5px;
+    padding-right:150px;
 }
-
-/* メタ情報 (pill) */
-.meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
+.meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:10px;
 }
-
 .pill{
     display:inline-block;
-    padding:4px 10px; /* 少し大きく */
+    padding:4px 10px;
     border-radius:999px;
     background:#eef5ff;
     color:var(--accent);
     font-size:0.85rem;
-    font-weight: 500;
+    font-weight:500;
 }
-
-.pre-link-pill {
-    background: #17a2b8 !important; /* 下処理リンクは目立つ色 */
-    color: white !important;
+.pre-link-pill{
+    background:#17a2b8 !important;
+    color:white !important;
 }
-
-/* セクションとグリッド */
-.detail-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin-bottom: 20px;
+.detail-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+    margin-bottom:20px;
 }
-
-.detail-section {
-    padding: 15px;
-    border: 1px solid #eef2f7;
-    border-radius: 8px;
-    background: var(--f8f9fa); /* やや薄い背景 */
+.detail-section{
+    padding:15px;
+    border:1px solid #eef2f7;
+    border-radius:8px;
+    background:var(--card);
 }
-
-.section-title {
-    font-size: 1.2rem;
-    color: var(--accent);
-    border-bottom: 2px solid var(--accent);
-    padding-bottom: 5px;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-weight: 600;
+.section-title{
+    font-size:1.2rem;
+    color:var(--accent);
+    border-bottom:2px solid var(--accent);
+    padding-bottom:5px;
+    margin-top:0;
+    margin-bottom:10px;
+    font-weight:600;
 }
-
-#detailIngredients ul, 
-#detailMemo ul, 
-#detailProps ul {
-    list-style: disc;
-    padding-left: 20px;
-    margin-top: 0;
-    line-height: 1.6;
+#detailIngredients ul,
+#detailMemo ul,
+#detailProps ul{
+    list-style:disc;
+    padding-left:20px;
+    margin-top:0;
+    line-height:1.6;
 }
-
-/* レシピ手順のカード */
-.recipe-step-card {
-    border: 1px solid #eef2f7;
-    padding: 15px;
-    border-radius: 6px;
-    background: var(--card);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    line-height: 1.6;
+.recipe-step-card{
+    border:1px solid #eef2f7;
+    padding:15px;
+    border-radius:6px;
+    background:var(--card);
+    box-shadow:0 1px 3px rgba(0,0,0,0.05);
+    line-height:1.6;
 }
-
-.recipe-step-card img {
-    border-radius: 4px;
-    margin-bottom: 10px;
+.recipe-step-card img{
+    border-radius:4px;
+    margin-bottom:10px;
 }
 
 /* ----------------------------------------------------- */
-/* 4. モーダルスタイル (フィルターUI) - クラス名を modal-overlay に統一 */
+/* 4. モーダルスタイル（絞り込みUI） */
 /* ----------------------------------------------------- */
-#filterModal { /* IDで指定 */
+#filterModal{
     position:fixed;
     inset:0;
     background:rgba(12,18,30,0.45);
-    display:none; /* JSで 'flex' に切り替える */
+    display:none;
     align-items:center;
     justify-content:center;
     padding:20px;
     z-index:1000;
 }
-
-.modal-content {
+.modal-content{
     width:100%;
     max-width:760px;
     background:var(--card);
     border-radius:12px;
-    padding:25px; /* 少し大きく */
+    padding:25px;
     box-shadow:0 10px 30px rgba(10,20,40,0.25);
     max-height:90vh;
     overflow:auto;
 }
-
-.modal-content h2 {
+.modal-content h2{
     font-size:1.5rem;
     color:var(--accent);
     border-bottom:2px solid var(--accent);
     padding-bottom:8px;
     margin:0 0 20px 0;
 }
-
-.filter-group {
-    border: 1px solid #e2e8f0;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    background-color: #fcfdfe;
+.filter-group{
+    border:1px solid #e2e8f0;
+    padding:15px;
+    margin-bottom:20px;
+    border-radius:8px;
+    background-color:#fcfdfe;
 }
-
-.filter-group legend {
-    font-weight: 700;
-    padding: 0 10px;
-    color: #343a40;
-    font-size: 1.1em;
+.filter-group legend{
+    font-weight:700;
+    padding:0 10px;
+    color:#343a40;
+    font-size:1.1em;
 }
-
-.filter-hint {
-    font-size: 0.85em;
-    color: var(--muted);
-    margin: 5px 0 10px 0;
+.filter-hint{
+    font-size:0.85em;
+    color:var(--muted);
+    margin:5px 0 10px 0;
 }
-
-.filter-item {
-    display: inline-block;
-    margin-right: 25px;
-    margin-bottom: 8px;
+.filter-item{
+    display:inline-block;
+    margin-right:25px;
+    margin-bottom:8px;
 }
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding-top: 20px;
-    border-top: 1px solid #e2e8f0;
-    margin-top: 10px;
+.modal-footer{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    padding-top:20px;
+    border-top:1px solid #e2e8f0;
+    margin-top:10px;
 }
-
-.modal-footer button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1em;
+.modal-footer button{
+    padding:10px 20px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:1em;
 }
-
-#filterClearBtn {
-    background: #a0aec0; /* 印刷ボタンと同じグレー */
-    color: white;
+#filterClearBtn{
+    background:#a0aec0;
+    color:white;
 }
-
-#applyFilterBtn {
-    background: var(--accent);
-    color: white;
+#applyFilterBtn{
+    background:var(--accent);
+    color:white;
 }
-
-/* レスポンシブ対応 */
-@media (max-width:768px){
-    .controls {
-        justify-content: space-between;
-    }
-    header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    .detail-grid {
-        grid-template-columns: 1fr;
-    }
-    .back-button {
-        position: static;
-        margin-top: 10px;
-        float: none;
-        display: block;
-        width: 100%;
-        text-align: center;
-    }
-    .detail-header h2 {
-        padding-right: 0;
-    }
+@media(max-width:768px){
+    .controls{justify-content:space-between;}
+    header{flex-direction:column;align-items:flex-start;gap:10px;}
+    .detail-grid{grid-template-columns:1fr;}
+    .back-button{position:static;margin-top:10px;float:none;display:block;width:100%;text-align:center;}
+    .detail-header h2{padding-right:0;}
 }
-/* --------------------------------------------------
-   レシピ提案ボタン
-   -------------------------------------------------- */
-#proposeOpenBtn {
-  background: #38b2ac;
-  color: #fff;
-  font-weight: bold;
-  border-radius: 8px;
-  padding: 9px 14px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-#proposeOpenBtn:hover { background: #2c7a7b; }
-
-/* --------------------------------------------------
-   モーダル（オーバーレイ）
-   -------------------------------------------------- */
-#proposeModal {
-  display: none; /* 初期非表示 */
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  z-index: 1000;
-  justify-content: center;
-  align-items: center;
-  padding: 30px;
-}
-
-/* --------------------------------------------------
-   モーダル本体（左右2カラム・高さ揃え）
-   -------------------------------------------------- */
-.modal-content {
-  background: #fff;
-  border-radius: 14px;
-  width: 96%;
-  max-width: 1400px;
-  max-height: 92vh;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-  overflow: hidden;
-  padding: 0;
-  position: relative;
-}
-
-/* 左：条件フォーム（縦に並べる） */
-.modal-left {
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  max-height: 92vh;
-  padding: 24px 20px 24px 24px;
-  border-right: 1px solid #ddd;
-  box-sizing: border-box;
-  background: #fff;
-}
-
-/* 各fieldsetの見出し＋2列グリッド */
-.grid-row {
-  display: grid;
-  grid-template-columns: 140px 1fr; /* 見出し（ラベル）＋コントロール */
-  gap: 8px 12px;
-  align-items: center;
-}
-.grid-label {
-  font-weight: 600;
-  color: #2d3748;
-}
-.grid-control {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-  align-items: center;
-}
-
-/* カウンター */
-.counter {
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  gap:12px;
-}
-.counter button {
-  background: var(--accent, #2b6cb0);
-  color:white;
-  border:none;
-  border-radius:6px;
-  font-size:1rem;
-  width:34px;
-  height:34px;
-  cursor:pointer;
-}
-.counter span {
-  font-size:1.2rem;
-  font-weight:bold;
-  min-width:36px;
-  text-align:center;
-  display:inline-block;
-}
-
-/* 決定ボタン */
-#customMealConfirm,
-#customDiffConfirm,
-#customTimeConfirm,
-#customCostConfirm,
-#customMealInput + button {
-  background: #3182ce;
-  color: #fff;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-input[type="number"] { width: 110px; }
-
-/* 右：サマリーパネル */
-#summaryPanel {
-  flex: 1;
-  background: #f9fafc;
-  border-left: 2px solid #ddd;
-  padding: 24px 20px;
-  border-radius: 0 14px 14px 0;
-  height: 92vh;
-  overflow-y: auto;
-  box-sizing: border-box;
-}
-#summaryPanel h3 {
-  text-align: center;
-  margin-bottom: 16px;
-  font-size: 1.2rem;
-}
-
-/* 複数食：カード */
-.summary-card {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.06);
-}
-.summary-card.active { border-color: #2b6cb0; background: #eaf4ff; }
-
-/* 1食時：大きな表示 */
-.summary-single {
-  background: #fff;
-  border: 2px solid #3182ce;
-  border-radius: 12px;
-  padding: 20px;
-  font-size: 1.05rem;
-  line-height: 1.6;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  color: #2d3748;
-}
-.summary-single h4 {
-  font-size: 1.25rem;
-  color: #2b6cb0;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-/* フィールドグループ */
-.propose-group {
-  margin-bottom: 18px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 12px;
-  background: #fafcff;
-}
-
-/* close */
-.close-propose {
-  position: absolute;
-  top: 12px;
-  right: 18px;
-  background:none;
-  border:none;
-  color:#666;
-  font-size:1.8rem;
-  cursor:pointer;
-}
-
-/* レスポンシブ */
-@media (max-width: 900px) {
-  .modal-content { flex-direction: column; padding: 12px; width: 100%; max-width: 720px; }
-  .modal-left { border-right: none; max-height: 60vh; }
-  #summaryPanel { border-left: none; border-top: 2px solid #ddd; border-radius: 0 0 12px 12px; height: auto; max-height: 40vh; }
-}
-
-/* small UI tweaks */
-label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
-
 </style>
-
+</head>
+<body>
 <div class="wrap" id="wrap">
     <header>
         <h1>魚のレシピリスト</h1>
-       <div class="controls">
+        <div class="controls">
             <input type="search" id="q" placeholder="タイトル, 材料, 魚名などで検索">
-            
             <select id="filterType">
                 <option value="all">全て</option>
                 <option value="recipe">レシピ</option>
                 <option value="pre">下処理</option>
             </select>
-            
-            <button id="filterOpenBtn">絞り込み設定</button> 
-           <button id="proposeOpenBtn">レシピ提案</button>
-            
+            <button id="filterOpenBtn">絞り込み設定</button>
+            <button id="proposeOpenBtn">レシピ提案</button>
             <select id="sortBy">
                 <option value="No" selected>No順 (昇順)</option>
                 <option value="-No">No順 (降順)</option>
@@ -594,16 +341,14 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             <button id="reloadBtn">データ再読み込み</button>
         </div>
     </header>
-
     <main id="app">
         <p id="message" class="muted">データを読み込み中です...</p>
-        
         <table id="recipeTable">
             <thead>
                 <tr>
                     <th style="width:80px">No</th>
                     <th style="width:80px">Type</th>
-                    <th style="width:80px">Picture</th> 
+                    <th style="width:80px">Picture</th>
                     <th>Title / flavortxt</th>
                     <th style="width:160px">魚 / 旬</th>
                     <th style="width:120px">難易度 / 時間</th>
@@ -611,19 +356,18 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
                     <th style="width:110px">操作</th>
                 </tr>
             </thead>
-            <tbody id="tbody">
-                </tbody>
+            <tbody id="tbody"></tbody>
         </table>
-
-        <div id="detailContainer" class="detail-container hidden">
+        <!-- 詳細コンテナ（デフォルトは非表示） -->
+        <div id="detailContainer" class="detail-container hidden" aria-hidden="true" style="display:none;">
             <div class="detail-header">
                 <button id="backToListBtn" class="back-button">← リストに戻る</button>
                 <h2 id="detailTitle"></h2>
                 <div id="detailSubtitle" class="muted"></div>
-                <div id="detailImageContainer" style="text-align: center; margin-bottom: 15px;"></div>
+                <div id="detailImageContainer" style="text-align:center; margin-bottom:15px;"></div>
                 <div id="detailMeta" class="meta"></div>
             </div>
-            
+
             <div class="detail-grid">
                 <div class="detail-section">
                     <h3 class="section-title">材料 (Ingredients)</h3>
@@ -638,35 +382,38 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
                     <div id="detailRecipe"></div>
                 </div>
             </div>
-            
+
             <div class="detail-section">
                 <h3 class="section-title">メモ (Memo)</h3>
                 <div id="detailMemo"></div>
             </div>
         </div>
     </main>
-</div>
+</div> <!-- /.wrap -->
 
-<div id="filterModal" class="modal-overlay">
-    <div class="modal-content">
-        <h2>絞り込み設定</h2>
+<!-- 絞り込みモーダル -->
+<div id="filterModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="filterTitle">
+        <h2 id="filterTitle">絞り込み設定</h2>
         <div id="filterContent">
-            </div>
+            <!-- JSで動的にフィルターUIを生成します -->
+        </div>
         <div class="modal-footer">
-            <button id="filterClearBtn">フィルター解除</button>
-            <button id="applyFilterBtn" class="primary-button">適用して閉じる</button>
+            <button id="filterClearBtn" type="button">フィルター解除</button>
+            <button id="applyFilterBtn" type="button" class="primary-button">適用して閉じる</button>
         </div>
     </div>
 </div>
-<!-- ▼ レシピ提案モーダル（置き換え） -->
-<div id="proposeModal" style="display:none;">
+
+<!-- レシピ提案モーダル（重複は取り除き、ここでは1つ） -->
+<div id="proposeModal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="proposeTitle">
   <div class="modal-content">
-    <button class="close-propose" id="closeProposeBtn">&times;</button>
+    <button class="close-propose" id="closeProposeBtn" aria-label="閉じる">&times;</button>
 
     <!-- 左側：条件（見出し＋2列グリッド） -->
     <div class="modal-left">
 
-      <h2>レシピ提案</h2>
+      <h2 id="proposeTitle">レシピ提案</h2>
 
       <!-- 食数選択 -->
       <fieldset class="propose-group">
@@ -701,15 +448,15 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         </div>
       </fieldset>
 
-      <!-- 食数表示窓（カウンター） -->
+      <!-- カウンター -->
       <fieldset class="propose-group" id="counterContainer" style="display:none;">
         <legend>食数表示窓</legend>
         <div class="grid-row">
           <div class="grid-label">現在</div>
           <div class="grid-control counter">
-            <button id="leftBtn">←</button>
+            <button id="leftBtn" type="button">←</button>
             <span id="counterValue">1</span>
-            <button id="rightBtn">→</button>
+            <button id="rightBtn" type="button">→</button>
           </div>
         </div>
       </fieldset>
@@ -812,201 +559,46 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         </div>
       </fieldset>
 
-    </div> <!-- /.modal-left -->
-
-    <!-- 右側：サマリーパネル -->
-    <div id="summaryPanel" aria-live="polite">
-      <!-- summary content injected by JS -->
-    </div>
-
-  </div> <!-- /.modal-content -->
-</div>
-<!-- ▼ レシピ提案モーダル（置き換え） -->
-<div id="proposeModal" style="display:none;">
-  <div class="modal-content">
-    <button class="close-propose" id="closeProposeBtn">&times;</button>
-
-    <!-- 左側：条件（見出し＋2列グリッド） -->
-    <div class="modal-left">
-
-      <h2>レシピ提案</h2>
-
-      <!-- 食数選択 -->
-      <fieldset class="propose-group">
-        <legend>食数選択</legend>
-        <div class="grid-row">
-          <div class="grid-label">種類</div>
-          <div class="grid-control">
-            <label><input type="radio" name="meals" value="1" checked> 1食</label>
-            <label><input type="radio" name="meals" value="3"> 1日(3食)</label>
-            <label><input type="radio" name="meals" value="9"> 3日(9食)</label>
-            <label><input type="radio" name="meals" value="custom"> カスタム</label>
-          </div>
-        </div>
-        <div class="grid-row" id="customMealRow" style="margin-top:8px; display:none;">
-          <div class="grid-label">カスタム値</div>
-          <div class="grid-control">
-            <input type="number" id="customMealInput" min="1" max="99" value="1">
-            <button id="customMealConfirm">決定</button>
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- 設定方法 -->
-      <fieldset class="propose-group" id="modeFieldset">
-        <legend>設定方法選択</legend>
-        <div class="grid-row">
-          <div class="grid-label">方法</div>
-          <div class="grid-control">
-            <label><input type="radio" name="mode" value="all" checked> 一斉設定</label>
-            <label><input type="radio" name="mode" value="each"> 個別設定</label>
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- 食数表示窓（カウンター） -->
-      <fieldset class="propose-group" id="counterContainer" style="display:none;">
-        <legend>食数表示窓</legend>
-        <div class="grid-row">
-          <div class="grid-label">現在</div>
-          <div class="grid-control counter">
-            <button id="leftBtn">←</button>
-            <span id="counterValue">1</span>
-            <button id="rightBtn">→</button>
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- 使いたい魚選択 -->
-      <fieldset class="propose-group">
-        <legend>使いたい魚選択</legend>
-        <div class="grid-row">
-          <div class="grid-label">指定</div>
-          <div class="grid-control">
-            <label><input type="radio" name="includeFishMode" value="none" checked> 指定しない</label>
-            <label><input type="radio" name="includeFishMode" value="specify"> 指定する</label>
-          </div>
-        </div>
-        <div class="grid-row" id="includeFishRow" style="margin-top:8px; display:none;">
-          <div class="grid-label">魚</div>
-          <div class="grid-control" id="includeFishContainer"></div>
-        </div>
-      </fieldset>
-
-      <!-- 除外する魚選択 -->
-      <fieldset class="propose-group">
-        <legend>除外する魚選択</legend>
-        <div class="grid-row">
-          <div class="grid-label">指定</div>
-          <div class="grid-control">
-            <label><input type="radio" name="excludeFishMode" value="none" checked> 指定しない</label>
-            <label><input type="radio" name="excludeFishMode" value="specify"> 指定する</label>
-          </div>
-        </div>
-        <div class="grid-row" id="excludeFishRow" style="margin-top:8px; display:none;">
-          <div class="grid-label">魚</div>
-          <div class="grid-control" id="excludeFishContainer"></div>
-        </div>
-      </fieldset>
-
-      <!-- 難易度 -->
-      <fieldset class="propose-group">
-        <legend>難易度選択</legend>
-        <div class="grid-row">
-          <div class="grid-label">設定</div>
-          <div class="grid-control">
-            <label><input type="radio" name="difficulty" value=""> 制限なし</label>
-            <label><input type="radio" name="difficulty" value="1"> 1以下</label>
-            <label><input type="radio" name="difficulty" value="2"> 2以下</label>
-            <label><input type="radio" name="difficulty" value="3"> 3以下</label>
-            <label><input type="radio" name="difficulty" value="custom"> カスタム</label>
-          </div>
-        </div>
-        <div class="grid-row" id="customDiffRow" style="margin-top:8px; display:none;">
-          <div class="grid-label">カスタム</div>
-          <div class="grid-control">
-            <input type="number" id="customDiffInput" min="1" max="5" placeholder="最大難易度">
-            <button id="customDiffConfirm">決定</button>
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- 時間 -->
-      <fieldset class="propose-group">
-        <legend>時間選択 (分)</legend>
-        <div class="grid-row">
-          <div class="grid-label">設定</div>
-          <div class="grid-control">
-            <label><input type="radio" name="time" value=""> 制限なし</label>
-            <label><input type="radio" name="time" value="15"> 15分以内</label>
-            <label><input type="radio" name="time" value="30"> 30分以内</label>
-            <label><input type="radio" name="time" value="60"> 60分以内</label>
-            <label><input type="radio" name="time" value="custom"> カスタム</label>
-          </div>
-        </div>
-        <div class="grid-row" id="customTimeRow" style="margin-top:8px; display:none;">
-          <div class="grid-label">カスタム</div>
-          <div class="grid-control">
-            <input type="number" id="customTimeInput" min="1" max="120" placeholder="最大時間">
-            <button id="customTimeConfirm">決定</button>
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- 費用 -->
-      <fieldset class="propose-group">
-        <legend>費用選択 (円)</legend>
-        <div class="grid-row">
-          <div class="grid-label">設定</div>
-          <div class="grid-control">
-            <label><input type="radio" name="cost" value=""> 制限なし</label>
-            <label><input type="radio" name="cost" value="500"> ¥500以下</label>
-            <label><input type="radio" name="cost" value="1000"> ¥1000以下</label>
-            <label><input type="radio" name="cost" value="2000"> ¥2000以下</label>
-            <label><input type="radio" name="cost" value="custom"> カスタム</label>
-          </div>
-        </div>
-        <div class="grid-row" id="customCostRow" style="margin-top:8px; display:none;">
-          <div class="grid-label">カスタム</div>
-          <div class="grid-control">
-            <input type="number" id="customCostInput" min="100" max="5000" placeholder="最大費用">
-            <button id="customCostConfirm">決定</button>
-          </div>
-        </div>
-      </fieldset>
+      <div style="height:12px;"></div>
+      <div style="text-align:center; padding:12px;">
+        <button id="proposeGenerateBtn" style="width:60%;">提案を生成</button>
+      </div>
 
     </div> <!-- /.modal-left -->
 
     <!-- 右側：サマリーパネル -->
     <div id="summaryPanel" aria-live="polite">
       <!-- summary content injected by JS -->
+      <h3 style="text-align:center;">提案プレビュー</h3>
+      <div id="proposalPreview" style="padding:10px;"></div>
     </div>
 
   </div> <!-- /.modal-content -->
 </div>
 
-    <!-- 提案結果モーダル -->
-<div id="proposalModal" class="modal">
+<!-- 提案結果モーダル -->
+<div id="proposalModal" class="modal" style="display:none;">
   <div class="modal-content">
     <h2>レシピ提案結果</h2>
     <div id="proposalResults"></div>
-    <div class="modal-buttons">
+    <div class="modal-buttons" style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
       <button id="backToSettingsBtn">戻る</button>
       <button id="closeProposalBtn">閉じる</button>
     </div>
   </div>
 </div>
 
-
-
-    
+<!-- ↓ 第3部でスクリプト本体を続けます（イベント、データ読み込み、フィルター処理、詳細表示など） -->
+<!-- ===== 第3部：スクリプト（完全版） ===== -->
 <script>
 /*
- * 最終修正版: 魚種フィルターを厳密なAND条件 (b ⊆ a) に変更 ＋ カスタム入力欄対応
- * ＋ 絞り込みフィルターを「下処理 (pre)」アイテムにも適用
+ * 完全修正版スクリプト
+ * - 第1部/第2部で定義した要素群に合わせて動作します
+ * - データ読み込み、フィルターUI生成、フィルタ適用、詳細表示、モーダル操作、提案生成まで含む
  */
 
 (function(){
+    // ----- 設定 -----
     const tryPaths = [
         'docs/recipes.json',
         './docs/recipes.json',
@@ -1014,7 +606,7 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         './recipes.json'
     ];
 
-    // ★★★ リスト/フィルター関連の要素 (既存のHTML要素を使用) ★★★
+    // ----- DOM 要素 -----
     const wrap = document.getElementById('wrap');
     const tbody = document.getElementById('tbody');
     const qInput = document.getElementById('q');
@@ -1023,14 +615,13 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     const reloadBtn = document.getElementById('reloadBtn');
     const message = document.getElementById('message');
 
-    // ★★★ 新しいフィルターモーダル関連の要素 (HTMLへの追加が必要です) ★★★
-    const filterOpenBtn = document.getElementById('filterOpenBtn'); 
-    const filterModal = document.getElementById('filterModal');     
-    const filterContent = document.getElementById('filterContent'); 
-    const applyFilterBtn = document.getElementById('applyFilterBtn'); 
-    const filterClearBtn = document.getElementById('filterClearBtn'); 
-    
-    // ★★★ 詳細コンテナの要素 ★★★
+    const filterOpenBtn = document.getElementById('filterOpenBtn');
+    const filterModal = document.getElementById('filterModal');
+    const filterContent = document.getElementById('filterContent');
+    const applyFilterBtn = document.getElementById('applyFilterBtn');
+    const filterClearBtn = document.getElementById('filterClearBtn');
+
+    const detailContainer = document.getElementById('detailContainer');
     const detailTitle = document.getElementById('detailTitle');
     const detailSubtitle = document.getElementById('detailSubtitle');
     const detailImageContainer = document.getElementById('detailImageContainer');
@@ -1042,33 +633,68 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     const detailProps = document.getElementById('detailProps');
     const propsSection = document.getElementById('propsSection');
 
+    // propose modal elements
+    const proposeOpenBtn = document.getElementById('proposeOpenBtn');
+    const proposeModal = document.getElementById('proposeModal');
+    const closeProposeBtn = document.getElementById('closeProposeBtn');
+    const proposeGenerateBtn = document.getElementById('proposeGenerateBtn');
+    const includeFishRow = document.getElementById('includeFishRow');
+    const excludeFishRow = document.getElementById('excludeFishRow');
+    const includeFishContainer = document.getElementById('includeFishContainer');
+    const excludeFishContainer = document.getElementById('excludeFishContainer');
+    const proposalPreview = document.getElementById('proposalPreview');
+    const proposalResults = document.getElementById('proposalResults');
+    const proposalModal = document.getElementById('proposalModal');
+    const backToSettingsBtn = document.getElementById('backToSettingsBtn');
+    const closeProposalBtn = document.getElementById('closeProposalBtn');
+
+    // propose form controls (many are in DOM with names; we'll query when needed)
+    // counter controls
+    const counterContainer = document.getElementById('counterContainer');
+    const customMealRow = document.getElementById('customMealRow');
+    const customMealInput = document.getElementById('customMealInput');
+    const customMealConfirm = document.getElementById('customMealConfirm');
+    const counterValue = document.getElementById('counterValue');
+    const leftBtn = document.getElementById('leftBtn');
+    const rightBtn = document.getElementById('rightBtn');
+
+    // custom inputs for difficulty/time/cost (in DOM)
+    const customDiffRow = document.getElementById('customDiffRow');
+    const customTimeRow = document.getElementById('customTimeRow');
+    const customCostRow = document.getElementById('customCostRow');
+
+    // ----- データ -----
     let rawData = null;
-    let flatList = []; // merged list with type annotation
-    
-    // フィルタの状態を保持するオブジェクト (魚種はSet、難易度/時間/費用は単一の値)
+    let flatList = [];
+
+    // フィルター状態（fish-name は Set）
     let activeFilters = {
-        'fish-name': new Set(), // チェックボックス形式 (複数選択)
-        difficulty: null,       // ラジオボタン形式 (単一値)
-        time: null,             // ラジオボタン/入力形式 (単一値)
-        cost: null              // ラジオボタン/入力形式 (単一値)
+        'fish-name': new Set(),
+        difficulty: null,
+        time: null,
+        cost: null
     };
-    // 固定オプション
-    const DIFFICULTY_OPTIONS = ['1', '2', '3', '4', '5'];
-    const TIME_OPTIONS = [15, 30, 60]; 
-    const COST_OPTIONS = [500, 1000, 2000];
-    const TIME_MAX = 120; // 入力欄の最大値
-    const COST_MAX = 5000; // 入力欄の最大値
 
+    const DIFFICULTY_OPTIONS = ['1','2','3','4','5'];
+    const TIME_OPTIONS = [15,30,60];
+    const COST_OPTIONS = [500,1000,2000];
+    const TIME_MAX = 120;
+    const COST_MAX = 5000;
 
-    // Utility: safe text node creation
+    // ----- ユーティリティ -----
     function elText(tag, text, cls){
         const el = document.createElement(tag);
         if (cls) el.className = cls;
         el.textContent = (text === undefined || text === null) ? '' : String(text);
         return el;
     }
+    function joinIfArray(val){
+        if (Array.isArray(val)) return val.join(', ');
+        if (val === undefined || val === null) return '';
+        return String(val);
+    }
 
-    // Try fetching from multiple paths in order
+    // 安全な fetch 複数候補からの読み込み
     async function fetchAny(paths){
         for (const p of paths){
             try {
@@ -1083,11 +709,10 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         throw new Error('recipes.json を見つけられませんでした。期待する場所: ' + paths.join(', '));
     }
 
-    // Normalize and flatten recipes + preparations into an array for table
+    // flatList を作成
     function buildFlatList(data){
         const list = [];
         if (!data || typeof data !== 'object') return list;
-
         const recipes = data.recipes || {};
         for (const key of Object.keys(recipes)){
             const item = Object.assign({}, recipes[key]);
@@ -1107,55 +732,33 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         return list;
     }
 
-    // safe join array-like fields for display
-    function joinIfArray(val){
-        if (Array.isArray(val)) return val.join(', ');
-        if (val === undefined || val === null) return '';
-        return String(val);
-    }
+    function clearTable(){ if (tbody) tbody.innerHTML = ''; }
 
-    function clearTable(){ 
-        if(tbody) tbody.innerHTML = ''; 
-    }
-
-    /**
-     * チェックボックスグループを生成するヘルパー関数 (魚種用)
-     */
-    function createCheckboxGroup(title, key, values, hintText = '') {
+    // ----- フィルターUI生成ヘルパー（第1/2部と同等） -----
+    function createCheckboxGroup(title, key, values, hintText = ''){
         const fieldset = document.createElement('fieldset');
         fieldset.className = 'filter-group';
-
         const legend = document.createElement('legend');
         legend.textContent = title;
         fieldset.appendChild(legend);
-
-        if (hintText) {
-             const hint = elText('p', hintText, 'filter-hint');
-             fieldset.appendChild(hint);
+        if (hintText){
+            const hint = elText('p', hintText, 'filter-hint');
+            fieldset.appendChild(hint);
         }
-
         values.forEach(value => {
             const strValue = String(value);
             const id = `${key}-${strValue.replace(/[^a-zA-Z0-9]/g, '-')}`;
-
             const div = document.createElement('div');
             div.className = 'filter-item';
-
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.id = id;
             checkbox.value = strValue;
             checkbox.dataset.filterKey = key;
-            
-            // activeFiltersに値が含まれていればチェック
-            if (activeFilters[key] && activeFilters[key].has(strValue)) {
-                checkbox.checked = true;
-            }
-
+            if (activeFilters[key] && activeFilters[key].has(strValue)) checkbox.checked = true;
             const label = document.createElement('label');
             label.htmlFor = id;
             label.textContent = strValue;
-
             div.appendChild(checkbox);
             div.appendChild(label);
             fieldset.appendChild(div);
@@ -1163,28 +766,20 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         return fieldset;
     }
 
-    /**
-     * ラジオボタングループを生成するヘルパー関数 (難易度/時間/費用用)
-     * @param {string} type - 'radio' or 'radio-input'
-     */
-    function createRadioGroup(title, key, values, hintText = '', labels = null, type = 'radio', inputProps = {}) {
+    function createRadioGroup(title, key, values, hintText = '', labels = null, type = 'radio', inputProps = {}){
         const fieldset = document.createElement('fieldset');
         fieldset.className = 'filter-group';
-
         const legend = document.createElement('legend');
         legend.textContent = title;
         fieldset.appendChild(legend);
-
-        if (hintText) {
-             const hint = elText('p', hintText, 'filter-hint');
-             fieldset.appendChild(hint);
+        if (hintText){
+            const hint = elText('p', hintText, 'filter-hint');
+            fieldset.appendChild(hint);
         }
-        
-        // ----------------- ラジオボタン群 -----------------
+
         const radioDiv = document.createElement('div');
         radioDiv.className = 'radio-options-container';
 
-        // ラジオボタン: 「制限なし」
         const allRadioDiv = document.createElement('div');
         allRadioDiv.className = 'filter-item';
         const allId = `${key}-all`;
@@ -1192,14 +787,9 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         allRadio.type = 'radio';
         allRadio.id = allId;
         allRadio.name = key;
-        allRadio.value = ''; // 空文字でフィルター解除を示す
+        allRadio.value = '';
         allRadio.dataset.filterKey = key;
-        
-        // activeFilters[key]がnullまたは空文字の場合、チェックする
-        if (activeFilters[key] === null || activeFilters[key] === '') {
-            allRadio.checked = true;
-        }
-
+        if (activeFilters[key] === null || activeFilters[key] === '') allRadio.checked = true;
         const allLabel = document.createElement('label');
         allLabel.htmlFor = allId;
         allLabel.textContent = '制限なし';
@@ -1207,41 +797,30 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         allRadioDiv.appendChild(allLabel);
         radioDiv.appendChild(allRadioDiv);
 
-        // ラジオボタン: 定義済みの値
         values.forEach((value, index) => {
             const strValue = String(value);
             const id = `${key}-${strValue}`;
             const labelText = labels ? labels[index] : strValue;
-
             const div = document.createElement('div');
             div.className = 'filter-item';
-
             const radio = document.createElement('input');
             radio.type = 'radio';
             radio.id = id;
             radio.name = key;
             radio.value = strValue;
             radio.dataset.filterKey = key;
-            
-            // activeFilters[key]がこの値の場合、チェックする
-            if (activeFilters[key] === strValue) {
-                radio.checked = true;
-            }
-
+            if (activeFilters[key] === strValue) radio.checked = true;
             const label = document.createElement('label');
             label.htmlFor = id;
             label.textContent = labelText;
-
             div.appendChild(radio);
             div.appendChild(label);
             radioDiv.appendChild(div);
         });
-        
-        // ----------------- カスタムラジオボタン (時間と費用のみ) -----------------
+
+        // カスタム入力（時間・費用用）
         let inputContainer = null;
-        if (type === 'radio-input') {
-            
-            // カスタムラジオボタンを追加
+        if (type === 'radio-input'){
             const customRadioDiv = document.createElement('div');
             customRadioDiv.className = 'filter-item';
             const customId = `${key}-custom-radio`;
@@ -1251,33 +830,23 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             customRadio.name = key;
             customRadio.value = 'CUSTOM';
             customRadio.dataset.filterKey = key;
-            
-            // activeFiltersに数字が格納されており、かつそれが定義済みの値でなければ、CUSTOMが選択されている
             const isCustomSelected = activeFilters[key] !== null && activeFilters[key] !== '' && !values.map(String).includes(activeFilters[key]);
-            if (isCustomSelected) {
-                customRadio.checked = true;
-            }
-            
+            if (isCustomSelected) customRadio.checked = true;
             const customLabel = document.createElement('label');
             customLabel.htmlFor = customId;
             customLabel.textContent = 'カスタム値を入力';
             customRadioDiv.appendChild(customRadio);
             customRadioDiv.appendChild(customLabel);
             radioDiv.appendChild(customRadioDiv);
-            
-            fieldset.appendChild(radioDiv); // ラジオボタン全てを fieldset に追加
-            
 
-            // ----------------- カスタム入力フィールド -----------------
+            fieldset.appendChild(radioDiv);
+
             inputContainer = document.createElement('div');
             inputContainer.className = 'filter-input-container';
             inputContainer.style.marginTop = '10px';
             inputContainer.style.borderTop = '1px dashed #e2e8f0';
             inputContainer.style.paddingTop = '10px';
-            // CUSTOMが選択されていない場合、非表示にする
-            if (!isCustomSelected) {
-                inputContainer.style.display = 'none';
-            }
+            if (!isCustomSelected) inputContainer.style.display = 'none';
 
             const inputId = `${key}-custom-input`;
             const labelText = (key === 'time') ? '分' : '円';
@@ -1295,11 +864,8 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             input.style.border = '1px solid #d6d8df';
             input.dataset.filterKey = key;
             input.dataset.inputType = 'custom';
+            if (isCustomSelected) input.value = activeFilters[key];
 
-            if (isCustomSelected) {
-                input.value = activeFilters[key];
-            }
-            
             const label = document.createElement('label');
             label.htmlFor = inputId;
             label.textContent = `以下の最大値を設定 (${labelText}以下): `;
@@ -1310,124 +876,88 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             inputContainer.appendChild(input);
             fieldset.appendChild(inputContainer);
         } else {
-            fieldset.appendChild(radioDiv); // radioタイプの場合は、ここで追加
+            fieldset.appendChild(radioDiv);
         }
 
         return fieldset;
     }
 
-
-    /**
-     * フィルターモーダルの設定とチェックボックス/ラジオボタンの生成
-     * @param {Array} list - flatList
-     */
+    // ----- フィルターモーダル生成 -----
     function setupFilterModal(list){
-        if (!filterContent) return; 
-
+        if (!filterContent) return;
         filterContent.innerHTML = '';
         const fragment = document.createDocumentFragment();
 
-        // 1. 魚種フィルター (fish-name) - チェックボックス（複数選択）
+        // 魚種集合を収集
         const fishSet = new Set();
         list.forEach(item => {
-            if (Array.isArray(item['fish-name'])) { // pre/recipe 両方から魚種名を収集
-                item['fish-name'].forEach(fish => {
-                    const trimmedFish = fish.trim();
-                    if (trimmedFish) fishSet.add(trimmedFish);
+            if (Array.isArray(item['fish-name'])){
+                item['fish-name'].forEach(f => {
+                    const t = String(f).trim();
+                    if (t) fishSet.add(t);
                 });
             }
         });
         const uniqueFish = Array.from(fishSet).sort();
-        // ユーザーにAND条件であることを示すヒントテキスト
         fragment.appendChild(createCheckboxGroup('魚種', 'fish-name', uniqueFish, 'レシピ/下処理に使う魚が、選択した魚種のすべてに含まれるものを表示 (b ⊆ a)'));
 
-        // 2. 難易度フィルター (difficulty) - ラジオボタン（単一選択）
         fragment.appendChild(createRadioGroup('難易度 (最大)', 'difficulty', DIFFICULTY_OPTIONS, '選択した難易度以下のアイテムを表示', DIFFICULTY_OPTIONS.map(d => `難易度 ${d} 以下`)));
-
-        // 3. 所要時間フィルター (time) - ラジオボタン＋カスタム入力欄
-        fragment.appendChild(createRadioGroup('所要時間 (分・最大)', 'time', TIME_OPTIONS, '選択肢またはカスタム入力で指定した時間以下のアイテムを表示', TIME_OPTIONS.map(t => `${t}分以内`), 'radio-input', {min: 1, max: TIME_MAX}));
-
-        // 4. 費用フィルター (cost) - ラジオボタン＋カスタム入力欄
-        fragment.appendChild(createRadioGroup('費用 (円・最大)', 'cost', COST_OPTIONS, '選択肢またはカスタム入力で指定した費用以下のアイテムを表示', COST_OPTIONS.map(c => `¥${c}以下`), 'radio-input', {min: 100, max: COST_MAX}));
+        fragment.appendChild(createRadioGroup('所要時間 (分・最大)', 'time', TIME_OPTIONS, '選択肢またはカスタム入力で指定した時間以下のアイテムを表示', TIME_OPTIONS.map(t => `${t}分以内`), 'radio-input', {min:1, max:TIME_MAX}));
+        fragment.appendChild(createRadioGroup('費用 (円・最大)', 'cost', COST_OPTIONS, '選択肢またはカスタム入力で指定した費用以下のアイテムを表示', COST_OPTIONS.map(c => `¥${c}以下`), 'radio-input', {min:100, max:COST_MAX}));
 
         filterContent.appendChild(fragment);
 
-        // イベントリスナーの再設定
-        filterContent.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', updateActiveFilters);
-        });
-        filterContent.querySelectorAll('input[type="radio"], input[type="number"]').forEach(input => {
-            input.addEventListener('change', handleRadioInputChange);
-            input.addEventListener('input', handleRadioInputChange);
-        });
+        // イベント設定
+        filterContent.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', updateActiveFilters));
+        filterContent.querySelectorAll('input[type="radio"]').forEach(r => r.addEventListener('change', handleRadioInputChange));
+        filterContent.querySelectorAll('input[type="number"]').forEach(n => n.addEventListener('input', handleRadioInputChange));
     }
 
-    /**
-     * ラジオボタン/入力欄の変更を処理し、入力欄の表示/非表示を制御する
-     */
-    function handleRadioInputChange(event) {
+    function handleRadioInputChange(event){
         const input = event.target;
         const key = input.dataset.filterKey;
-
-        if (key === 'time' || key === 'cost') {
-            const customContainer = filterContent.querySelector(`.filter-input-container input[data-filter-key="${key}"]`).parentNode;
-
-            if (input.type === 'radio') {
-                if (input.value === 'CUSTOM') {
-                    customContainer.style.display = 'block';
-                } else {
-                    customContainer.style.display = 'none';
-                    customContainer.querySelector('input[type="number"]').value = '';
+        if (key === 'time' || key === 'cost'){
+            const container = filterContent.querySelector(`.filter-input-container input[data-filter-key="${key}"]`);
+            if (container){
+                const parent = container.parentNode;
+                if (input.type === 'radio'){
+                    if (input.value === 'CUSTOM') parent.style.display = 'block';
+                    else { parent.style.display = 'none'; parent.querySelector('input[type="number"]').value = ''; }
                 }
             }
         }
-        
         updateActiveFilters();
     }
 
-
-    /**
-     * チェックボックス/ラジオボタン/入力欄の状態を activeFilters に反映する
-     */
-    function updateActiveFilters() {
-        // fish-name は Setを再構築
+    function updateActiveFilters(){
+        // fish-name
         activeFilters['fish-name'].clear();
-        filterContent.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-            if (checkbox.dataset.filterKey === 'fish-name') {
-                activeFilters['fish-name'].add(checkbox.value);
-            }
+        filterContent.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+            if (cb.dataset.filterKey === 'fish-name') activeFilters['fish-name'].add(cb.value);
         });
-        
-        // difficulty, time, cost は単一の値を設定
-        ['difficulty', 'time', 'cost'].forEach(key => {
-            activeFilters[key] = null; // まずリセット
 
-            // 1. ラジオボタンの値を取得
+        ['difficulty','time','cost'].forEach(key => {
+            activeFilters[key] = null;
             const checkedRadio = filterContent.querySelector(`input[type="radio"][name="${key}"]:checked`);
-            if (checkedRadio) {
-                if (checkedRadio.value === '') {
-                    // 制限なし
-                    activeFilters[key] = null;
-                } else if (checkedRadio.value === 'CUSTOM') {
-                    // カスタムが選択されている場合、入力欄の値を採用
+            if (checkedRadio){
+                if (checkedRadio.value === '') activeFilters[key] = null;
+                else if (checkedRadio.value === 'CUSTOM'){
                     const customInput = filterContent.querySelector(`input[type="number"][data-filter-key="${key}"][data-input-type="custom"]`);
-                    const val = parseFloat(customInput.value);
-                    if (!isNaN(val) && val > 0) {
-                        activeFilters[key] = String(val);
+                    if (customInput){
+                        const val = parseFloat(customInput.value);
+                        if (!isNaN(val) && val > 0) activeFilters[key] = String(val);
                     }
                 } else {
-                    // 定義済みオプション
                     activeFilters[key] = checkedRadio.value;
                 }
             }
         });
     }
-    
-    // render table rows from list
+
+    // ----- テーブル描画 -----
     function renderTable(list){
         clearTable();
-        if (!tbody) return; 
-
+        if (!tbody) return;
         if (!Array.isArray(list) || list.length === 0){
             tbody.innerHTML = '<tr><td colspan="8" class="muted" style="padding:20px;text-align:center">表示するレシピがありません。</td></tr>';
             return;
@@ -1457,9 +987,9 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             let imgSrc = firstPic && typeof firstPic === 'string' ? firstPic : 'https://0128-game.github.io/Fish-recipe/picture/noimage.png';
             img.src = imgSrc;
             img.alt = item.title || '画像';
-            img.style.width = '80px'; 
-            img.style.height = '60px'; 
-            img.style.objectFit = 'cover'; 
+            img.style.width = '80px';
+            img.style.height = '60px';
+            img.style.objectFit = 'cover';
             tdPicture.appendChild(img);
             tr.appendChild(tdPicture);
 
@@ -1486,9 +1016,7 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             // cost / info line
             const tdCost = document.createElement('td');
             tdCost.appendChild(elText('div', '¥' + (item.cost != null ? item.cost : '-')));
-            const infoLine = (item._type === 'recipe')
-                ? ('食事: ' + (item.timing || '-'))
-                : ('特徴: ' + joinIfArray(item.feature));
+            const infoLine = (item._type === 'recipe') ? ('食事: ' + (item.timing || '-')) : ('特徴: ' + joinIfArray(item.feature));
             tdCost.appendChild(elText('div', infoLine, 'muted'));
             tr.appendChild(tdCost);
 
@@ -1496,23 +1024,17 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             const tdActions = document.createElement('td');
             tdActions.className = 'actions';
 
-            // 詳細ボタン
             const viewBtn = document.createElement('button');
             viewBtn.textContent = '詳細';
-            viewBtn.addEventListener('click', ()=> {
-                displayDetail(item);
-            });
+            viewBtn.addEventListener('click', ()=> displayDetail(item));
             tdActions.appendChild(viewBtn);
 
-            // 印刷ボタン
             const printBtn = document.createElement('button');
             printBtn.textContent = '印刷';
-            printBtn.style.background = '#a0aec0'; 
+            printBtn.style.background = '#a0aec0';
             printBtn.addEventListener('click', ()=> {
                 displayDetail(item);
-                setTimeout(() => {
-                    window.print();
-                }, 500); 
+                setTimeout(()=> window.print(), 500);
             });
             tdActions.appendChild(printBtn);
 
@@ -1521,15 +1043,13 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         }
         tbody.appendChild(fragment);
     }
-    
-    // Utility: 画像を表示するエレメントを作成する関数
-    function createPictureElement(src, altText, maxHeight = '250px') {
-        if (!src || src === 'null' || src === '') return null;
 
+    // 画像要素作成
+    function createPictureElement(src, altText, maxHeight = '250px'){
+        if (!src || src === 'null' || src === '') return null;
         const img = document.createElement('img');
         img.src = src;
         img.alt = altText || '画像';
-
         img.style.maxWidth = '100%';
         img.style.maxHeight = maxHeight;
         img.style.width = 'auto';
@@ -1537,11 +1057,10 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         img.style.borderRadius = '4px';
         img.style.display = 'block';
         img.style.margin = '0 auto';
-
         return img;
     }
 
-    // 詳細情報を表示する関数
+    // 詳細表示
     function displayDetail(item){
         if(!detailTitle || !detailSubtitle || !detailMeta || !detailImageContainer || !detailIngredients || !detailRecipe || !detailMemo || !propsSection) {
             console.error("Missing detail element(s) in HTML.");
@@ -1551,6 +1070,14 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         if (wrap) {
             wrap.classList.remove('list-view');
             wrap.classList.add('detail-view');
+        }
+        // show detail container, hide table
+        if (detailContainer) {
+            detailContainer.style.display = 'block';
+            detailContainer.setAttribute('aria-hidden','false');
+        }
+        if (document.getElementById('recipeTable')) {
+            document.getElementById('recipeTable').style.display = 'none';
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -1570,16 +1097,13 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
 
         if (item._type === 'recipe') {
             const preRecipeNo = item['pre-recipe'] ? String(item['pre-recipe']) : null;
-
             if (preRecipeNo) {
                 const preItem = flatList.find(i => i._type === 'pre' && String(i.No) === preRecipeNo);
-
                 if (preItem) {
                     const preBtn = document.createElement('button');
                     preBtn.textContent = '下処理: ' + (preItem.title || preItem.No); 
                     preBtn.className = 'pill pre-link-pill';
                     preBtn.style.cursor = 'pointer'; 
-
                     preBtn.addEventListener('click', ()=> displayDetail(preItem)); 
                     detailMeta.appendChild(preBtn);
                 } else {
@@ -1600,10 +1124,10 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             detailImageContainer.appendChild(mainImg);
         }
 
+        // 材料
         detailIngredients.innerHTML = '';
         const ing = item.ingredients || {};
-
-        if (Object.keys(ing).length === 0){
+        if (!ing || Object.keys(ing).length === 0){
             detailIngredients.appendChild(elText('div','(材料なし)','muted'));
         } else {
             const ul = document.createElement('ul');
@@ -1615,13 +1139,12 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             detailIngredients.appendChild(ul);
         }
 
+        // 道具（pre のみ表示）
         detailProps.innerHTML = '';
         const props = item.props || {};
-
         if (item._type === 'pre') {
             if (propsSection) propsSection.style.display = 'block';
-
-            if (Object.keys(props).length === 0){
+            if (!props || Object.keys(props).length === 0){
                 detailProps.appendChild(elText('div', '(道具なし)', 'muted'));
             } else {
                 const ul = document.createElement('ul');
@@ -1636,9 +1159,9 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             if (propsSection) propsSection.style.display = 'none';
         }
 
+        // レシピ手順
         detailRecipe.innerHTML = '';
         const rec = item.recipe || [];
-
         if (!Array.isArray(rec) || rec.length === 0){
             detailRecipe.appendChild(elText('div','(手順なし)','muted'));
         } else {
@@ -1646,43 +1169,36 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             gridContainer.style.display = 'grid';
             gridContainer.style.gridTemplateColumns = 'repeat(auto-fit, minmax(280px, 1fr))';
             gridContainer.style.gap = '10px';
-            
             for (let i = 0; i < rec.length; i++){
                 const step = rec[i];
                 const stepNo = i + 1;
-
                 const card = document.createElement('div');
-                card.className = 'recipe-step-card'; 
-                card.style.border = '1px solid #dee2e6'; 
+                card.className = 'recipe-step-card';
+                card.style.border = '1px solid #dee2e6';
                 card.style.padding = '15px';
                 card.style.borderRadius = '6px';
                 card.style.background = 'var(--card)';
                 card.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
-
                 const stepPicIndex = i + 1;
-                const stepPicSrc = pictures[stepPicIndex];
-
+                const stepPicSrc = (item.pictures && item.pictures[stepPicIndex]) ? item.pictures[stepPicIndex] : null;
                 if (stepPicSrc && stepPicSrc !== 'null' && stepPicSrc !== '') {
                     const picContainer = document.createElement('div');
                     picContainer.className = 'recipe-step-picture';
                     const stepImg = createPictureElement(stepPicSrc, `手順${stepNo}の画像`, '150px');
-
                     if (stepImg) {
                         picContainer.appendChild(stepImg);
                         card.appendChild(picContainer);
                     }
                 }
-
                 const p = document.createElement('p');
                 p.innerHTML = `<span style="font-weight:bold; color:var(--accent);">${stepNo}.</span> ${step}`;
                 card.appendChild(p);
-
                 gridContainer.appendChild(card);
             }
-            
             detailRecipe.appendChild(gridContainer);
         }
 
+        // メモ
         detailMemo.innerHTML = '';
         const memo = item.memo || [];
         if (!Array.isArray(memo) || memo.length === 0){
@@ -1690,16 +1206,15 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         } else {
             const ulm = document.createElement('ul');
             for (const m of memo){
-                ulm.appendChild(elText('li', m));
+                const li = document.createElement('li');
+                li.textContent = m;
+                ulm.appendChild(li);
             }
             detailMemo.appendChild(ulm);
         }
     }
 
-
-    /**
-     * フィルターを適用し、テーブルを再描画する
-     */
+    // ----- フィルター適用と描画 -----
     function applyFiltersAndRender(){
         if(!qInput || !filterType || !sortBy || !message) { return; }
 
@@ -1709,10 +1224,10 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
 
         let list = flatList.slice();
 
-        // 1. タイプのフィルター
+        // type filter
         if (type !== 'all') list = list.filter(i => i._type === type);
 
-        // 2. 検索 (Search)
+        // search
         if (q){
             list = list.filter(item => {
                 const parts = [
@@ -1731,58 +1246,47 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             });
         }
 
-        // ★★★ 3. フィルターロジックの適用 (下処理アイテムにも適用) ★★★
+        // filter logic (applies to both recipe and pre)
         list = list.filter(item => {
-            // NOTE: item._type === 'pre' のスキップ処理を削除したため、
-            // 下処理アイテムにも魚種、難易度、時間、費用のフィルターが適用される。
-
-            // --- 魚種フィルター (fish-name) - AND条件 (b ⊆ a) ---
-            const activeFish = activeFilters['fish-name']; // a: ユーザーが選択した魚種リスト (Set)
-            if (activeFish.size > 0) {
-                // b: レシピ/下処理で使われている魚種を取得し、整形
-                const itemFish = Array.isArray(item['fish-name']) ? item['fish-name'].map(f => f.trim()) : [];
-                
-                // b ⊆ a のチェック: レシピ/下処理で使われている魚 (b) すべてが、ユーザーの選択肢 (a) に含まれているか？
+            // fish-name: activeFilters['fish-name'] is a Set (a)
+            const activeFish = activeFilters['fish-name'];
+            if (activeFish.size > 0){
+                const itemFish = Array.isArray(item['fish-name']) ? item['fish-name'].map(f => String(f).trim()) : [];
+                // check: itemFish (b) are all included in activeFish (a): b ⊆ a
                 const allMatch = itemFish.every(f => activeFish.has(f));
-                
-                // itemFishが空の配列の場合 (魚種が定義されていないアイテム)、every()はtrueを返すため通過
                 if (!allMatch) return false;
             }
 
-            // --- 難易度フィルター (difficulty) - 最大値条件 ---
+            // difficulty
             const maxDiff = activeFilters.difficulty ? parseFloat(activeFilters.difficulty) : null;
-            if (maxDiff !== null && item.difficulty != null) {
+            if (maxDiff !== null && item.difficulty != null){
                 const itemDiff = parseFloat(item.difficulty);
                 if (!isNaN(itemDiff) && itemDiff > maxDiff) return false;
             }
 
-            // --- 所要時間フィルター (time) - 最大値条件 ---
+            // time
             const maxTime = activeFilters.time ? parseFloat(activeFilters.time) : null;
-            if (maxTime !== null && item.time != null) {
+            if (maxTime !== null && item.time != null){
                 const itemTime = parseFloat(item.time);
                 if (!isNaN(itemTime) && itemTime > maxTime) return false;
             }
-            
-            // --- 費用フィルター (cost) - 最大値条件 ---
+
+            // cost
             const maxCost = activeFilters.cost ? parseFloat(activeFilters.cost) : null;
-            if (maxCost !== null && item.cost != null) {
+            if (maxCost !== null && item.cost != null){
                 const itemCost = parseFloat(item.cost);
                 if (!isNaN(itemCost) && itemCost > maxCost) return false;
             }
 
             return true;
         });
-        // ★★★ フィルタリングロジックの適用 ここまで ★★★
 
-
-        // 4. ソート (Sort)
+        // sort
         const desc = sortVal.startsWith('-');
         const key = desc ? sortVal.slice(1) : sortVal;
-
-        list.sort((a,b)=>{
+        list.sort((a,b) => {
             const av = a[key];
             const bv = b[key];
-
             if (key === 'No'){
                 const extractNum = (val) => {
                     const s = String(val||'');
@@ -1794,7 +1298,6 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
                 const nb = extractNum(bv);
                 return desc ? nb - na : na - nb;
             }
-
             const an = (av == null) ? Number.POSITIVE_INFINITY : Number(av);
             const bn = (bv == null) ? Number.POSITIVE_INFINITY : Number(bv);
             if (!isFinite(an) || !isFinite(bn)){
@@ -1803,701 +1306,429 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
             return desc ? bn - an : an - bn;
         });
 
-
         renderTable(list);
-        
+
         let activeCount = activeFilters['fish-name'].size;
-        ['difficulty', 'time', 'cost'].forEach(key => {
-            if (activeFilters[key] !== null) activeCount++;
-        });
+        ['difficulty','time','cost'].forEach(k => { if (activeFilters[k] !== null) activeCount++; });
 
         let filterText = '';
-        if (activeCount > 0) {
-             filterText = ` (${activeCount} 種類のフィルター適用中)`;
-        }
-
+        if (activeCount > 0) filterText = ` (${activeCount} 種類のフィルター適用中)`;
         message.textContent = `${list.length} 件の結果を表示中 (全 ${flatList.length} 件)${filterText}`;
     }
 
-    // reload button
-    if(reloadBtn) {
-        reloadBtn.addEventListener('click', ()=> {
-            loadData();
+    // ----- モーダル / UI 操作 -----
+    // filter modal open/close
+    if (filterOpenBtn && filterModal){
+        filterOpenBtn.addEventListener('click', ()=> {
+            if (filterModal){
+                filterModal.style.display = 'flex';
+                filterModal.setAttribute('aria-hidden','false');
+            }
         });
     }
+    // apply and close
+    if (applyFilterBtn){
+        applyFilterBtn.addEventListener('click', ()=> {
+            updateActiveFilters();
+            if (filterModal){
+                filterModal.style.display = 'none';
+                filterModal.setAttribute('aria-hidden','true');
+            }
+            applyFiltersAndRender();
+        });
+    }
+    // clear filters
+    if (filterClearBtn){
+        filterClearBtn.addEventListener('click', ()=> {
+            // reset activeFilters
+            activeFilters['fish-name'].clear();
+            activeFilters.difficulty = null;
+            activeFilters.time = null;
+            activeFilters.cost = null;
+            // rebuild UI
+            setupFilterModal(flatList);
+            applyFiltersAndRender();
+        });
+    }
+    // close modal when clicking outside content
+    if (filterModal){
+        filterModal.addEventListener('click', (e) => {
+            if (e.target === filterModal){
+                filterModal.style.display = 'none';
+                filterModal.setAttribute('aria-hidden','true');
+            }
+        });
+    }
+    // esc to close modals
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape'){
+            if (filterModal && filterModal.style.display === 'flex'){ filterModal.style.display = 'none'; filterModal.setAttribute('aria-hidden','true'); }
+            if (proposeModal && proposeModal.style.display === 'flex'){ proposeModal.style.display = 'none'; }
+            if (proposalModal && proposalModal.style.display === 'block'){ proposalModal.style.display = 'none'; }
+        }
+    });
 
-    // リストに戻るボタンのイベントリスナー
-    if(backToListBtn) {
+    // back to list
+    if (backToListBtn){
         backToListBtn.addEventListener('click', ()=> {
-            if(wrap) {
+            if (wrap) {
                 wrap.classList.remove('detail-view');
                 wrap.classList.add('list-view');
+            }
+            if (detailContainer) {
+                detailContainer.style.display = 'none';
+                detailContainer.setAttribute('aria-hidden','true');
+            }
+            if (document.getElementById('recipeTable')) {
+                document.getElementById('recipeTable').style.display = 'table';
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 
-    // フィルターと検索のイベントリスナー
-    if(qInput) qInput.addEventListener('input', ()=> applyFiltersAndRender());
-    if(filterType) filterType.addEventListener('change', ()=> applyFiltersAndRender());
-    if(sortBy) sortBy.addEventListener('change', ()=> applyFiltersAndRender());
-    
-    // ★★★ フィルターモーダル関連のイベントリスナー ★★★
-    if (filterOpenBtn) {
-        filterOpenBtn.addEventListener('click', () => {
-             // モーダル表示時に毎回チェックボックス/ラジオボタンの状態を更新し、表示をリフレッシュ
-             setupFilterModal(flatList); 
-             if (filterModal) filterModal.style.display = 'flex'; // flexで表示
+    // ----- リロード -----
+    if (reloadBtn){
+        reloadBtn.addEventListener('click', ()=> {
+            loadData();
         });
-        
-        // モーダルのオーバーレイをクリックで閉じる (簡易的なもの)
-        if (filterModal) {
-            filterModal.addEventListener('click', (e) => {
-                if (e.target === filterModal) {
-                    filterModal.style.display = 'none';
-                }
+    }
+
+    // ----- 検索・ソート・タイプ 反応 -----
+    if (qInput){
+        qInput.addEventListener('input', ()=> {
+            applyFiltersAndRender();
+        });
+    }
+    if (filterType){
+        filterType.addEventListener('change', ()=> applyFiltersAndRender());
+    }
+    if (sortBy){
+        sortBy.addEventListener('change', ()=> applyFiltersAndRender());
+    }
+
+    // ----- レシピ提案モーダル挙動 -----
+    if (proposeOpenBtn && proposeModal){
+        proposeOpenBtn.addEventListener('click', ()=> {
+            // build include/exclude fish checkboxes (from current flatList)
+            buildFishCheckboxesForPropose(flatList);
+            proposeModal.style.display = 'flex';
+            proposeModal.setAttribute('aria-hidden','false');
+            // initial preview
+            updateProposalPreview();
+        });
+    }
+    if (closeProposeBtn){
+        closeProposeBtn.addEventListener('click', ()=> {
+            if (proposeModal) { proposeModal.style.display = 'none'; proposeModal.setAttribute('aria-hidden','true'); }
+        });
+    }
+    if (proposeModal){
+        proposeModal.addEventListener('click', (e) => {
+            if (e.target === proposeModal){ proposeModal.style.display = 'none'; proposeModal.setAttribute('aria-hidden','true'); }
+        });
+    }
+
+    // include/exclude mode toggles
+    document.querySelectorAll('input[name="includeFishMode"]').forEach(r => {
+        r.addEventListener('change', (e) => {
+            if (e.target.value === 'specify') includeFishRow.style.display = 'block';
+            else includeFishRow.style.display = 'none';
+        });
+    });
+    document.querySelectorAll('input[name="excludeFishMode"]').forEach(r => {
+        r.addEventListener('change', (e) => {
+            if (e.target.value === 'specify') excludeFishRow.style.display = 'block';
+            else excludeFishRow.style.display = 'none';
+        });
+    });
+
+    // meals/custom handling
+    document.querySelectorAll('input[name="meals"]').forEach(r => {
+        r.addEventListener('change', (e) => {
+            if (e.target.value === 'custom') {
+                customMealRow.style.display = 'flex';
+                counterContainer.style.display = 'none';
+            } else {
+                customMealRow.style.display = 'none';
+                counterContainer.style.display = 'none';
+                counterValue.textContent = e.target.value;
+            }
+        });
+    });
+    if (customMealConfirm){
+        customMealConfirm.addEventListener('click', ()=> {
+            const v = parseInt(customMealInput.value, 10);
+            if (!isNaN(v) && v >= 1){
+                counterValue.textContent = String(v);
+                customMealRow.style.display = 'none';
+            }
+        });
+    }
+    if (leftBtn && rightBtn){
+        leftBtn.addEventListener('click', ()=> {
+            let v = parseInt(counterValue.textContent || '1', 10);
+            if (isNaN(v)) v = 1;
+            if (v > 1) v--;
+            counterValue.textContent = String(v);
+        });
+        rightBtn.addEventListener('click', ()=> {
+            let v = parseInt(counterValue.textContent || '1', 10);
+            if (isNaN(v)) v = 1;
+            v++;
+            counterValue.textContent = String(v);
+        });
+    }
+
+    // propose generate -> produce simple proposal list based on constraints
+    if (proposeGenerateBtn){
+        proposeGenerateBtn.addEventListener('click', ()=> {
+            const proposals = generateProposals();
+            showProposalResults(proposals);
+            // show proposal modal
+            if (proposalModal) proposalModal.style.display = 'block';
+            if (proposeModal) proposeModal.style.display = 'none';
+        });
+    }
+
+    if (backToSettingsBtn){
+        backToSettingsBtn.addEventListener('click', ()=> {
+            if (proposalModal) proposalModal.style.display = 'none';
+            if (proposeModal) proposeModal.style.display = 'flex';
+        });
+    }
+    if (closeProposalBtn){
+        closeProposalBtn.addEventListener('click', ()=> {
+            if (proposalModal) proposalModal.style.display = 'none';
+        });
+    }
+
+    // ----- プロポーザル 補助関数 -----
+    function buildFishCheckboxesForPropose(list){
+        // collect unique fish
+        const fishSet = new Set();
+        list.forEach(item => {
+            if (Array.isArray(item['fish-name'])){
+                item['fish-name'].forEach(f => {
+                    const t = String(f).trim();
+                    if (t) fishSet.add(t);
+                });
+            }
+        });
+        const uniqueFish = Array.from(fishSet).sort();
+        // clear containers
+        includeFishContainer.innerHTML = '';
+        excludeFishContainer.innerHTML = '';
+        uniqueFish.forEach((f, idx) => {
+            const id1 = `propose-include-${idx}-${f.replace(/[^0-9a-zA-Z]/g,'')}`;
+            const cb1 = document.createElement('input');
+            cb1.type = 'checkbox';
+            cb1.id = id1;
+            cb1.value = f;
+            cb1.name = 'proposeIncludeFish';
+            const label1 = document.createElement('label');
+            label1.htmlFor = id1;
+            label1.style.marginRight = '10px';
+            label1.appendChild(document.createTextNode(f));
+            includeFishContainer.appendChild(cb1);
+            includeFishContainer.appendChild(label1);
+
+            const id2 = `propose-exclude-${idx}-${f.replace(/[^0-9a-zA-Z]/g,'')}`;
+            const cb2 = document.createElement('input');
+            cb2.type = 'checkbox';
+            cb2.id = id2;
+            cb2.value = f;
+            cb2.name = 'proposeExcludeFish';
+            const label2 = document.createElement('label');
+            label2.htmlFor = id2;
+            label2.style.marginRight = '10px';
+            label2.appendChild(document.createTextNode(f));
+            excludeFishContainer.appendChild(cb2);
+            excludeFishContainer.appendChild(label2);
+        });
+    }
+
+    function updateProposalPreview(){
+        // simple preview showing counts that would match current filter selections in propose modal
+        const proposals = generateProposals({preview:true});
+        proposalPreview.innerHTML = '';
+        const div = document.createElement('div');
+        div.textContent = `候補: ${proposals.length} 件 (プレビュー)`;
+        proposalPreview.appendChild(div);
+        // show top 3 titles
+        proposals.slice(0,3).forEach(p => {
+            const d = document.createElement('div');
+            d.style.padding = '6px 0';
+            d.textContent = `${p.No} — ${p.title || '(タイトルなし)'}`;
+            proposalPreview.appendChild(d);
+        });
+    }
+
+    function generateProposals(opts = {}){
+        // read propose modal form values and filter flatList accordingly
+        const mode = (document.querySelector('input[name="mode"]:checked') || {value:'all'}).value;
+        const mealsSel = (document.querySelector('input[name="meals"]:checked') || {value:'1'}).value;
+        let meals = 1;
+        if (mealsSel === 'custom'){
+            const v = parseInt(customMealInput.value, 10);
+            meals = (!isNaN(v) && v >= 1) ? v : 1;
+        } else {
+            meals = parseInt(mealsSel, 10) || 1;
+        }
+
+        // include/exclude fish
+        const includeMode = (document.querySelector('input[name="includeFishMode"]:checked') || {value:'none'}).value;
+        const excludeMode = (document.querySelector('input[name="excludeFishMode"]:checked') || {value:'none'}).value;
+        const includeFish = includeMode === 'specify' ? Array.from(document.querySelectorAll('input[name="proposeIncludeFish"]:checked')).map(i => i.value) : [];
+        const excludeFish = excludeMode === 'specify' ? Array.from(document.querySelectorAll('input[name="proposeExcludeFish"]:checked')).map(i => i.value) : [];
+
+        // difficulty/time/cost from propose modal (note: propose modal inputs share names with filter modal, but we query directly)
+        const diffRadio = document.querySelector('input[name="difficulty"]:checked');
+        const difficulty = diffRadio ? diffRadio.value : '';
+
+        const timeRadio = document.querySelector('input[name="time"]:checked');
+        let timeVal = timeRadio ? timeRadio.value : '';
+        if (timeVal === 'custom'){
+            const ti = document.getElementById('customTimeInput');
+            if (ti) timeVal = ti.value || '';
+        }
+
+        const costRadio = document.querySelector('input[name="cost"]:checked');
+        let costVal = costRadio ? costRadio.value : '';
+        if (costVal === 'custom'){
+            const ci = document.getElementById('customCostInput');
+            if (ci) costVal = ci.value || '';
+        }
+
+        // filter flatList: prefer recipes (exclude pre) for proposals
+        let candidates = flatList.filter(i => i._type === 'recipe');
+
+        if (includeFish.length > 0){
+            // require recipe's fish set to include at least one of includeFish (OR semantics for propose)
+            candidates = candidates.filter(item => {
+                const itemFish = Array.isArray(item['fish-name']) ? item['fish-name'].map(f => f.trim()) : [];
+                // include if any of includeFish in itemFish
+                return includeFish.some(f => itemFish.includes(f));
             });
         }
-    }
+        if (excludeFish.length > 0){
+            candidates = candidates.filter(item => {
+                const itemFish = Array.isArray(item['fish-name']) ? item['fish-name'].map(f => f.trim()) : [];
+                return !excludeFish.some(f => itemFish.includes(f));
+            });
+        }
 
-    if (applyFilterBtn) {
-        applyFilterBtn.addEventListener('click', () => {
-             updateActiveFilters(); // チェックボックス/ラジオボタン/入力欄の状態を確定
-             applyFiltersAndRender();
-             if (filterModal) filterModal.style.display = 'none'; // モーダルを閉じる
+        if (difficulty && difficulty !== ''){
+            const maxD = parseFloat(difficulty);
+            if (!isNaN(maxD)) candidates = candidates.filter(i => i.difficulty == null ? true : (parseFloat(i.difficulty) <= maxD));
+        }
+        if (timeVal && timeVal !== ''){
+            const maxT = parseFloat(timeVal);
+            if (!isNaN(maxT)) candidates = candidates.filter(i => i.time == null ? true : (parseFloat(i.time) <= maxT));
+        }
+        if (costVal && costVal !== ''){
+            const maxC = parseFloat(costVal);
+            if (!isNaN(maxC)) candidates = candidates.filter(i => i.cost == null ? true : (parseFloat(i.cost) <= maxC));
+        }
+
+        // dedupe and sort by No ascending
+        candidates.sort((a,b) => {
+            const na = parseFloat(String(a.No).replace(/^P/,'') || '0');
+            const nb = parseFloat(String(b.No).replace(/^P/,'') || '0');
+            return na - nb;
         });
+
+        // propose: pick top N recipes where N == meals (but cap to 50)
+        const N = Math.min(Math.max(1, meals), 50);
+        const proposals = candidates.slice(0, N);
+
+        // preview mode returns full array; otherwise return proposals
+        if (opts.preview) return proposals;
+        return proposals;
     }
-    
-    if (filterClearBtn) {
-        filterClearBtn.addEventListener('click', () => {
-             // 全てのフィルターをクリア
-             activeFilters = {
-                'fish-name': new Set(),
-                difficulty: null,
-                time: null,
-                cost: null
-             };
-             // UIをリセットするために再度セットアップ
-             setupFilterModal(flatList); 
-             applyFiltersAndRender();
+
+    function showProposalResults(list){
+        if (!proposalResults) return;
+        proposalResults.innerHTML = '';
+        if (!Array.isArray(list) || list.length === 0){
+            proposalResults.innerHTML = '<div class="muted">該当する提案がありませんでした。</div>';
+            return;
+        }
+        const ul = document.createElement('ul');
+        list.forEach(item => {
+            const li = document.createElement('li');
+            li.style.marginBottom = '8px';
+            const title = item.title || '(タイトルなし)';
+            const a = document.createElement('a');
+            a.href = '#';
+            a.textContent = `${item.No} — ${title}`;
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                // close proposal modal, open detail
+                if (proposalModal) proposalModal.style.display = 'none';
+                displayDetail(item);
+            });
+            li.appendChild(a);
+            ul.appendChild(li);
         });
+        proposalResults.appendChild(ul);
     }
-    // ★★★ フィルターモーダル関連のイベントリスナー ここまで ★★★
 
-
-    // main loader
+    // ----- 初期化 / データ読み込み -----
     async function loadData(){
-        if(message) message.textContent = '読み込み中...';
+        // show loading
+        if (message) message.textContent = 'データを読み込み中です...';
         try {
-            const json = await fetchAny(tryPaths);
-            rawData = json;
-            flatList = buildFlatList(json);
-
-            if (flatList.length === 0){
-                if(message) message.innerHTML = '<div class="notice">recipes または preparations のデータが空です。docs/recipes.json を確認してください。</div>';
-            } else {
-                if(message) message.textContent = `読み込み完了 — 合計 ${flatList.length} 件（recipes: ${Object.keys(json.recipes||{}).length}, preparations: ${Object.keys(json.preparations||{}).length}）`;
+            rawData = await fetchAny(tryPaths);
+            flatList = buildFlatList(rawData);
+            // default view class
+            if (wrap){
+                wrap.classList.add('list-view');
+                wrap.classList.remove('detail-view');
             }
-            
-            // 初回表示
+            // prepare filter modal UI
+            setupFilterModal(flatList);
+            // initial render
             applyFiltersAndRender();
-            if(wrap) {
-                 wrap.classList.remove('detail-view');
-                 wrap.classList.add('list-view');
+            // update propose preview if modal exists
+            if (proposalPreview) updateProposalPreview();
+        } catch (e){
+            console.error(e);
+            if (message) message.textContent = 'データの読み込みに失敗しました。recipes.json を配置してください。';
+            flatList = [];
+            renderTable([]);
+        }
+    }
+
+    // ----- 起動時処理 -----
+    // set sensible defaults
+    (function boot(){
+        // small defensive defaults
+        if (!wrap) console.warn('wrap not found');
+        // load data
+        loadData();
+
+        // update preview when propose controls change
+        document.querySelectorAll('#proposeModal input').forEach(inp => {
+            inp.addEventListener('change', updateProposalPreview);
+            inp.addEventListener('input', updateProposalPreview);
+        });
+
+        // also update preview when include/exclude checkboxes are clicked (they are built on open)
+        // attach a small interval to refresh preview if proposeModal opened later and controls are added
+        setInterval(() => {
+            if (proposeModal && proposeModal.style.display === 'flex') {
+                // attach listeners once for any newly added checkboxes
+                document.querySelectorAll('input[name="proposeIncludeFish"], input[name="proposeExcludeFish"]').forEach(cb => {
+                    if (!cb.dataset._listenerAttached){
+                        cb.addEventListener('change', updateProposalPreview);
+                        cb.dataset._listenerAttached = '1';
+                    }
+                });
             }
-        } catch (err){
-            console.error(err);
-            if(message) message.innerHTML = '<div class="notice">読み込みエラー: ' + String(err.message) + '</div>';
-            clearTable();
-            if(wrap) wrap.classList.remove('detail-view');
-        }
-    }
+        }, 500);
+    })();
 
-    // initial load
-    loadData();
-
-    // Expose for debug on window
-    window._recipesApp = {
-        loadData,
-        getRaw: ()=> rawData,
-        getFlat: ()=> flatList,
-        activeFilters: activeFilters 
-    };
-})();
-// ===== レシピ提案モーダル制御（完全修正版 2.0） =====
-(function(){
-  // --- 要素 ---
-  const proposeBtn = document.getElementById('proposeOpenBtn');
-  const proposeModal = document.getElementById('proposeModal');
-  const closeProposeBtn = document.getElementById('closeProposeBtn');
-
-  const mealRadios = document.querySelectorAll('input[name="meals"]');
-  const customMealInput = document.getElementById('customMealInput');
-  const customMealRow = document.getElementById('customMealRow');
-  const customMealConfirm = document.getElementById('customMealConfirm');
-
-  const modeFieldset = document.getElementById('modeFieldset');
-  const modeRadios = document.querySelectorAll('input[name="mode"]');
-  const modeAllRadio = document.querySelector('input[name="mode"][value="all"]');
-
-  const counterContainer = document.getElementById('counterContainer');
-  const leftBtn = document.getElementById('leftBtn');
-  const rightBtn = document.getElementById('rightBtn');
-  const counterValue = document.getElementById('counterValue');
-
-  const includeFishModeRadios = document.getElementsByName('includeFishMode');
-  const excludeFishModeRadios = document.getElementsByName('excludeFishMode');
-  const includeFishRow = document.getElementById('includeFishRow');
-  const excludeFishRow = document.getElementById('excludeFishRow');
-  const includeFishContainer = document.getElementById('includeFishContainer');
-  const excludeFishContainer = document.getElementById('excludeFishContainer');
-
-  const diffRadios = document.querySelectorAll('input[name="difficulty"]');
-  const customDiffRow = document.getElementById('customDiffRow');
-  const customDiffInput = document.getElementById('customDiffInput');
-  const customDiffConfirm = document.getElementById('customDiffConfirm');
-
-  const timeRadios = document.querySelectorAll('input[name="time"]');
-  const customTimeRow = document.getElementById('customTimeRow');
-  const customTimeInput = document.getElementById('customTimeInput');
-  const customTimeConfirm = document.getElementById('customTimeConfirm');
-
-  const costRadios = document.querySelectorAll('input[name="cost"]');
-  const customCostRow = document.getElementById('customCostRow');
-  const customCostInput = document.getElementById('customCostInput');
-  const customCostConfirm = document.getElementById('customCostConfirm');
-
-  const summaryPanel = document.getElementById('summaryPanel');
-
-  // --- 状態 ---
-  let p = 1; // 食数 (1から始まる)
-  let currentCount = 1; // 現在の設定対象の食数 (1から始まる)
-  let fishList = [];
-  // mealSettings[1], mealSettings[2], ... を使用し、0インデックスは使用しない (1ベースインデックス)
-  let mealSettings = []; 
-
-  // --- 初期設定 ---
-  function makeDefaultMeal() {
-    return {
-      include: new Set(),
-      exclude: new Set(),
-      difficulty: "",
-      difficultyCustom: null,
-      time: "",
-      timeCustom: null,
-      cost: "",
-      costCustom: null,
-    };
-  }
-
-  // 食数 p に合わせて mealSettings の長さを保証（1ベースインデックスに対応）
-  function ensureMealSettings(len) {
-    const newArr = [];
-    // newArr[0] は undefined のまま
-    for (let i = 1; i <= len; i++) newArr[i] = mealSettings[i] || makeDefaultMeal();
-    mealSettings = newArr;
-  }
-
-  // --- モーダル開閉 ---
-  proposeBtn.addEventListener('click', async () => {
-    proposeModal.style.display = 'flex';
-    // 魚リストをロードし、待機
-    await loadFishList();
-    
-    // 食数の初期状態をチェック
-    const selected = document.querySelector('input[name="meals"]:checked');
-    const initialP = selected && selected.value !== 'custom' ? Number(selected.value) || 1 : (Number(customMealInput.value) || 1);
-    
-    // p の値を初期化し、設定を準備
-    p = initialP;
-    ensureMealSettings(p);
-    
-    // カスタム入力行の表示を制御
-    if (selected && selected.value === 'custom') {
-      customMealRow.style.display = 'grid';
-    } else {
-      customMealRow.style.display = 'none';
-    }
-
-    // 初期表示の更新処理
-    currentCount = 1;
-    counterValue.textContent = currentCount;
-    // 食数変更後のリセットとUI調整
-    applyResetRulesAfterMealCountChange();
-    renderIncludeExcludeUI();
-    renderSummary();
-  });
-
-  function closeModal() {
-    proposeModal.style.display = 'none';
-  }
-  closeProposeBtn.addEventListener('click', closeModal);
-  proposeModal.addEventListener('click', (e) => { 
-    if (e.target === proposeModal) closeModal(); 
-  });
-
-  // --- 魚リスト読込 (変更なし) ---
-  async function loadFishList() {
-    try {
-      const res = await fetch('./docs/recipes.json');
-      const json = await res.json();
-      const set = new Set();
-      for (const cat of ['recipes','preparations']) {
-        const group = json[cat];
-        if (!group) continue;
-        for (const k in group) {
-          const entry = group[k];
-          if (Array.isArray(entry['fish-name'])) entry['fish-name'].forEach(f => set.add(f));
-        }
-      }
-      fishList = Array.from(set).sort();
-    } catch (err) {
-      console.error('魚リスト読み込み失敗', err);
-      fishList = [];
-    }
-  }
-
-  // --- include/exclude UI (調整あり) ---
-  function renderIncludeExcludeUI() {
-    const incMode = document.querySelector('input[name="includeFishMode"]:checked')?.value || 'none';
-    const excMode = document.querySelector('input[name="excludeFishMode"]:checked')?.value || 'none';
-
-    // 表示/非表示を制御
-    includeFishRow.style.display = (incMode === 'specify') ? 'grid' : 'none';
-    excludeFishRow.style.display = (excMode === 'specify') ? 'grid' : 'none';
-
-    // コンテナをクリア
-    includeFishContainer.innerHTML = '';
-    excludeFishContainer.innerHTML = '';
-
-    const mode = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-
-    let currentIncludeSet = new Set();
-    let currentExcludeSet = new Set();
-
-    // どの食数の設定を表示するかを決定
-    if (mode === 'each') {
-      // 個別設定モード: 現在の食数の設定を表示
-      currentIncludeSet = mealSettings[currentCount]?.include || new Set();
-      currentExcludeSet = mealSettings[currentCount]?.exclude || new Set();
-    } else {
-      // まとめて設定モード: すべての食数から収集した設定を表示（UI上の表示のみ）
-      for (let i = 1; i <= p; i++) {
-        mealSettings[i]?.include.forEach(v => currentIncludeSet.add(v));
-        mealSettings[i]?.exclude.forEach(v => currentExcludeSet.add(v));
-      }
-    }
-
-    fishList.forEach(f => {
-      // include チェックボックス
-      const incLbl = document.createElement('label');
-      const inc = document.createElement('input');
-      inc.type = 'checkbox';
-      inc.value = f;
-      inc.checked = currentIncludeSet.has(f);
-      // チェックボックスのイベント処理
-      inc.addEventListener('change', () => {
-        const m = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-        if (m === 'each') {
-          // 個別設定
-          const currentMeal = mealSettings[currentCount];
-          if (inc.checked) {
-            currentMeal.include.add(f);
-            currentMeal.exclude.delete(f); // 除外との排他処理
-          } else {
-            currentMeal.include.delete(f);
-          }
-        } else {
-          // まとめて設定
-          for (let i = 1; i <= p; i++) {
-            if (inc.checked) {
-              mealSettings[i].include.add(f);
-              mealSettings[i].exclude.delete(f); // 除外との排他処理
-            } else {
-              mealSettings[i].include.delete(f);
-            }
-          }
-        }
-        renderIncludeExcludeUI();
-        renderSummary();
-      });
-      incLbl.appendChild(inc);
-      incLbl.appendChild(document.createTextNode(' ' + f));
-      includeFishContainer.appendChild(incLbl);
-
-      // exclude チェックボックス
-      const excLbl = document.createElement('label');
-      const exc = document.createElement('input');
-      exc.type = 'checkbox';
-      exc.value = f;
-      exc.checked = currentExcludeSet.has(f);
-      // チェックボックスのイベント処理
-      exc.addEventListener('change', () => {
-        const m = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-        if (m === 'each') {
-          // 個別設定
-          const currentMeal = mealSettings[currentCount];
-          if (exc.checked) {
-            currentMeal.exclude.add(f);
-            currentMeal.include.delete(f); // 含むとの排他処理
-          } else {
-            currentMeal.exclude.delete(f);
-          }
-        } else {
-          // まとめて設定
-          for (let i = 1; i <= p; i++) {
-            if (exc.checked) {
-              mealSettings[i].exclude.add(f);
-              mealSettings[i].include.delete(f); // 含むとの排他処理
-            } else {
-              mealSettings[i].exclude.delete(f);
-            }
-          }
-        }
-        renderIncludeExcludeUI();
-        renderSummary();
-      });
-      excLbl.appendChild(exc);
-      excLbl.appendChild(document.createTextNode(' ' + f));
-      excludeFishContainer.appendChild(excLbl);
-    });
-  }
-
-  // --- include/exclude mode切替 (調整あり: setTimeoutを削除) ---
-  includeFishModeRadios.forEach(r => r.addEventListener('change', (e) => {
-    const v = e.target.value;
-    if (v === 'specify') {
-      // 'specify' の場合は UI を表示するだけ
-      includeFishRow.style.display = 'grid';
-    } else {
-      // 'none' または 'random' の場合はすべての include 設定をクリア
-      for (let i = 1; i <= p; i++) mealSettings[i].include.clear();
-      includeFishRow.style.display = 'none';
-    }
-    renderIncludeExcludeUI();
-    renderSummary();
-  }));
-
-  excludeFishModeRadios.forEach(r => r.addEventListener('change', (e) => {
-    const v = e.target.value;
-    if (v === 'specify') {
-      excludeFishRow.style.display = 'grid';
-    } else {
-      // 'none' または 'random' の場合はすべての exclude 設定をクリア
-      for (let i = 1; i <= p; i++) mealSettings[i].exclude.clear();
-      excludeFishRow.style.display = 'none';
-    }
-    renderIncludeExcludeUI();
-    renderSummary();
-  }));
-
-  // --- 食数選択 (調整あり) ---
-  mealRadios.forEach(r => r.addEventListener('change', (e) => {
-    if (e.target.value === 'custom') {
-      customMealRow.style.display = 'grid';
-    } else {
-      const newP = Number(e.target.value) || 1;
-      customMealRow.style.display = 'none';
-      applyOnMealCountChange(newP);
-    }
-  }));
-
-  customMealConfirm.addEventListener('click', () => {
-    const v = Math.max(1, Number(customMealInput.value) || 1);
-    // カスタムラジオボタンがチェックされていることを確認
-    const customRadio = document.querySelector('input[name="meals"][value="custom"]');
-    if (customRadio) customRadio.checked = true;
-    applyOnMealCountChange(v);
-  });
-
-  function applyOnMealCountChange(newP) {
-    p = newP;
-    ensureMealSettings(p);
-    // 食数変更時には、設定モードと基準値をリセット
-    applyResetRulesAfterMealCountChange();
-    renderIncludeExcludeUI();
-    renderSummary();
-  }
-
-  // --- 設定方法切替 (調整あり: カウンター表示制御を追加) ---
-  modeRadios.forEach(r => r.addEventListener('change', (e) => {
-    const mode = e.target.value;
-    if (p > 1 && mode === 'each') {
-      // 複数食 + 個別設定の場合にのみカウンターを表示
-      counterContainer.style.display = 'flex';
-    } else {
-      counterContainer.style.display = 'none';
-    }
-    
-    // 設定モード切替時は、一旦、すべての基準設定をリセット
-    applyResetRulesAfterModeChange();
-    renderIncludeExcludeUI();
-    renderSummary();
-  }));
-
-  // --- カウンター操作 (変更なし) ---
-  leftBtn.addEventListener('click', () => {
-    if (currentCount > 1) {
-      currentCount--;
-      counterValue.textContent = currentCount;
-      // カウンター変更時はUIを再描画
-      renderIncludeExcludeUI();
-      renderSummary();
-    }
-  });
-  rightBtn.addEventListener('click', () => {
-    if (currentCount < p) {
-      currentCount++;
-      counterValue.textContent = currentCount;
-      // カウンター変更時はUIを再描画
-      renderIncludeExcludeUI();
-      renderSummary();
-    }
-  });
-
-  // --- 難易度/時間/費用 (調整あり) ---
-  // ラジオボタン変更時の処理
-  function handleCriterionRadioChange(radios, customRow, kind) {
-    radios.forEach(r => r.addEventListener('change', (e) => {
-      customRow.style.display = (e.target.value === 'custom') ? 'grid' : 'none';
-      if (e.target.value !== 'custom') applyCriterionToMeals(kind, e.target.value, null);
-    }));
-  }
-
-  // カスタム確定ボタンの処理
-  function handleCriterionCustomConfirm(confirmBtn, input, kind) {
-    confirmBtn.addEventListener('click', () => {
-      // カスタムラジオボタンがチェックされていることを確認
-      const customRadio = document.querySelector(`input[name="${kind}"][value="custom"]`);
-      if (customRadio) customRadio.checked = true;
-      applyCriterionToMeals(kind, 'custom', input.value);
-    });
-  }
-
-  // イベントリスナーの適用
-  handleCriterionRadioChange(diffRadios, customDiffRow, 'difficulty');
-  handleCriterionCustomConfirm(customDiffConfirm, customDiffInput, 'difficulty');
-
-  handleCriterionRadioChange(timeRadios, customTimeRow, 'time');
-  handleCriterionCustomConfirm(customTimeConfirm, customTimeInput, 'time');
-
-  handleCriterionRadioChange(costRadios, customCostRow, 'cost');
-  handleCriterionCustomConfirm(customCostConfirm, customCostInput, 'cost');
-
-  function applyCriterionToMeals(kind, value, customVal) {
-    const mode = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-    const mealsToUpdate = (mode === 'each') ? [currentCount] : Array.from({length: p}, (_, i) => i + 1);
-    
-    mealsToUpdate.forEach(i => {
-      if (mealSettings[i]) {
-        mealSettings[i][kind] = value;
-        mealSettings[i][kind + 'Custom'] = (value === 'custom') ? customVal : null;
-      }
-    });
-    renderSummary();
-  }
-
-  // --- サマリー (変更なし) ---
-  function renderSummary() {
-    summaryPanel.innerHTML = '';
-    const title = document.createElement('h3');
-    title.textContent = '設定サマリー';
-    summaryPanel.appendChild(title);
-
-    if (p === 1) {
-      const m = mealSettings[1] || makeDefaultMeal();
-      const div = document.createElement('div');
-      div.className = 'summary-single';
-      div.innerHTML = `
-        <h4>1食分の設定</h4>
-        <p><strong>使いたい魚:</strong> ${Array.from(m.include).join('、') || '指定なし'}</p>
-        <p><strong>除外する魚:</strong> ${Array.from(m.exclude).join('、') || '指定なし'}</p>
-        <p><strong>難易度:</strong> ${formatCriterionDisplay(m, 'difficulty')}</p>
-        <p><strong>時間:</strong> ${formatCriterionDisplay(m, 'time')}</p>
-        <p><strong>費用:</strong> ${formatCriterionDisplay(m, 'cost')}</p>
-      `;
-      summaryPanel.appendChild(div);
-    } else {
-      for (let i = 1; i <= p; i++) {
-        const m = mealSettings[i];
-        const card = document.createElement('div');
-        card.className = 'summary-card' + (i === currentCount ? ' active' : '');
-        card.innerHTML = `
-          <h4>${i}食目 ${i===currentCount ? '(現在)' : ''}</h4>
-          <p><strong>使いたい魚:</strong> ${Array.from(m.include).join('、') || '指定なし'}</p>
-          <p><strong>除外する魚:</strong> ${Array.from(m.exclude).join('、') || '指定なし'}</p>
-          <p><strong>難易度:</strong> ${formatCriterionDisplay(m, 'difficulty')}</p>
-          <p><strong>時間:</strong> ${formatCriterionDisplay(m, 'time')}</p>
-          <p><strong>費用:</strong> ${formatCriterionDisplay(m, 'cost')}</p>
-        `;
-        summaryPanel.appendChild(card);
-      }
-    }
-  }
-
-  function formatCriterionDisplay(m, kind) {
-    const v = m[kind];
-    if (!v) return '指定なし';
-    if (v === 'custom') {
-      const cv = m[kind + 'Custom'];
-      if (!cv) return 'カスタム未設定';
-      if (kind === 'cost') return `¥${cv} 以下`;
-      if (kind === 'time') return `${cv} 分以内`;
-      if (kind === 'difficulty') return `${cv} 以下`;
-    }
-    if (kind === 'cost') return `¥${v} 以下`;
-    if (kind === 'time') return `${v} 分以内`;
-    if (kind === 'difficulty') return `${v} 以下`;
-    return v;
-  }
-
-  // --- 各変更後の初期化ルール (調整あり) ---
-  function applyResetRulesAfterMealCountChange() {
-    // 食数が変わったら、必ず「まとめて設定」にリセットする
-    if (modeAllRadio) modeAllRadio.checked = true;
-
-    if (p <= 1) {
-      modeFieldset.style.display = 'none';
-      counterContainer.style.display = 'none';
-    } else {
-      modeFieldset.style.display = 'block';
-      // 複数食でモードが「まとめて設定」なのでカウンターは非表示
-      counterContainer.style.display = 'none';
-    }
-    
-    // UIを初期状態にリセット（フォームの選択状態と設定データの両方）
-    resetCriteria();
-  }
-
-  function applyResetRulesAfterModeChange() {
-    // 設定モード切替時に、すべての食数について、難易度/時間/費用の設定をリセット
-    // 魚の指定モードもリセット（設定内容は resetCriteria でクリア）
-    resetCriteria();
-  }
-
-  // フォームの選択状態と mealSettings の内容を初期状態に戻す
-  function resetCriteria() {
-    // 1. mealSettings の難易度/時間/費用/魚の指定をクリア
-    for (let i = 1; i <= p; i++) {
-      mealSettings[i] = makeDefaultMeal(); // これで難易度などがクリアされる
-    }
-
-    // 2. フォームUIを初期選択状態に戻す
-    document.querySelector('input[name="includeFishMode"][value="none"]').checked = true;
-    document.querySelector('input[name="excludeFishMode"][value="none"]').checked = true;
-    includeFishRow.style.display = 'none';
-    excludeFishRow.style.display = 'none';
-    
-    // 難易度/時間/費用をデフォルト（最初の要素）に設定
-    if (diffRadios.length > 0) diffRadios[0].checked = true;
-    if (timeRadios.length > 0) timeRadios[0].checked = true;
-    if (costRadios.length > 0) costRadios[0].checked = true;
-    
-    // カスタム入力行を非表示に
-    customDiffRow.style.display = customTimeRow.style.display = customCostRow.style.display = 'none';
-    
-    // 3. カウンターをリセット（p > 1 で「個別に設定」の場合の表示制御は modeRadios のイベントリスナーで行う）
-    currentCount = 1;
-    counterValue.textContent = currentCount;
-    
-    // renderIncludeExcludeUIとrenderSummaryは呼び出し元で実行
-  }
-
-  // --- 初期 ---
-  (function init(){
-    p = 1;
-    ensureMealSettings(1);
-    // 初期状態で非表示にする要素
-    modeFieldset.style.display = 'none';
-    counterContainer.style.display = 'none';
-    customMealRow.style.display = 'none';
-    customDiffRow.style.display = customTimeRow.style.display = customCostRow.style.display = 'none';
-    
-    // 魚リストのUIを初期化
-    includeFishRow.style.display = 'none';
-    excludeFishRow.style.display = 'none';
-  })();
-})();
-
-    // ===== レシピ提案モーダル =====
-
-// ボタン・モーダル要素
-const generateProposalsBtn = document.createElement('button');
-generateProposalsBtn.textContent = '提案へ';
-generateProposalsBtn.id = 'generateProposalsBtn';
-document.querySelector('#proposeModal .modal-content').appendChild(generateProposalsBtn);
-
-const proposalModal = document.getElementById('proposalModal');
-const backToSettingsBtn = document.getElementById('backToSettingsBtn');
-const closeProposalBtn = document.getElementById('closeProposalBtn');
-const proposalResults = document.getElementById('proposalResults');
-
-// 「提案へ」クリック
-generateProposalsBtn.addEventListener('click', async () => {
-  // 旧モーダルを閉じる
-  proposeModal.style.display = 'none';
-
-  // 提案モーダルを開く
-  proposalModal.style.display = 'flex';
-
-  // レシピJSON読込
-  const res = await fetch('./docs/recipes.json');
-  const data = await res.json();
-  const recipes = Object.values(data.recipes);
-
-  // 季節を取得
-  const now = new Date();
-  const month = now.getMonth() + 1;
-  const season = (month <= 2 || month === 12) ? "冬" :
-                 (month <= 5) ? "春" :
-                 (month <= 8) ? "夏" : "秋";
-
-  const selectedRecipes = [];
-
-  for (let i = 1; i <= p; i++) {
-    const m = mealSettings[i];
-    const scored = recipes
-      .filter(r => !(m.exclude.size && r["fish-name"].some(f => m.exclude.has(f))))
-      .map(r => {
-        let score = 0;
-        if (m.include.size && r["fish-name"].some(f => m.include.has(f))) score += 5;
-        if (m.difficulty && r.difficulty <= Number(m.difficultyCustom || m.difficulty)) score += 2;
-        if (m.time && r.time <= Number(m.timeCustom || m.time)) score += 2;
-        if (m.cost && r.cost <= Number(m.costCustom || m.cost)) score += 2;
-        if (r.season.includes(season)) score += 3;
-        return { ...r, score };
-      })
-      .sort((a, b) => b.score - a.score);
-
-    if (scored.length > 0) selectedRecipes.push(scored[0]);
-  }
-
-  // 提案結果の表示
-  proposalResults.innerHTML = `
-    <h3>提案結果（${selectedRecipes.length}食分）</h3>
-    <ul>
-      ${selectedRecipes.map((r, i) => `
-        <li>
-          <strong>${i + 1}食目:</strong> ${r.title}<br>
-          <span class="desc">${r.flavortxt}</span><br>
-          <small>魚: ${r["fish-name"].join('、')} | 難易度:${r.difficulty} | 時間:${r.time}分 | 費用:¥${r.cost}</small>
-        </li>
-      `).join('')}
-    </ul>
-  `;
-});
-
-// 「戻る」ボタン
-backToSettingsBtn.addEventListener('click', () => {
-  proposalModal.style.display = 'none';
-  proposeModal.style.display = 'flex';
-});
-
-// 「閉じる」ボタン
-closeProposalBtn.addEventListener('click', () => {
-  proposalModal.style.display = 'none';
-});
-
+})(); 
 </script>
 </body>
 </html>
