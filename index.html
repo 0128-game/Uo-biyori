@@ -1912,7 +1912,7 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         activeFilters: activeFilters 
     };
 })();
-// ===== レシピ提案モーダル制御（完全修正版） =====
+// ===== レシピ提案モーダル制御（完全版・修正版） =====
 (function(){
   // --- 要素 ---
   const proposeBtn = document.getElementById('proposeOpenBtn');
@@ -1957,12 +1957,12 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
   const summaryPanel = document.getElementById('summaryPanel');
 
   // --- 状態 ---
-  let p = 1;
+  let p = 1; // 食数
   let currentCount = 1;
   let fishList = [];
   let mealSettings = [];
 
-  // --- 初期化関数 ---
+  // --- ユーティリティ ---
   function makeDefaultMeal() {
     return {
       include: new Set(),
@@ -1978,21 +1978,10 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
 
   function ensureMealSettings(len) {
     const newArr = [];
-    for (let i = 1; i <= len; i++) newArr[i] = mealSettings[i] || makeDefaultMeal();
+    for (let i = 1; i <= len; i++) {
+      newArr[i] = mealSettings[i] || makeDefaultMeal();
+    }
     mealSettings = newArr;
-  }
-
-  function resetMeal(index) {
-    const m = mealSettings[index];
-    if (!m) return;
-    m.include.clear();
-    m.exclude.clear();
-    m.difficulty = "";
-    m.difficultyCustom = null;
-    m.time = "";
-    m.timeCustom = null;
-    m.cost = "";
-    m.costCustom = null;
   }
 
   // --- モーダル開閉 ---
@@ -2007,11 +1996,10 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     } else {
       customMealRow.style.display = 'none';
     }
-
     ensureMealSettings(p);
     currentCount = 1;
     counterValue.textContent = currentCount;
-    updateMealDependentVisibility();
+    applyOnMealCountChange(p);
     renderIncludeExcludeUI();
     renderSummary();
   });
@@ -2022,7 +2010,7 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
   closeProposeBtn.addEventListener('click', closeModal);
   proposeModal.addEventListener('click', (e) => { if (e.target === proposeModal) closeModal(); });
 
-  // --- 魚リストロード ---
+  // --- JSONの魚リストをロード ---
   async function loadFishList() {
     try {
       const res = await fetch('./docs/recipes.json');
@@ -2043,157 +2031,44 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     }
   }
 
-  // --- Include/Exclude UI ---
-  function renderIncludeExcludeUI() {
-    const incMode = document.querySelector('input[name="includeFishMode"]:checked')?.value || 'none';
-    const excMode = document.querySelector('input[name="excludeFishMode"]:checked')?.value || 'none';
-    includeFishRow.style.display = (incMode === 'specify') ? 'grid' : 'none';
-    excludeFishRow.style.display = (excMode === 'specify') ? 'grid' : 'none';
-    includeFishContainer.innerHTML = '';
-    excludeFishContainer.innerHTML = '';
-
-    const mode = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-    let includeSet = new Set();
-    let excludeSet = new Set();
-    if (mode === 'each') {
-      includeSet = new Set(mealSettings[currentCount].include);
-      excludeSet = new Set(mealSettings[currentCount].exclude);
-    } else {
-      for (let i = 1; i <= p; i++) {
-        mealSettings[i].include.forEach(v => includeSet.add(v));
-        mealSettings[i].exclude.forEach(v => excludeSet.add(v));
-      }
-    }
-
-    fishList.forEach(f => {
-      const incLbl = document.createElement('label');
-      const inc = document.createElement('input');
-      inc.type = 'checkbox';
-      inc.value = f;
-      inc.checked = includeSet.has(f);
-      inc.addEventListener('change', () => {
-        const m = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-        if (m === 'each') {
-          if (inc.checked) mealSettings[currentCount].include.add(f);
-          else mealSettings[currentCount].include.delete(f);
-        } else {
-          for (let i = 1; i <= p; i++) {
-            if (inc.checked) {
-              mealSettings[i].include.add(f);
-              mealSettings[i].exclude.delete(f);
-            } else {
-              mealSettings[i].include.delete(f);
-            }
-          }
-        }
-        if (inc.checked) {
-          for (let i = 1; i <= p; i++) mealSettings[i].exclude.delete(f);
-        }
-        renderIncludeExcludeUI();
-        renderSummary();
-      });
-      incLbl.appendChild(inc);
-      incLbl.appendChild(document.createTextNode(' ' + f));
-      includeFishContainer.appendChild(incLbl);
-
-      const excLbl = document.createElement('label');
-      const exc = document.createElement('input');
-      exc.type = 'checkbox';
-      exc.value = f;
-      exc.checked = excludeSet.has(f);
-      exc.addEventListener('change', () => {
-        const m = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-        if (m === 'each') {
-          if (exc.checked) mealSettings[currentCount].exclude.add(f);
-          else mealSettings[currentCount].exclude.delete(f);
-        } else {
-          for (let i = 1; i <= p; i++) {
-            if (exc.checked) {
-              mealSettings[i].exclude.add(f);
-              mealSettings[i].include.delete(f);
-            } else {
-              mealSettings[i].exclude.delete(f);
-            }
-          }
-        }
-        if (exc.checked) {
-          for (let i = 1; i <= p; i++) mealSettings[i].include.delete(f);
-        }
-        renderIncludeExcludeUI();
-        renderSummary();
-      });
-      excLbl.appendChild(exc);
-      excLbl.appendChild(document.createTextNode(' ' + f));
-      excludeFishContainer.appendChild(excLbl);
-    });
-
-    // disable opposite if conflict
-    fishList.forEach(f => {
-      const incBox = includeFishContainer.querySelector(`input[value="${f}"]`);
-      const excBox = excludeFishContainer.querySelector(`input[value="${f}"]`);
-      if (!incBox || !excBox) return;
-      const incChecked = mealSettings[currentCount].include.has(f);
-      const excChecked = mealSettings[currentCount].exclude.has(f);
-      incBox.disabled = !!excChecked;
-      excBox.disabled = !!incChecked;
-    });
-  }
-
-  // --- モード変更ハンドラ ---
-  includeFishModeRadios.forEach(r => r.addEventListener('change', (e) => {
-    if (e.target.value === 'specify') includeFishRow.style.display = 'grid';
-    else {
-      for (let i = 1; i <= p; i++) mealSettings[i].include.clear();
-      includeFishRow.style.display = 'none';
-      includeFishContainer.innerHTML = '';
-      renderSummary();
-    }
-  }));
-  excludeFishModeRadios.forEach(r => r.addEventListener('change', (e) => {
-    if (e.target.value === 'specify') excludeFishRow.style.display = 'grid';
-    else {
-      for (let i = 1; i <= p; i++) mealSettings[i].exclude.clear();
-      excludeFishRow.style.display = 'none';
-      excludeFishContainer.innerHTML = '';
-      renderSummary();
-    }
-  }));
-
-  // --- 食数変更 ---
-  mealRadios.forEach(r => r.addEventListener('change', (e) => {
-    if (e.target.value === 'custom') customMealRow.style.display = 'grid';
-    else {
-      customMealRow.style.display = 'none';
-      const newP = Number(e.target.value) || 1;
-      applyOnMealCountChange(newP);
-    }
-  }));
-
-  customMealConfirm.addEventListener('click', () => {
-    const v = Math.max(1, Number(customMealInput.value) || 1);
-    applyOnMealCountChange(v);
-  });
-
+  // --- 食数変更時 ---
   function applyOnMealCountChange(newP) {
     p = newP;
     ensureMealSettings(p);
+    const allModeRadio = document.querySelector('input[name="mode"][value="all"]');
+    const checkedMode = document.querySelector('input[name="mode"]:checked');
+    const includeNone = document.querySelector('input[name="includeFishMode"][value="none"]');
+    const excludeNone = document.querySelector('input[name="excludeFishMode"][value="none"]');
+
     if (p <= 1) {
       modeFieldset.style.display = 'none';
-      document.querySelector('input[name="mode"][value="all"]')?.checked = true;
+      if (allModeRadio) allModeRadio.checked = true;
     } else {
       modeFieldset.style.display = 'block';
-      document.querySelector('input[name="mode"][value="all"]')?.checked = true;
+      if (allModeRadio) allModeRadio.checked = true;
     }
-    counterContainer.style.display = (p > 1 && document.querySelector('input[name="mode"]:checked')?.value === 'each') ? 'block' : 'none';
-    document.querySelector('input[name="includeFishMode"][value="none"]').checked = true;
-    document.querySelector('input[name="excludeFishMode"][value="none"]').checked = true;
-    includeFishRow.style.display = excludeFishRow.style.display = 'none';
-    includeFishContainer.innerHTML = excludeFishContainer.innerHTML = '';
-    document.querySelectorAll('input[name="difficulty"]')[0].checked = true;
-    document.querySelectorAll('input[name="time"]')[0].checked = true;
-    document.querySelectorAll('input[name="cost"]')[0].checked = true;
+
+    counterContainer.style.display = (p > 1 && checkedMode && checkedMode.value === 'each') ? 'block' : 'none';
+
+    if (includeNone) includeNone.checked = true;
+    if (excludeNone) excludeNone.checked = true;
+
+    includeFishRow.style.display = 'none';
+    excludeFishRow.style.display = 'none';
+    includeFishContainer.innerHTML = '';
+    excludeFishContainer.innerHTML = '';
+
+    const diffNone = document.querySelectorAll('input[name="difficulty"]')[0];
+    const timeNone = document.querySelectorAll('input[name="time"]')[0];
+    const costNone = document.querySelectorAll('input[name="cost"]')[0];
+    if (diffNone) diffNone.checked = true;
+    if (timeNone) timeNone.checked = true;
+    if (costNone) costNone.checked = true;
+
     customDiffRow.style.display = customTimeRow.style.display = customCostRow.style.display = 'none';
+
     for (let i = 1; i <= p; i++) mealSettings[i] = makeDefaultMeal();
+
     currentCount = 1;
     counterValue.textContent = currentCount;
     renderIncludeExcludeUI();
@@ -2203,15 +2078,27 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
   // --- 設定方法切替 ---
   modeRadios.forEach(r => r.addEventListener('change', (e) => {
     const newMode = e.target.value;
-    document.querySelector('input[name="includeFishMode"][value="none"]').checked = true;
-    document.querySelector('input[name="excludeFishMode"][value="none"]').checked = true;
-    includeFishRow.style.display = excludeFishRow.style.display = 'none';
-    includeFishContainer.innerHTML = excludeFishContainer.innerHTML = '';
-    document.querySelectorAll('input[name="difficulty"]')[0].checked = true;
-    document.querySelectorAll('input[name="time"]')[0].checked = true;
-    document.querySelectorAll('input[name="cost"]')[0].checked = true;
+    const diffNone = document.querySelectorAll('input[name="difficulty"]')[0];
+    const timeNone = document.querySelectorAll('input[name="time"]')[0];
+    const costNone = document.querySelectorAll('input[name="cost"]')[0];
+    const includeNone = document.querySelector('input[name="includeFishMode"][value="none"]');
+    const excludeNone = document.querySelector('input[name="excludeFishMode"][value="none"]');
+
+    if (includeNone) includeNone.checked = true;
+    if (excludeNone) excludeNone.checked = true;
+    includeFishRow.style.display = 'none';
+    excludeFishRow.style.display = 'none';
+    includeFishContainer.innerHTML = '';
+    excludeFishContainer.innerHTML = '';
+
+    if (diffNone) diffNone.checked = true;
+    if (timeNone) timeNone.checked = true;
+    if (costNone) costNone.checked = true;
+
     customDiffRow.style.display = customTimeRow.style.display = customCostRow.style.display = 'none';
+
     for (let i = 1; i <= p; i++) mealSettings[i] = makeDefaultMeal();
+
     counterContainer.style.display = (newMode === 'each' && p > 1) ? 'block' : 'none';
     renderIncludeExcludeUI();
     renderSummary();
@@ -2220,7 +2107,6 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
   // --- カウンター操作 ---
   leftBtn.addEventListener('click', () => {
     if (currentCount > 1) {
-      resetMeal(currentCount);
       currentCount--;
       counterValue.textContent = currentCount;
       renderIncludeExcludeUI();
@@ -2229,7 +2115,6 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
   });
   rightBtn.addEventListener('click', () => {
     if (currentCount < p) {
-      resetMeal(currentCount);
       currentCount++;
       counterValue.textContent = currentCount;
       renderIncludeExcludeUI();
@@ -2269,8 +2154,9 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
   });
 
   function applyCriterionToMeals(kind, value, customVal) {
-    const mode = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-    if (mode === 'each') {
+    const mode = document.querySelector('input[name="mode"]:checked');
+    const modeVal = mode ? mode.value : 'all';
+    if (modeVal === 'each') {
       if (value === 'custom') {
         mealSettings[currentCount][kind] = 'custom';
         mealSettings[currentCount][kind + 'Custom'] = customVal;
@@ -2292,7 +2178,7 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     renderSummary();
   }
 
-  // --- Summary ---
+  // --- サマリー描画 ---
   function renderSummary() {
     summaryPanel.innerHTML = '';
     const title = document.createElement('h3');
@@ -2330,16 +2216,33 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     }
   }
 
-  function formatCriterionDisplay(m, key) {
-    if (m[key] === 'custom') return m[key + 'Custom'] || 'カスタム';
-    if (!m[key]) return '制限なし';
-    return m[key];
+  function formatCriterionDisplay(m, kind) {
+    const v = m[kind];
+    if (!v) return '指定なし';
+    if (v === 'custom') {
+      const cv = m[kind + 'Custom'];
+      if (!cv) return 'カスタム（未設定）';
+      if (kind === 'cost') return `¥${cv} 以下`;
+      if (kind === 'time') return `${cv} 分以内`;
+      if (kind === 'difficulty') return `${cv} 以下`;
+    }
+    if (kind === 'cost') return `¥${v} 以下`;
+    if (kind === 'time') return `${v} 分以内`;
+    if (kind === 'difficulty') return `${v} 以下`;
+    return String(v);
   }
 
-  function updateMealDependentVisibility() {
-    modeFieldset.style.display = (p > 1 ? 'block' : 'none');
-    counterContainer.style.display = (p > 1 && document.querySelector('input[name="mode"]:checked')?.value === 'each') ? 'block' : 'none';
-  }
+  // --- 初期化 ---
+  (function initDefaults() {
+    p = 1;
+    ensureMealSettings(1);
+    currentCount = 1;
+    counterValue.textContent = currentCount;
+    modeFieldset.style.display = 'none';
+    counterContainer.style.display = 'none';
+    customMealRow.style.display = 'none';
+    customDiffRow.style.display = customTimeRow.style.display = customCostRow.style.display = 'none';
+  })();
 
 })();
 
