@@ -1,0 +1,308 @@
+{
+  "recipes": {
+    "1": {
+      "No": "1",
+      "type": "recipe",
+      "flavortxt": "脂ののったサバを味噌でじっくり煮込んだご飯が進む一品",
+      "title": "味噌サバ煮",
+      "fish-name": ["サバ"],
+      "feature": ["脂がのっていて旨味が強い", "骨がしっかりしている"],
+      "season": ["秋", "冬"],
+      "difficulty": 2,
+      "cost": 300,
+      "timing": "昼食,夕食",
+      "time": 25,
+      "pre-recipe": "P1",
+      "ingredients": {
+        "サバ": "1尾（半身でも可）",
+        "味噌": "大さじ2",
+        "砂糖": "大さじ1",
+        "酒": "大さじ2",
+        "みりん": "大さじ2",
+        "しょうが": "1かけ"
+      },
+      "recipe": [
+        "サバを3枚におろし、骨を丁寧に取り除く。",
+        "鍋に味噌・砂糖・酒・みりん・しょうがを入れて煮立てる。",
+        "サバを皮目を上にして鍋に入れ、中火で煮る。",
+        "落としぶたをして10分ほど煮込み、煮汁を煮詰める。",
+        "器に盛り、煮汁をかけて仕上げる。"
+      ],
+      "memo": [
+        "しょうがを多めに入れると臭みがやわらぐ。",
+        "煮詰めすぎないように注意。"
+      ],
+      "pictures": ["https://0128-game.github.io/Fish-recipe/picture/test.png", "https://0128-game.github.io/Fish-recipe/picture/test.png", null, "https://0128-game.github.io/Fish-recipe/picture/test.png", "https://0128-game.github.io/Fish-recipe/picture/test.png", "https://0128-game.github.io/Fish-recipe/picture/test.png","https://0128-game.github.io/Fish-recipe/picture/test.png","https://0128-game.github.io/Fish-recipe/picture/test.png"]
+    },
+    "2": {
+      "No": "2",
+      "type": "recipe",
+      "flavortxt": "青魚の香ばしさとレモンの酸味が絶妙な簡単フライ",
+      "title": "アジのレモンフライ",
+      "fish-name": ["アジ"],
+      "feature": ["青魚特有の風味", "骨が少なく扱いやすい"],
+      "season": ["春", "初夏"],
+      "difficulty": 3,
+      "cost": 250,
+      "timing": "昼食,夕食",
+      "time": 20,
+      "pre-recipe": "P2",
+      "ingredients": {
+        "アジ": "2尾",
+        "塩": "少々",
+        "片栗粉": "大さじ2",
+        "油": "適量",
+        "レモン": "1/2個"
+      },
+      "recipe": [
+        "アジの頭と内臓を取り、3枚におろす。",
+        "水気をよく拭き、軽く塩をふる。",
+        "片栗粉を全体にまぶす。",
+        "フライパンに油を熱し、中火で両面をこんがりと焼く。",
+        "仕上げにレモンを絞る。"
+      ],
+      "memo": [
+        "下味は塩だけでも十分。",
+        "骨を抜くと食べやすい。"
+      ],
+      "pictures": [null, null, null, null, null, null, null, null]
+    },
+    "3": {
+      "No": "3",
+      "type": "recipe",
+      "flavortxt": "淡白な鮭をシンプルに焼き上げた朝食やランチに最適な一品",
+      "title": "サケのソテー",
+      "fish-name": ["サケ"],
+      "feature": ["淡白な味わい", "身が崩れにくい"],
+      "season": ["秋"],
+      "difficulty": 2,
+      "cost": 400,
+      "timing": "朝食,昼食,夕食",
+      "time": 15,
+      "pre-recipe": "P3",
+      "ingredients": {
+        "サケ": "2切れ",
+        "塩": "少々",
+        "サラダ油": "少々",
+        "レモン": "1/4個"
+      },
+      "recipe": [
+        "サケに軽く塩をふって5分ほどおく。",
+        "フライパンに油を熱し、皮目から焼く。",
+        "両面がこんがりするまで中火で焼く。",
+        "器に盛り、レモンを添える。"
+      ],
+      "memo": [
+        "焦げないように火加減に注意。",
+        "シンプルな味つけで鮭の旨味を引き立てる。"
+      ],
+      "pictures": [null, null, null, null, null, null, null, null]
+    },
+    "4": {
+      "No": "4",
+      "type": "recipe",
+      "flavortxt": "柔らかいイワシを甘辛く煮つけておつまみにも最適",
+      "title": "イワシの生姜煮",
+      "fish-name": ["イワシ"],
+      "feature": ["身が柔らかく、旨味が強い"],
+      "season": ["春", "夏"],
+      "difficulty": 3,
+      "cost": 200,
+      "timing": "夕食,おつまみ",
+      "time": 30,
+      "pre-recipe": "P4",
+      "ingredients": {
+        "イワシ": "4尾",
+        "しょうが": "1かけ",
+        "しょうゆ": "大さじ2",
+        "砂糖": "大さじ1",
+        "みりん": "大さじ1",
+        "酒": "大さじ2"
+      },
+      "recipe": [
+        "イワシの頭と内臓を取り除き、手開きにする。",
+        "しょうがを薄切りにする。",
+        "鍋に調味料としょうがを入れて煮立てる。",
+        "イワシを重ならないように並べ、中火で煮る。",
+        "煮汁が少なくなるまで煮詰める。"
+      ],
+      "memo": [
+        "煮崩れやすいので、途中であまり触らない。",
+        "しょうがは多めが香りよく仕上がる。"
+      ],
+      "pictures": [null, null, null, null, null, null, null, null]
+    },
+    "5": {
+      "No": "5",
+      "type": "recipe",
+      "flavortxt": "ふっくら厚いホッケを焼き上げ、夕食やおつまみにぴったり",
+      "title": "ホッケの塩焼き",
+      "fish-name": ["ホッケ"],
+      "feature": ["身が厚く、ふっくらとした食感"],
+      "season": ["冬"],
+      "difficulty": 1,
+      "cost": 350,
+      "timing": "夕食,おつまみ",
+      "time": 20,
+      "pre-recipe": "P5",
+      "ingredients": {
+        "ホッケ": "1尾（開き）",
+        "塩": "少々"
+      },
+      "recipe": [
+        "ホッケを軽く水洗いし、水分を拭き取る。",
+        "魚焼きグリルを予熱しておく。",
+        "皮目を下にして7〜10分焼く。",
+        "裏返してさらに5分ほど焼く。",
+        "器に盛りつける。"
+      ],
+      "memo": [
+        "焼きすぎると身が固くなるので注意。",
+        "大根おろしを添えるとよりおいしい。"
+      ],
+      "pictures": [null, null, null, null, null, null, null, null]
+    }
+  },
+  "preparations": {
+    "P1": {
+      "No": "P1",
+      "type": "pre",
+      "flavortxt": "新鮮なサバのうろこと内臓を丁寧に処理する",
+      "title": "サバの下処理",
+      "fish-name": ["サバ"],
+      "feature": ["脂がのっていて旨味が強い", "骨がしっかりしている"],
+      "season": ["秋", "冬"],
+      "difficulty": 2,
+      "cost": 50,
+      "time": 10,
+      "pre-recipe": null,
+      "ingredients": {
+        "サバ": "1尾",
+        "塩": "少々",
+        "包丁": "1本",
+        "まな板": "1枚"
+      },
+      "props": ["包丁", "まな板", "キッチンペーパー"],
+      "recipe": [
+        "サバのうろこを取り、腹を開く。",
+        "内臓を取り除き、水で洗う。",
+        "水分を拭き取って下処理完了。"
+      ],
+      "memo": [
+        "鮮度の良いものを使用する。",
+        "骨に注意して処理する。"
+      ],
+      "pictures": [null, null, null, null, null, null]
+    },
+    "P2": {
+      "No": "P2",
+      "type": "pre",
+      "flavortxt": "骨が少なく扱いやすいアジを手早く下処理",
+      "title": "アジの下処理",
+      "fish-name": ["アジ"],
+      "feature": ["青魚特有の風味", "骨が少なく扱いやすい"],
+      "season": ["春", "初夏"],
+      "difficulty": 2,
+      "cost": 40,
+      "time": 10,
+      "pre-recipe": null,
+      "ingredients": {
+        "アジ": "2尾",
+        "塩": "少々",
+        "包丁": "1本",
+        "まな板": "1枚"
+      },
+      "props": ["包丁", "まな板", "キッチンペーパー"],
+      "recipe": [
+        "アジの頭を落とし、腹を開く。",
+        "内臓を取り出し、水で洗う。",
+        "水気をよく拭いて下処理完了。"
+      ],
+      "memo": [
+        "骨を丁寧に取り除くと調理がしやすい。"
+      ],
+      "pictures": [null, null, null, null, null, null]
+    },
+    "P3": {
+      "No": "P3",
+      "type": "pre",
+      "flavortxt": "鮭を焼く前に余分な水分を取り、塩で下味をつける",
+      "title": "サケの下処理",
+      "fish-name": ["サケ"],
+      "feature": ["淡白な味わい", "身が崩れにくい"],
+      "season": ["秋"],
+      "difficulty": 1,
+      "cost": 30,
+      "time": 5,
+      "pre-recipe": null,
+      "ingredients": {
+        "サケ": "2切れ",
+        "塩": "少々"
+      },
+      "props": ["キッチンペーパー"],
+      "recipe": [
+        "サケの切り身を水で軽く洗う。",
+        "水気をキッチンペーパーで拭く。",
+        "塩をふって5分ほど置く。"
+      ],
+      "memo": [
+        "焼く直前まで冷蔵庫で保管。"
+      ],
+      "pictures": [null, null, null, null, null, null]
+    },
+    "P4": {
+      "No": "P4",
+      "type": "pre",
+      "flavortxt": "柔らかいイワシを煮付けやすい状態に整える",
+      "title": "イワシの下処理",
+      "fish-name": ["イワシ"],
+      "feature": ["身が柔らかく、旨味が強い"],
+      "season": ["春", "夏"],
+      "difficulty": 2,
+      "cost": 40,
+      "time": 10,
+      "pre-recipe": null,
+      "ingredients": {
+        "イワシ": "4尾",
+        "包丁": "1本",
+        "まな板": "1枚"
+      },
+      "props": ["包丁", "まな板", "キッチンペーパー"],
+      "recipe": [
+        "イワシの頭と内臓を取り除く。",
+        "手開きして骨を整える。",
+        "水分を拭いて下処理完了。"
+      ],
+      "memo": [
+        "煮崩れしやすいので丁寧に扱う。"
+      ],
+      "pictures": [null, null, null, null, null, null]
+    },
+    "P5": {
+      "No": "P5",
+      "type": "pre",
+      "flavortxt": "ホッケの開きを焼く前に塩をふって下味をつける",
+      "title": "ホッケの下処理",
+      "fish-name": ["ホッケ"],
+      "feature": ["身が厚く、ふっくらとした食感"],
+      "season": ["冬"],
+      "difficulty": 1,
+      "cost": 20,
+      "time": 5,
+      "pre-recipe": null,
+      "ingredients": {
+        "ホッケ": "1尾（開き）",
+        "塩": "少々"
+      },
+      "props": ["キッチンペーパー"],
+      "recipe": [
+        "ホッケの水分を拭く。",
+        "塩を両面にふり、5分ほど置く。"
+      ],
+      "memo": [
+        "焼く直前に塩を調整するとよい。"
+      ],
+      "pictures": [null, null, null, null, null, null]
+    }
+  }
+}
