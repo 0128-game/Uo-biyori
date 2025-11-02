@@ -2102,26 +2102,33 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
   // --- include/exclude mode切替 ---
   includeFishModeRadios.forEach(r => r.addEventListener('change', (e) => {
     const v = e.target.value;
-    if (v === 'specify') includeFishRow.style.display = 'grid';
-    else {
+    if (v === 'specify') {
+      includeFishRow.style.display = 'grid';
+    } else {
       for (let i = 1; i <= p; i++) mealSettings[i].include.clear();
       includeFishRow.style.display = 'none';
       includeFishContainer.innerHTML = '';
     }
-    renderIncludeExcludeUI();
-    renderSummary();
+    // 修正版: 再描画順序保証
+    setTimeout(() => {
+      renderIncludeExcludeUI();
+      renderSummary();
+    }, 0);
   }));
 
   excludeFishModeRadios.forEach(r => r.addEventListener('change', (e) => {
     const v = e.target.value;
-    if (v === 'specify') excludeFishRow.style.display = 'grid';
-    else {
+    if (v === 'specify') {
+      excludeFishRow.style.display = 'grid';
+    } else {
       for (let i = 1; i <= p; i++) mealSettings[i].exclude.clear();
       excludeFishRow.style.display = 'none';
       excludeFishContainer.innerHTML = '';
     }
-    renderIncludeExcludeUI();
-    renderSummary();
+    setTimeout(() => {
+      renderIncludeExcludeUI();
+      renderSummary();
+    }, 0);
   }));
 
   // --- 食数選択 ---
@@ -2295,8 +2302,9 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     customDiffRow.style.display = customTimeRow.style.display = customCostRow.style.display = 'none';
     currentCount = 1;
     counterValue.textContent = currentCount;
+
     renderIncludeExcludeUI();
-    renderSummary();
+    setTimeout(renderSummary, 0);
   }
 
   // --- 初期 ---
@@ -2309,6 +2317,7 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     customDiffRow.style.display = customTimeRow.style.display = customCostRow.style.display = 'none';
   })();
 })();
+
 
 
 </script>
