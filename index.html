@@ -630,7 +630,134 @@ button{cursor:pointer;}
     <button class="close-propose" id="closeProposeBtn">&times;</button>
     <div class="modal-left">
       <h2>レシピ提案</h2>
-      <!-- ここに既存のfieldset群をそのまま配置 -->
+        <fieldset class="propose-group">
+            <legend>食数選択</legend>
+            <div class="grid-row">
+                <div class="grid-label">種類</div>
+                <div class="grid-control">
+                    <label><input type="radio" name="meals" value="1" checked>1食</label>
+                    <label><input type="radio" name="meals" value="3"> 1日(3食)</label>
+                    <label><input type="radio" name="meals" value="9"> 3日(9食)</label>
+                    <label><input type="radio" name="meals" value="custom"> カスタム</label>
+                </div>
+            </div>
+            <div class="grid-row" id="customMealRow" style="margin-top:8px; display:none;">
+                <div class="grid-label">カスタム値</div>
+                <div class="grid-control">
+                    <input type="number" id="customMealInput" min="1" max="99" value="1">
+                    <button id="customMealConfirm">決定</button>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="propose-group" id="modeFieldset">
+            <legend>設定方法選択</legend>
+            <div class="grid-row">
+                <div class="grid-label">方法</div>
+                <div class="grid-control">
+                    <label><input type="radio" name="mode" value="all" checked> 一斉設定</label>
+                    <label><input type="radio" name="mode" value="each"> 個別設定</label>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="propose-group" id="counterContainer" style="display:none;">
+            <legend>食数表示窓</legend>
+            <div class="grid-row">
+                <div class="grid-label">現在</div>
+                <div class="grid-control counter">
+                    <button id="leftBtn">←</button>
+                    <span id="counterValue">1</span>
+                    <button id="rightBtn">→</button>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="propose-group">
+            <legend>使いたい魚選択</legend>
+            <div class="grid-row">
+                <div class="grid-label">指定</div>
+                <div class="grid-control">
+                    <label><input type="radio" name="includeFishMode" value="none" checked> 指定しない</label>
+                    <label><input type="radio" name="includeFishMode" value="specify"> 指定する</label>
+                </div>
+            </div>
+            <div class="grid-row" id="includeFishRow" style="margin-top:8px; display:none;">
+                <div class="grid-label">魚</div>
+                <div class="grid-control" id="includeFishContainer"></div>
+            </div>
+        </fieldset>
+        <fieldset class="propose-group">
+            <legend>除外する魚選択</legend>
+            <div class="grid-row">
+                <div class="grid-label">指定</div>
+                <div class="grid-control"> 
+                     <label><input type="radio" name="excludeFishMode" value="none" checked> 指定しない</label>
+                    <label><input type="radio" name="excludeFishMode" value="specify"> 指定する</label>
+                </div>
+            </div>
+            <div class="grid-row" id="excludeFishRow" style="margin-top:8px; display:none;">
+                <div class="grid-label">魚</div>
+                <div class="grid-control" id="excludeFishContainer"></div>
+            </div>
+        </fieldset>
+        <fieldset class="propose-group">
+            <legend>難易度選択</legend>
+            <div class="grid-row">
+                <div class="grid-label">設定</div>
+                <div class="grid-control">
+                    <label><input type="radio" name="difficulty" value=""> 制限なし</label>
+                    <label><input type="radio" name="difficulty" value="1"> 1以下</label>
+                    <label><input type="radio" name="difficulty" value="2"> 2以下</label>
+                    <label><input type="radio" name="difficulty" value="3"> 3以下</label>
+                    <label><input type="radio" name="difficulty" value="custom"> カスタム</label>
+                </div>
+            </div>
+            <div class="grid-row" id="customDiffRow" style="margin-top:8px; display:none;">
+                <div class="grid-label">カスタム</div>
+                <div class="grid-control">
+                    <input type="number" id="customDiffInput" min="1" max="5" placeholder="最大難易度">
+                    <button id="customDiffConfirm">決定</button>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="propose-group">
+            <legend>時間選択 (分)</legend>
+            <div class="grid-row">
+                <div class="grid-label">設定</div>
+                <div class="grid-control">
+                    <label><input type="radio" name="time" value=""> 制限なし</label>
+                    <label><input type="radio" name="time" value="15"> 15分以内</label>
+                    <label><input type="radio" name="time" value="30"> 30分以内</label>
+                    <label><input type="radio" name="time" value="60"> 60分以内</label>
+                    <label><input type="radio" name="time" value="custom"> カスタム</label>
+                </div>
+            </div>
+            <div class="grid-row" id="customTimeRow" style="margin-top:8px; display:none;">
+                <div class="grid-label">カスタム</div>
+                <div class="grid-control">
+                    <input type="number" id="customTimeInput" min="1" max="120" placeholder="最大時間">
+                    <button id="customTimeConfirm">決定</button>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="propose-group">
+            <legend>費用選択 (円)</legend>
+            <div class="grid-row">
+                <div class="grid-label">設定</div>
+                <div class="grid-control">
+                    <label><input type="radio" name="cost" value=""> 制限なし</label>
+                    <label><input type="radio" name="cost" value="500"> ¥500以下</label>
+                    <label><input type="radio" name="cost" value="1000"> ¥1000以下</label>
+                    <label><input type="radio" name="cost" value="2000"> ¥2000以下</label>
+                    <label><input type="radio" name="cost" value="custom"> カスタム</label>
+                </div>
+            </div>
+            <div class="grid-row" id="customCostRow" style="margin-top:8px; display:none;">
+                <div class="grid-label">カスタム</div>
+                <div class="grid-control">
+                    <input type="number" id="customCostInput" min="100" max="5000" placeholder="最大費用">
+                    <button id="customCostConfirm">決定</button>
+                </div>
+            </div>
+        </fieldset>
     </div>
     <div id="summaryPanel" aria-live="polite"></div>
   </div>
