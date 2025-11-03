@@ -213,45 +213,68 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     margin-bottom:10px;
 }
 
-/* ----------------------------------------------------- */
-/* 4. モーダルスタイル */
-.modal{
+/* ===================================================== */
+/* 1. 絞り込み設定モーダル (#filterModal) */
+/* ===================================================== */
+#filterModal {
     display:none;
     position:fixed;
-    z-index:1000;
     inset:0;
-    background:rgba(0,0,0,0.5);
+    background:rgba(0,0,0,0.55);
+    z-index:1000;
     justify-content:center;
     align-items:center;
-}
-/* 共通モーダルスタイル */
-.modal-overlay {
-    display: none; /* 初期は非表示 */
-    position: fixed;
-    inset: 0; /* top/right/bottom/left 0 */
-    background: rgba(0,0,0,0.55); /* 背景の半透明 */
-    z-index: 1000;
-
-    /* 真ん中に配置 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px; /* モバイル時の余白 */
+    padding:30px;
 }
 
-.modal-overlay .modal-content {
-    background: #fff;
-    border-radius: 14px;
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 20px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    position: relative;
+#filterModal .modal-content{
+    background:#fff;
+    border-radius:14px;
+    width:90%;
+    max-width:900px;
+    max-height:80vh;
+    overflow-y:auto;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
+    padding:20px;
+    display:flex;
+    flex-direction:column;
 }
 
-.modal-content{
+#filterModal .grid-row{
+    display:grid;
+    grid-template-columns:140px 1fr;
+    gap:12px;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+#filterModal fieldset{
+    margin-bottom:16px;
+    border:1px solid #e2e8f0;
+    border-radius:8px;
+    padding:12px;
+}
+
+#filterModal legend{
+    font-weight:600;
+    color:#2b6cb0;
+}
+
+/* -------------------------------------------------- */
+/* 2. レシピ提案モーダル (#proposeModal) */
+/* -------------------------------------------------- */
+#proposeModal {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.55);
+    z-index:1000;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+}
+
+#proposeModal .modal-content{
     background:#fff;
     border-radius:14px;
     width:96%;
@@ -265,7 +288,8 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     padding:0;
     position:relative;
 }
-.modal-left{
+
+#proposeModal .modal-left{
     flex:2;
     display:flex;
     flex-direction:column;
@@ -276,110 +300,31 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     box-sizing:border-box;
     background:#fff;
 }
-.grid-row{
+
+#proposeModal .grid-row{
     display:grid;
     grid-template-columns:140px 1fr;
-    gap:8px 12px;
+    gap:12px;
     align-items:center;
-}
-.grid-label{font-weight:600;color:#2d3748;}
-.grid-control{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;}
-.counter{display:flex;align-items:center;justify-content:flex-start;gap:12px;}
-.counter button{
-    background:var(--accent,#2b6cb0);
-    color:white;
-    border:none;
-    border-radius:6px;
-    font-size:1rem;
-    width:34px;
-    height:34px;
-    cursor:pointer;
-}
-.counter span{
-    font-size:1.2rem;
-    font-weight:bold;
-    min-width:36px;
-    text-align:center;
-    display:inline-block;
-}
-#customMealConfirm,
-#customDiffConfirm,
-#customTimeConfirm,
-#customCostConfirm,
-#customMealInput + button{
-    background:#3182ce;
-    color:#fff;
-    border:none;
-    padding:6px 10px;
-    border-radius:6px;
-    cursor:pointer;
-}
-input[type="number"]{width:110px;}
-#summaryPanel{
-    flex:1;
-    background:#f9fafc;
-    border-left:2px solid #ddd;
-    padding:24px 20px;
-    border-radius:0 14px 14px 0;
-    height:92vh;
-    overflow-y:auto;
-    box-sizing:border-box;
-}
-#summaryPanel h3{text-align:center;margin-bottom:16px;font-size:1.2rem;}
-.summary-card{
-    background:#fff;
-    border:1px solid #ddd;
-    border-radius:8px;
-    padding:12px;
-    margin-bottom:12px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.06);
-}
-.summary-card.active{border-color:#2b6cb0;background:#eaf4ff;}
-.summary-single{
-    background:#fff;
-    border:2px solid #3182ce;
-    border-radius:12px;
-    padding:20px;
-    font-size:1.05rem;
-    line-height:1.6;
-    box-shadow:0 2px 6px rgba(0,0,0,0.08);
-    color:#2d3748;
-}
-.summary-single h4{
-    font-size:1.25rem;
-    color:#2b6cb0;
-    text-align:center;
     margin-bottom:10px;
 }
-.propose-group{
-    margin-bottom:18px;
+
+#proposeModal fieldset{
+    margin-bottom:16px;
     border:1px solid #e2e8f0;
     border-radius:8px;
     padding:12px;
-    background:#fafcff;
 }
-.close-propose{
-    position:absolute;
-    top:12px;
-    right:18px;
-    background:none;
-    border:none;
-    color:#666;
-    font-size:1.8rem;
-    cursor:pointer;
+
+#proposeModal legend{
+    font-weight:600;
+    color:#2b6cb0;
 }
-#proposeOpenBtn{
-    background:#38b2ac;
-    color:#fff;
-    font-weight:bold;
-    border-radius:8px;
-    padding:9px 14px;
-    border:none;
-    cursor:pointer;
-    transition:background-color 0.2s;
-}
-#proposeOpenBtn:hover{background:#2c7a7b;}
-#proposeModal{
+
+/* -------------------------------------------------- */
+/* 3. 提案結果モーダル (#proposalModal) */
+/* -------------------------------------------------- */
+#proposalModal {
     display:none;
     position:fixed;
     inset:0;
@@ -389,52 +334,204 @@ input[type="number"]{width:110px;}
     align-items:center;
     padding:30px;
 }
-#closeProposeBtn,
-#closeProposalBtn{
-    position:absolute;
-    top:10px;
-    right:10px;
-    background:transparent;
-    border:none;
-    font-size:1.6rem;
-    color:#666;
-    cursor:pointer;
+
+#proposalModal .modal-content{
+    background:#fff;
+    border-radius:14px;
+    width:90%;
+    max-width:720px;
+    max-height:80vh;
+    overflow-y:auto;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
+    padding:20px;
+    display:flex;
+    flex-direction:column;
 }
-#closeProposeBtn:hover,
-#closeProposalBtn:hover{color:#000;}
-#proposalResults ul{list-style:none;padding-left:0;}
-#proposalResults li{
+
+#proposalModal h2{
+    margin-bottom:16px;
+    color:#2b6cb0;
+}
+
+#proposalModal #proposalResults ul{
+    list-style:none;
+    padding-left:0;
+}
+
+#proposalModal #proposalResults li{
     margin-bottom:1.2em;
     padding:0.8em;
     background:#f8fafc;
     border-radius:8px;
 }
-#proposalResults h3{
-    margin-bottom:1em;
-    font-size:1.3rem;
-    color:#2b6cb0;
-}
-
-/* ----------------------------------------------------- */
-/* レスポンシブ */
-@media (max-width:768px){
-    .controls{justify-content:space-between;}
-    header{flex-direction:column;align-items:flex-start;gap:10px;}
-    .detail-grid{grid-template-columns:1fr;}
-    .back-button{position:static;margin-top:10px;float:none;display:block;width:100%;text-align:center;}
-    .detail-header h2{padding-right:0;}
-}
-@media (max-width:900px){
-    .modal-content{flex-direction:column;padding:12px;width:100%;max-width:720px;}
-    .modal-left{border-right:none;max-height:60vh;}
-    #summaryPanel{border-left:none;border-top:2px solid #ddd;border-radius:0 0 12px 12px;height:auto;max-height:40vh;}
-}
-
-/* small UI tweaks */
-label{display:inline-flex;align-items:center;gap:8px;margin-right:8px;}
 
 
 </style>
+
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>魚のレシピリスト</title>
+<style>
+:root{
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --accent:#2b6cb0;
+    --muted:#666;
+    --success:#2f855a;
+    --danger:#c53030;
+}
+
+/* 基本リセット */
+body, h1,h2,h3,h4,p,ul,ol,li,table,thead,tbody,tr,th,td,fieldset,legend{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: sans-serif;
+}
+button{cursor:pointer;}
+
+/* ===================================================== */
+/* 1. 絞り込み設定モーダル (#filterModal) */
+/* ===================================================== */
+#filterModal {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.55);
+    z-index:1000;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+}
+#filterModal .modal-content{
+    background:#fff;
+    border-radius:14px;
+    width:90%;
+    max-width:900px;
+    max-height:80vh;
+    overflow-y:auto;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+}
+#filterModal .grid-row{
+    display:grid;
+    grid-template-columns:140px 1fr;
+    gap:12px;
+    align-items:center;
+    margin-bottom:10px;
+}
+#filterModal fieldset{
+    margin-bottom:16px;
+    border:1px solid #e2e8f0;
+    border-radius:8px;
+    padding:12px;
+}
+#filterModal legend{
+    font-weight:600;
+    color:#2b6cb0;
+}
+
+/* ===================================================== */
+/* 2. レシピ提案モーダル (#proposeModal) */
+/* ===================================================== */
+#proposeModal {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.55);
+    z-index:1000;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+}
+#proposeModal .modal-content{
+    background:#fff;
+    border-radius:14px;
+    width:96%;
+    max-width:1400px;
+    max-height:92vh;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
+    display:flex;
+    flex-direction:row;
+    gap:24px;
+    overflow:hidden;
+    padding:0;
+    position:relative;
+}
+#proposeModal .modal-left{
+    flex:2;
+    display:flex;
+    flex-direction:column;
+    overflow-y:auto;
+    max-height:92vh;
+    padding:24px 20px 24px 24px;
+    border-right:1px solid #ddd;
+    box-sizing:border-box;
+    background:#fff;
+}
+#proposeModal .grid-row{
+    display:grid;
+    grid-template-columns:140px 1fr;
+    gap:12px;
+    align-items:center;
+    margin-bottom:10px;
+}
+#proposeModal fieldset{
+    margin-bottom:16px;
+    border:1px solid #e2e8f0;
+    border-radius:8px;
+    padding:12px;
+}
+#proposeModal legend{
+    font-weight:600;
+    color:#2b6cb0;
+}
+
+/* ===================================================== */
+/* 3. 提案結果モーダル (#proposalModal) */
+/* ===================================================== */
+#proposalModal {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.55);
+    z-index:1000;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+}
+#proposalModal .modal-content{
+    background:#fff;
+    border-radius:14px;
+    width:90%;
+    max-width:720px;
+    max-height:80vh;
+    overflow-y:auto;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+}
+#proposalModal h2{
+    margin-bottom:16px;
+    color:#2b6cb0;
+}
+#proposalModal #proposalResults{
+    margin-bottom:16px;
+}
+#proposalModal .modal-buttons{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+}
+</style>
+</head>
+<body>
 
 <div class="wrap" id="wrap">
     <header>
@@ -483,7 +580,7 @@ label{display:inline-flex;align-items:center;gap:8px;margin-right:8px;}
                 </tr>
             </thead>
             <tbody id="tbody">
-                </tbody>
+            </tbody>
         </table>
 
         <div id="detailContainer" class="detail-container hidden">
@@ -523,236 +620,24 @@ label{display:inline-flex;align-items:center;gap:8px;margin-right:8px;}
   <div class="modal-content">
     <button id="closeFilterBtn" style="position:absolute;top:10px;right:10px;font-size:1.5rem;background:none;border:none;cursor:pointer;">&times;</button>
     <h2>絞り込み設定</h2>
-
-    <!-- レシピ種類 -->
-    <fieldset class="propose-group">
-      <legend>種類</legend>
-      <div class="grid-row">
-        <div class="grid-label">選択</div>
-        <div class="grid-control">
-          <label><input type="radio" name="filterTypeOption" value="all" checked> 全て</label>
-          <label><input type="radio" name="filterTypeOption" value="recipe"> レシピ</label>
-          <label><input type="radio" name="filterTypeOption" value="pre"> 下処理</label>
-        </div>
-      </div>
-    </fieldset>
-
-    <!-- 難易度 -->
-    <fieldset class="propose-group">
-      <legend>難易度</legend>
-      <div class="grid-row">
-        <div class="grid-label">上限</div>
-        <div class="grid-control">
-          <label><input type="radio" name="filterDifficulty" value=""> 制限なし</label>
-          <label><input type="radio" name="filterDifficulty" value="1"> 1以下</label>
-          <label><input type="radio" name="filterDifficulty" value="2"> 2以下</label>
-          <label><input type="radio" name="filterDifficulty" value="3"> 3以下</label>
-        </div>
-      </div>
-    </fieldset>
-
-    <!-- 時間 -->
-    <fieldset class="propose-group">
-      <legend>調理時間 (分)</legend>
-      <div class="grid-row">
-        <div class="grid-label">上限</div>
-        <div class="grid-control">
-          <label><input type="radio" name="filterTime" value=""> 制限なし</label>
-          <label><input type="radio" name="filterTime" value="15"> 15分以内</label>
-          <label><input type="radio" name="filterTime" value="30"> 30分以内</label>
-          <label><input type="radio" name="filterTime" value="60"> 60分以内</label>
-        </div>
-      </div>
-    </fieldset>
-
-    <!-- 費用 -->
-    <fieldset class="propose-group">
-      <legend>費用 (円)</legend>
-      <div class="grid-row">
-        <div class="grid-label">上限</div>
-        <div class="grid-control">
-          <label><input type="radio" name="filterCost" value=""> 制限なし</label>
-          <label><input type="radio" name="filterCost" value="500"> 500円以下</label>
-          <label><input type="radio" name="filterCost" value="1000"> 1000円以下</label>
-          <label><input type="radio" name="filterCost" value="2000"> 2000円以下</label>
-        </div>
-      </div>
-    </fieldset>
-
-    <div class="modal-footer" style="text-align:right;margin-top:15px;">
-      <button id="filterClearBtn">フィルター解除</button>
-      <button id="applyFilterBtn" class="primary-button">適用して閉じる</button>
-    </div>
+    <!-- ここに既存のfieldset群をそのまま配置 -->
   </div>
 </div>
 
-
-<!-- ▼ レシピ提案モーダル（置き換え） -->
-<div id="proposeModal" style="display:none;">
+<!-- レシピ提案モーダル -->
+<div id="proposeModal">
   <div class="modal-content">
     <button class="close-propose" id="closeProposeBtn">&times;</button>
-
-    <!-- 左側：条件（見出し＋2列グリッド） -->
     <div class="modal-left">
-
       <h2>レシピ提案</h2>
-
-      <!-- 食数選択 -->
-      <fieldset class="propose-group">
-        <legend>食数選択</legend>
-        <div class="grid-row">
-          <div class="grid-label">種類</div>
-          <div class="grid-control">
-            <label><input type="radio" name="meals" value="1" checked> 1食</label>
-            <label><input type="radio" name="meals" value="3"> 1日(3食)</label>
-            <label><input type="radio" name="meals" value="9"> 3日(9食)</label>
-            <label><input type="radio" name="meals" value="custom"> カスタム</label>
-          </div>
-        </div>
-        <div class="grid-row" id="customMealRow" style="margin-top:8px; display:none;">
-          <div class="grid-label">カスタム値</div>
-          <div class="grid-control">
-            <input type="number" id="customMealInput" min="1" max="99" value="1">
-            <button id="customMealConfirm">決定</button>
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- 設定方法 -->
-      <fieldset class="propose-group" id="modeFieldset">
-        <legend>設定方法選択</legend>
-        <div class="grid-row">
-          <div class="grid-label">方法</div>
-          <div class="grid-control">
-            <label><input type="radio" name="mode" value="all" checked> 一斉設定</label>
-            <label><input type="radio" name="mode" value="each"> 個別設定</label>
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- 食数表示窓（カウンター） -->
-      <fieldset class="propose-group" id="counterContainer" style="display:none;">
-        <legend>食数表示窓</legend>
-        <div class="grid-row">
-          <div class="grid-label">現在</div>
-          <div class="grid-control counter">
-            <button id="leftBtn">←</button>
-            <span id="counterValue">1</span>
-            <button id="rightBtn">→</button>
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- 使いたい魚選択 -->
-      <fieldset class="propose-group">
-        <legend>使いたい魚選択</legend>
-        <div class="grid-row">
-          <div class="grid-label">指定</div>
-          <div class="grid-control">
-            <label><input type="radio" name="includeFishMode" value="none" checked> 指定しない</label>
-            <label><input type="radio" name="includeFishMode" value="specify"> 指定する</label>
-          </div>
-        </div>
-        <div class="grid-row" id="includeFishRow" style="margin-top:8px; display:none;">
-          <div class="grid-label">魚</div>
-          <div class="grid-control" id="includeFishContainer"></div>
-        </div>
-      </fieldset>
-
-      <!-- 除外する魚選択 -->
-      <fieldset class="propose-group">
-        <legend>除外する魚選択</legend>
-        <div class="grid-row">
-          <div class="grid-label">指定</div>
-          <div class="grid-control">
-            <label><input type="radio" name="excludeFishMode" value="none" checked> 指定しない</label>
-            <label><input type="radio" name="excludeFishMode" value="specify"> 指定する</label>
-          </div>
-        </div>
-        <div class="grid-row" id="excludeFishRow" style="margin-top:8px; display:none;">
-          <div class="grid-label">魚</div>
-          <div class="grid-control" id="excludeFishContainer"></div>
-        </div>
-      </fieldset>
-
-      <!-- 難易度 -->
-      <fieldset class="propose-group">
-        <legend>難易度選択</legend>
-        <div class="grid-row">
-          <div class="grid-label">設定</div>
-          <div class="grid-control">
-            <label><input type="radio" name="difficulty" value=""> 制限なし</label>
-            <label><input type="radio" name="difficulty" value="1"> 1以下</label>
-            <label><input type="radio" name="difficulty" value="2"> 2以下</label>
-            <label><input type="radio" name="difficulty" value="3"> 3以下</label>
-            <label><input type="radio" name="difficulty" value="custom"> カスタム</label>
-          </div>
-        </div>
-        <div class="grid-row" id="customDiffRow" style="margin-top:8px; display:none;">
-          <div class="grid-label">カスタム</div>
-          <div class="grid-control">
-            <input type="number" id="customDiffInput" min="1" max="5" placeholder="最大難易度">
-            <button id="customDiffConfirm">決定</button>
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- 時間 -->
-      <fieldset class="propose-group">
-        <legend>時間選択 (分)</legend>
-        <div class="grid-row">
-          <div class="grid-label">設定</div>
-          <div class="grid-control">
-            <label><input type="radio" name="time" value=""> 制限なし</label>
-            <label><input type="radio" name="time" value="15"> 15分以内</label>
-            <label><input type="radio" name="time" value="30"> 30分以内</label>
-            <label><input type="radio" name="time" value="60"> 60分以内</label>
-            <label><input type="radio" name="time" value="custom"> カスタム</label>
-          </div>
-        </div>
-        <div class="grid-row" id="customTimeRow" style="margin-top:8px; display:none;">
-          <div class="grid-label">カスタム</div>
-          <div class="grid-control">
-            <input type="number" id="customTimeInput" min="1" max="120" placeholder="最大時間">
-            <button id="customTimeConfirm">決定</button>
-          </div>
-        </div>
-      </fieldset>
-
-      <!-- 費用 -->
-      <fieldset class="propose-group">
-        <legend>費用選択 (円)</legend>
-        <div class="grid-row">
-          <div class="grid-label">設定</div>
-          <div class="grid-control">
-            <label><input type="radio" name="cost" value=""> 制限なし</label>
-            <label><input type="radio" name="cost" value="500"> ¥500以下</label>
-            <label><input type="radio" name="cost" value="1000"> ¥1000以下</label>
-            <label><input type="radio" name="cost" value="2000"> ¥2000以下</label>
-            <label><input type="radio" name="cost" value="custom"> カスタム</label>
-          </div>
-        </div>
-        <div class="grid-row" id="customCostRow" style="margin-top:8px; display:none;">
-          <div class="grid-label">カスタム</div>
-          <div class="grid-control">
-            <input type="number" id="customCostInput" min="100" max="5000" placeholder="最大費用">
-            <button id="customCostConfirm">決定</button>
-          </div>
-        </div>
-      </fieldset>
-
-    </div> <!-- /.modal-left -->
-
-    <!-- 右側：サマリーパネル -->
-    <div id="summaryPanel" aria-live="polite">
-      <!-- summary content injected by JS -->
+      <!-- ここに既存のfieldset群をそのまま配置 -->
     </div>
-
-  </div> <!-- /.modal-content -->
+    <div id="summaryPanel" aria-live="polite"></div>
+  </div>
 </div>
 
-    <!-- 提案結果モーダル -->
-<div id="proposalModal" class="modal">
+<!-- 提案結果モーダル -->
+<div id="proposalModal">
   <div class="modal-content">
     <h2>レシピ提案結果</h2>
     <div id="proposalResults"></div>
@@ -763,6 +648,8 @@ label{display:inline-flex;align-items:center;gap:8px;margin-right:8px;}
   </div>
 </div>
 
+</body>
+</html>
 
 
     
