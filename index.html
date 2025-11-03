@@ -2291,7 +2291,7 @@ generateProposalsBtn.addEventListener('click', async () => {
 
   const selectedRecipes = [];
 
-  for (let i = 1; i <= p; i++) {
+for (let i = 0; i < mealSettings.length; i++) {
     const m = mealSettings[i];
     const scored = recipes
       .filter(r => !(m.exclude.size && r["fish-name"].some(f => m.exclude.has(f))))
