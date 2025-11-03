@@ -224,8 +224,6 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     justify-content:center;
     align-items:center;
 }
-
-/* modal-contentは既存優先 */
 .modal-content{
     background:#fff;
     border-radius:14px;
@@ -240,9 +238,19 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     padding:0;
     position:relative;
 }
+.modal-left{
+    flex:2;
+    display:flex;
+    flex-direction:column;
+    overflow-y:auto;
+    max-height:92vh;
+    padding:24px 20px 24px 24px;
+    border-right:1px solid #ddd;
+    box-sizing:border-box;
+    background:#fff;
+}
 
-/* ----------------------------------------------------- */
-/* 個別ID指定: フィルターモーダル */
+/* 新規追加: フィルターモーダル個別設定 */
 #filterModal{
     display:none;
     position:fixed;
@@ -273,8 +281,7 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
 }
 #closeFilterBtn:hover{color:#000;}
 
-/* ----------------------------------------------------- */
-/* 個別ID指定: 提案モーダル */
+/* 新規追加: 提案モーダル個別設定 */
 #proposeModal{
     display:none;
     position:fixed;
@@ -326,7 +333,7 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     font-size:0.9rem;
     color:#444;
 }
-#closeProposeBtn,#closeProposalBtn{
+#closeProposeBtn, #closeProposalBtn{
     position:absolute;
     top:12px;
     right:12px;
@@ -336,7 +343,7 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     color:#666;
     cursor:pointer;
 }
-#closeProposeBtn:hover,#closeProposalBtn:hover{color:#000;}
+#closeProposeBtn:hover, #closeProposalBtn:hover{color:#000;}
 #backProposeBtn{
     position:absolute;
     top:12px;
@@ -351,20 +358,6 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
 }
 #backProposeBtn:hover{background:#787878;}
 
-/* proposalResults 個別 */
-#proposalResults ul{list-style:none;padding-left:0;}
-#proposalResults li{
-    margin-bottom:1.2em;
-    padding:0.8em;
-    background:#f8fafc;
-    border-radius:8px;
-}
-#proposalResults h3{
-    margin-bottom:1em;
-    font-size:1.3rem;
-    color:#2b6cb0;
-}
-
 /* ----------------------------------------------------- */
 /* レスポンシブ */
 @media (max-width:768px){
@@ -373,17 +366,10 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     .detail-grid{grid-template-columns:1fr;}
     .back-button{position:static;margin-top:10px;float:none;display:block;width:100%;text-align:center;}
     .detail-header h2{padding-right:0;}
-    #filterModal{width:90%;padding:16px;}
-    #proposeModal{width:95%;padding:16px;}
-    #proposeModal .propose-group{
-        flex-direction:column;
-        align-items:center;
-    }
-    #proposeModal .propose-group img{
-        width:100px;
-        height:100px;
-    }
-    #backProposeBtn,#closeProposeBtn,#closeProposalBtn{top:8px;font-size:1.4rem;}
+    #filterModal,#proposeModal{width:90%;padding:16px;}
+    #proposeModal .propose-group{flex-direction:column;align-items:center;}
+    #proposeModal .propose-group img{width:100px;height:100px;}
+    #backProposeBtn, #closeProposeBtn, #closeProposalBtn{top:8px;font-size:1.4rem;}
 }
 @media (max-width:900px){
     .modal-content{flex-direction:column;padding:12px;width:100%;max-width:720px;}
