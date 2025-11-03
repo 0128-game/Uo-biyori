@@ -225,7 +225,7 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     align-items:center;
 }
 
-/* 既存のmodal-contentは優先 */
+/* modal-contentは既存優先 */
 .modal-content{
     background:#fff;
     border-radius:14px;
@@ -241,7 +241,8 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     position:relative;
 }
 
-/* 新規追加: フィルターモーダル中央表示調整 */
+/* ----------------------------------------------------- */
+/* 個別ID指定: フィルターモーダル */
 #filterModal{
     display:none;
     position:fixed;
@@ -257,51 +258,100 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     z-index:1001;
     padding:20px;
 }
+#filterModal .filter-group legend{font-weight:bold;margin-bottom:6px;}
+#filterModal .filter-item{margin-bottom:6px;}
+#filterModal .filter-input-container input[type="number"]{width:100px;}
+#closeFilterBtn{
+    position:absolute;
+    top:12px;
+    right:12px;
+    background:transparent;
+    border:none;
+    font-size:1.5rem;
+    color:#666;
+    cursor:pointer;
+}
+#closeFilterBtn:hover{color:#000;}
 
-/* フィルター内部 */
-.filter-group legend{font-weight:bold;margin-bottom:6px;}
-.filter-item{margin-bottom:6px;}
-.filter-input-container input[type="number"]{width:100px;}
-
-/* 新規追加: 提案モーダル改善 */
+/* ----------------------------------------------------- */
+/* 個別ID指定: 提案モーダル */
 #proposeModal{
     display:none;
     position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.55);
-    z-index:1000;
-    justify-content:center;
-    align-items:center;
-    padding:30px;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:90%;
+    max-width:900px;
+    max-height:85vh;
+    overflow-y:auto;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
+    z-index:1002;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
 }
-.propose-group{
-    margin-bottom:18px;
+#proposeModal .propose-group{
+    display:flex;
+    flex-direction:row;
+    gap:16px;
+    align-items:flex-start;
+    padding:12px;
     border:1px solid #e2e8f0;
     border-radius:8px;
-    padding:12px;
     background:#fafcff;
 }
-.close-propose{
+#proposeModal .propose-group img{
+    width:80px;
+    height:80px;
+    object-fit:cover;
+    border-radius:6px;
+}
+#proposeModal .propose-group .propose-info{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    flex:1;
+}
+#proposeModal .propose-group .propose-info h4{
+    margin:0;
+    font-size:1rem;
+    color:var(--accent);
+}
+#proposeModal .propose-group .propose-info p{
+    margin:0;
+    font-size:0.9rem;
+    color:#444;
+}
+#closeProposeBtn,#closeProposalBtn{
     position:absolute;
     top:12px;
-    right:18px;
-    background:none;
+    right:12px;
+    background:transparent;
     border:none;
+    font-size:1.6rem;
     color:#666;
-    font-size:1.8rem;
     cursor:pointer;
 }
-#proposeOpenBtn{
-    background:#38b2ac;
-    color:#fff;
-    font-weight:bold;
-    border-radius:8px;
-    padding:9px 14px;
+#closeProposeBtn:hover,#closeProposalBtn:hover{color:#000;}
+#backProposeBtn{
+    position:absolute;
+    top:12px;
+    left:12px;
+    background:#909090;
+    color:white;
+    border-radius:6px;
     border:none;
+    padding:6px 12px;
+    font-size:0.95rem;
     cursor:pointer;
-    transition:background-color 0.2s;
 }
-#proposeOpenBtn:hover{background:#2c7a7b;}
+#backProposeBtn:hover{background:#787878;}
+
+/* proposalResults 個別 */
 #proposalResults ul{list-style:none;padding-left:0;}
 #proposalResults li{
     margin-bottom:1.2em;
@@ -323,6 +373,17 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     .detail-grid{grid-template-columns:1fr;}
     .back-button{position:static;margin-top:10px;float:none;display:block;width:100%;text-align:center;}
     .detail-header h2{padding-right:0;}
+    #filterModal{width:90%;padding:16px;}
+    #proposeModal{width:95%;padding:16px;}
+    #proposeModal .propose-group{
+        flex-direction:column;
+        align-items:center;
+    }
+    #proposeModal .propose-group img{
+        width:100px;
+        height:100px;
+    }
+    #backProposeBtn,#closeProposeBtn,#closeProposalBtn{top:8px;font-size:1.4rem;}
 }
 @media (max-width:900px){
     .modal-content{flex-direction:column;padding:12px;width:100%;max-width:720px;}
