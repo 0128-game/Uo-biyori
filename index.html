@@ -220,18 +220,42 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
 /* モーダル統合スタイル（中央オーバーレイ表示） */
 
 /* 共通モーダル設定 */
+/* 共通モーダル（中央オーバーレイ表示） */
 .modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    justify-content: center;
-    align-items: center;
+    display: none;                  /* 非表示 */
+    position: fixed;                /* 画面に固定 */
+    top: 50%;                       /* 垂直中央 */
+    left: 50%;                      /* 水平中央 */
+    transform: translate(-50%, -50%); /* 中心に移動 */
     z-index: 1000;
-    background: rgba(0,0,0,0.5); /* 背景オーバーレイ */
-    padding: 20px;
+    background: rgba(0,0,0,0.5);   /* 背景オーバーレイ */
+    width: 100%;                    /* モーダル自体の幅調整は中身で */
+    height: 100%;                   /* 高さはスクロール可能 */
 }
+
+/* 内部コンテンツ */
+.modal-content {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    max-width: 900px;               /* 最大幅 */
+    width: 90%;                      /* 幅調整 */
+    max-height: 85vh;                /* 高さ制限 */
+    overflow-y: auto;                /* スクロール可能 */
+    padding: 24px;
+    display: grid;                   /* グリッド表示に対応 */
+    gap: 16px;
+}
+
+/* 条件設定モーダル */
+#proposeSettingModal .modal-content,
+#filterModal .modal-content,
+#proposalModal .modal-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
 
 /* ======================= */
 /* 1. 絞り込みモーダル */
