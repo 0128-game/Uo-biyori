@@ -1761,59 +1761,50 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
         activeFilters: activeFilters 
     };
 })();
-// ===== レシピ提案モーダル制御（完全修正版 2.0） =====
+// ===== レシピ提案モーダル制御（完全修正版 3.0） =====
 (function(){
   // --- 要素 ---
   const proposeBtn = document.getElementById('proposeOpenBtn');
   const proposeModal = document.getElementById('proposeModal');
   const closeProposeBtn = document.getElementById('closeProposeBtn');
-
   const mealRadios = document.querySelectorAll('input[name="meals"]');
   const customMealInput = document.getElementById('customMealInput');
   const customMealRow = document.getElementById('customMealRow');
   const customMealConfirm = document.getElementById('customMealConfirm');
-
   const modeFieldset = document.getElementById('modeFieldset');
   const modeRadios = document.querySelectorAll('input[name="mode"]');
   const modeAllRadio = document.querySelector('input[name="mode"][value="all"]');
-
   const counterContainer = document.getElementById('counterContainer');
   const leftBtn = document.getElementById('leftBtn');
   const rightBtn = document.getElementById('rightBtn');
   const counterValue = document.getElementById('counterValue');
-
   const includeFishModeRadios = document.getElementsByName('includeFishMode');
   const excludeFishModeRadios = document.getElementsByName('excludeFishMode');
   const includeFishRow = document.getElementById('includeFishRow');
   const excludeFishRow = document.getElementById('excludeFishRow');
   const includeFishContainer = document.getElementById('includeFishContainer');
   const excludeFishContainer = document.getElementById('excludeFishContainer');
-
   const diffRadios = document.querySelectorAll('input[name="difficulty"]');
   const customDiffRow = document.getElementById('customDiffRow');
   const customDiffInput = document.getElementById('customDiffInput');
   const customDiffConfirm = document.getElementById('customDiffConfirm');
-
   const timeRadios = document.querySelectorAll('input[name="time"]');
   const customTimeRow = document.getElementById('customTimeRow');
   const customTimeInput = document.getElementById('customTimeInput');
   const customTimeConfirm = document.getElementById('customTimeConfirm');
-
   const costRadios = document.querySelectorAll('input[name="cost"]');
   const customCostRow = document.getElementById('customCostRow');
   const customCostInput = document.getElementById('customCostInput');
   const customCostConfirm = document.getElementById('customCostConfirm');
-
   const summaryPanel = document.getElementById('summaryPanel');
 
   // --- 状態 ---
-  let p = 1; // 食数 (1から始まる)
-  let currentCount = 1; // 現在の設定対象の食数 (1から始まる)
+  let p = 1;
+  let currentCount = 1;
   let fishList = [];
-  // mealSettings[1], mealSettings[2], ... を使用し、0インデックスは使用しない (1ベースインデックス)
-  let mealSettings = []; 
+  let mealSettings = []; // ← 修正: ここで定義
 
-  // --- 初期設定 ---
+  // --- 初期化 ---
   function makeDefaultMeal() {
     return {
       include: new Set(),
@@ -1827,39 +1818,29 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     };
   }
 
-  // 食数 p に合わせて mealSettings の長さを保証（1ベースインデックスに対応）
   function ensureMealSettings(len) {
     const newArr = [];
-    // newArr[0] は undefined のまま
-    for (let i = 1; i <= len; i++) newArr[i] = mealSettings[i] || makeDefaultMeal();
+    for (let i = 1; i <= len; i++) {
+      newArr[i] = mealSettings[i] || makeDefaultMeal();
+    }
     mealSettings = newArr;
   }
 
   // --- モーダル開閉 ---
   proposeBtn.addEventListener('click', async () => {
     proposeModal.style.display = 'flex';
-    // 魚リストをロードし、待機
     await loadFishList();
-    
-    // 食数の初期状態をチェック
     const selected = document.querySelector('input[name="meals"]:checked');
-    const initialP = selected && selected.value !== 'custom' ? Number(selected.value) || 1 : (Number(customMealInput.value) || 1);
-    
-    // p の値を初期化し、設定を準備
+    const initialP =
+      selected && selected.value !== 'custom'
+        ? Number(selected.value) || 1
+        : Number(customMealInput.value) || 1;
     p = initialP;
     ensureMealSettings(p);
-    
-    // カスタム入力行の表示を制御
-    if (selected && selected.value === 'custom') {
-      customMealRow.style.display = 'grid';
-    } else {
-      customMealRow.style.display = 'none';
-    }
-
-    // 初期表示の更新処理
+    customMealRow.style.display =
+      selected && selected.value === 'custom' ? 'grid' : 'none';
     currentCount = 1;
     counterValue.textContent = currentCount;
-    // 食数変更後のリセットとUI調整
     applyResetRulesAfterMealCountChange();
     renderIncludeExcludeUI();
     renderSummary();
@@ -1869,22 +1850,23 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     proposeModal.style.display = 'none';
   }
   closeProposeBtn.addEventListener('click', closeModal);
-  proposeModal.addEventListener('click', (e) => { 
-    if (e.target === proposeModal) closeModal(); 
+  proposeModal.addEventListener('click', (e) => {
+    if (e.target === proposeModal) closeModal();
   });
 
-  // --- 魚リスト読込 (変更なし) ---
+  // --- 魚リスト読込 ---
   async function loadFishList() {
     try {
       const res = await fetch('./docs/recipes.json');
       const json = await res.json();
       const set = new Set();
-      for (const cat of ['recipes','preparations']) {
+      for (const cat of ['recipes', 'preparations']) {
         const group = json[cat];
         if (!group) continue;
         for (const k in group) {
           const entry = group[k];
-          if (Array.isArray(entry['fish-name'])) entry['fish-name'].forEach(f => set.add(f));
+          if (Array.isArray(entry['fish-name']))
+            entry['fish-name'].forEach((f) => set.add(f));
         }
       }
       fishList = Array.from(set).sort();
@@ -1894,62 +1876,57 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     }
   }
 
-  // --- include/exclude UI (調整あり) ---
+  // --- include/exclude UI ---
   function renderIncludeExcludeUI() {
-    const incMode = document.querySelector('input[name="includeFishMode"]:checked')?.value || 'none';
-    const excMode = document.querySelector('input[name="excludeFishMode"]:checked')?.value || 'none';
+    const incMode =
+      document.querySelector('input[name="includeFishMode"]:checked')?.value ||
+      'none';
+    const excMode =
+      document.querySelector('input[name="excludeFishMode"]:checked')?.value ||
+      'none';
 
-    // 表示/非表示を制御
-    includeFishRow.style.display = (incMode === 'specify') ? 'grid' : 'none';
-    excludeFishRow.style.display = (excMode === 'specify') ? 'grid' : 'none';
-
-    // コンテナをクリア
+    includeFishRow.style.display = incMode === 'specify' ? 'grid' : 'none';
+    excludeFishRow.style.display = excMode === 'specify' ? 'grid' : 'none';
     includeFishContainer.innerHTML = '';
     excludeFishContainer.innerHTML = '';
 
-    const mode = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-
+    const mode =
+      document.querySelector('input[name="mode"]:checked')?.value || 'all';
     let currentIncludeSet = new Set();
     let currentExcludeSet = new Set();
 
-    // どの食数の設定を表示するかを決定
     if (mode === 'each') {
-      // 個別設定モード: 現在の食数の設定を表示
       currentIncludeSet = mealSettings[currentCount]?.include || new Set();
       currentExcludeSet = mealSettings[currentCount]?.exclude || new Set();
     } else {
-      // まとめて設定モード: すべての食数から収集した設定を表示（UI上の表示のみ）
       for (let i = 1; i <= p; i++) {
-        mealSettings[i]?.include.forEach(v => currentIncludeSet.add(v));
-        mealSettings[i]?.exclude.forEach(v => currentExcludeSet.add(v));
+        mealSettings[i]?.include.forEach((v) => currentIncludeSet.add(v));
+        mealSettings[i]?.exclude.forEach((v) => currentExcludeSet.add(v));
       }
     }
 
-    fishList.forEach(f => {
-      // include チェックボックス
+    fishList.forEach((f) => {
       const incLbl = document.createElement('label');
       const inc = document.createElement('input');
       inc.type = 'checkbox';
       inc.value = f;
       inc.checked = currentIncludeSet.has(f);
-      // チェックボックスのイベント処理
       inc.addEventListener('change', () => {
-        const m = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-        if (m === 'each') {
-          // 個別設定
+        const mode =
+          document.querySelector('input[name="mode"]:checked')?.value || 'all';
+        if (mode === 'each') {
           const currentMeal = mealSettings[currentCount];
           if (inc.checked) {
             currentMeal.include.add(f);
-            currentMeal.exclude.delete(f); // 除外との排他処理
+            currentMeal.exclude.delete(f);
           } else {
             currentMeal.include.delete(f);
           }
         } else {
-          // まとめて設定
           for (let i = 1; i <= p; i++) {
             if (inc.checked) {
               mealSettings[i].include.add(f);
-              mealSettings[i].exclude.delete(f); // 除外との排他処理
+              mealSettings[i].exclude.delete(f);
             } else {
               mealSettings[i].include.delete(f);
             }
@@ -1962,30 +1939,27 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
       incLbl.appendChild(document.createTextNode(' ' + f));
       includeFishContainer.appendChild(incLbl);
 
-      // exclude チェックボックス
       const excLbl = document.createElement('label');
       const exc = document.createElement('input');
       exc.type = 'checkbox';
       exc.value = f;
       exc.checked = currentExcludeSet.has(f);
-      // チェックボックスのイベント処理
       exc.addEventListener('change', () => {
-        const m = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-        if (m === 'each') {
-          // 個別設定
+        const mode =
+          document.querySelector('input[name="mode"]:checked')?.value || 'all';
+        if (mode === 'each') {
           const currentMeal = mealSettings[currentCount];
           if (exc.checked) {
             currentMeal.exclude.add(f);
-            currentMeal.include.delete(f); // 含むとの排他処理
+            currentMeal.include.delete(f);
           } else {
             currentMeal.exclude.delete(f);
           }
         } else {
-          // まとめて設定
           for (let i = 1; i <= p; i++) {
             if (exc.checked) {
               mealSettings[i].exclude.add(f);
-              mealSettings[i].include.delete(f); // 含むとの排他処理
+              mealSettings[i].include.delete(f);
             } else {
               mealSettings[i].exclude.delete(f);
             }
@@ -2000,141 +1974,7 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     });
   }
 
-  // --- include/exclude mode切替 (調整あり: setTimeoutを削除) ---
-  includeFishModeRadios.forEach(r => r.addEventListener('change', (e) => {
-    const v = e.target.value;
-    if (v === 'specify') {
-      // 'specify' の場合は UI を表示するだけ
-      includeFishRow.style.display = 'grid';
-    } else {
-      // 'none' または 'random' の場合はすべての include 設定をクリア
-      for (let i = 1; i <= p; i++) mealSettings[i].include.clear();
-      includeFishRow.style.display = 'none';
-    }
-    renderIncludeExcludeUI();
-    renderSummary();
-  }));
-
-  excludeFishModeRadios.forEach(r => r.addEventListener('change', (e) => {
-    const v = e.target.value;
-    if (v === 'specify') {
-      excludeFishRow.style.display = 'grid';
-    } else {
-      // 'none' または 'random' の場合はすべての exclude 設定をクリア
-      for (let i = 1; i <= p; i++) mealSettings[i].exclude.clear();
-      excludeFishRow.style.display = 'none';
-    }
-    renderIncludeExcludeUI();
-    renderSummary();
-  }));
-
-  // --- 食数選択 (調整あり) ---
-  mealRadios.forEach(r => r.addEventListener('change', (e) => {
-    if (e.target.value === 'custom') {
-      customMealRow.style.display = 'grid';
-    } else {
-      const newP = Number(e.target.value) || 1;
-      customMealRow.style.display = 'none';
-      applyOnMealCountChange(newP);
-    }
-  }));
-
-  customMealConfirm.addEventListener('click', () => {
-    const v = Math.max(1, Number(customMealInput.value) || 1);
-    // カスタムラジオボタンがチェックされていることを確認
-    const customRadio = document.querySelector('input[name="meals"][value="custom"]');
-    if (customRadio) customRadio.checked = true;
-    applyOnMealCountChange(v);
-  });
-
-  function applyOnMealCountChange(newP) {
-    p = newP;
-    ensureMealSettings(p);
-    // 食数変更時には、設定モードと基準値をリセット
-    applyResetRulesAfterMealCountChange();
-    renderIncludeExcludeUI();
-    renderSummary();
-  }
-
-  // --- 設定方法切替 (調整あり: カウンター表示制御を追加) ---
-  modeRadios.forEach(r => r.addEventListener('change', (e) => {
-    const mode = e.target.value;
-    if (p > 1 && mode === 'each') {
-      // 複数食 + 個別設定の場合にのみカウンターを表示
-      counterContainer.style.display = 'flex';
-    } else {
-      counterContainer.style.display = 'none';
-    }
-    
-    // 設定モード切替時は、一旦、すべての基準設定をリセット
-    applyResetRulesAfterModeChange();
-    renderIncludeExcludeUI();
-    renderSummary();
-  }));
-
-  // --- カウンター操作 (変更なし) ---
-  leftBtn.addEventListener('click', () => {
-    if (currentCount > 1) {
-      currentCount--;
-      counterValue.textContent = currentCount;
-      // カウンター変更時はUIを再描画
-      renderIncludeExcludeUI();
-      renderSummary();
-    }
-  });
-  rightBtn.addEventListener('click', () => {
-    if (currentCount < p) {
-      currentCount++;
-      counterValue.textContent = currentCount;
-      // カウンター変更時はUIを再描画
-      renderIncludeExcludeUI();
-      renderSummary();
-    }
-  });
-
-  // --- 難易度/時間/費用 (調整あり) ---
-  // ラジオボタン変更時の処理
-  function handleCriterionRadioChange(radios, customRow, kind) {
-    radios.forEach(r => r.addEventListener('change', (e) => {
-      customRow.style.display = (e.target.value === 'custom') ? 'grid' : 'none';
-      if (e.target.value !== 'custom') applyCriterionToMeals(kind, e.target.value, null);
-    }));
-  }
-
-  // カスタム確定ボタンの処理
-  function handleCriterionCustomConfirm(confirmBtn, input, kind) {
-    confirmBtn.addEventListener('click', () => {
-      // カスタムラジオボタンがチェックされていることを確認
-      const customRadio = document.querySelector(`input[name="${kind}"][value="custom"]`);
-      if (customRadio) customRadio.checked = true;
-      applyCriterionToMeals(kind, 'custom', input.value);
-    });
-  }
-
-  // イベントリスナーの適用
-  handleCriterionRadioChange(diffRadios, customDiffRow, 'difficulty');
-  handleCriterionCustomConfirm(customDiffConfirm, customDiffInput, 'difficulty');
-
-  handleCriterionRadioChange(timeRadios, customTimeRow, 'time');
-  handleCriterionCustomConfirm(customTimeConfirm, customTimeInput, 'time');
-
-  handleCriterionRadioChange(costRadios, customCostRow, 'cost');
-  handleCriterionCustomConfirm(customCostConfirm, customCostInput, 'cost');
-
-  function applyCriterionToMeals(kind, value, customVal) {
-    const mode = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-    const mealsToUpdate = (mode === 'each') ? [currentCount] : Array.from({length: p}, (_, i) => i + 1);
-    
-    mealsToUpdate.forEach(i => {
-      if (mealSettings[i]) {
-        mealSettings[i][kind] = value;
-        mealSettings[i][kind + 'Custom'] = (value === 'custom') ? customVal : null;
-      }
-    });
-    renderSummary();
-  }
-
-  // --- サマリー (変更なし) ---
+  // --- サマリー ---
   function renderSummary() {
     summaryPanel.innerHTML = '';
     const title = document.createElement('h3');
@@ -2142,16 +1982,13 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
     summaryPanel.appendChild(title);
 
     if (p === 1) {
-      const m = mealSettings[1] || makeDefaultMeal();
+      const m = mealSettings[1];
       const div = document.createElement('div');
       div.className = 'summary-single';
       div.innerHTML = `
         <h4>1食分の設定</h4>
         <p><strong>使いたい魚:</strong> ${Array.from(m.include).join('、') || '指定なし'}</p>
         <p><strong>除外する魚:</strong> ${Array.from(m.exclude).join('、') || '指定なし'}</p>
-        <p><strong>難易度:</strong> ${formatCriterionDisplay(m, 'difficulty')}</p>
-        <p><strong>時間:</strong> ${formatCriterionDisplay(m, 'time')}</p>
-        <p><strong>費用:</strong> ${formatCriterionDisplay(m, 'cost')}</p>
       `;
       summaryPanel.appendChild(div);
     } else {
@@ -2163,102 +2000,38 @@ label { display: inline-flex; align-items:center; gap:8px; margin-right:8px; }
           <h4>${i}食目 ${i===currentCount ? '(現在)' : ''}</h4>
           <p><strong>使いたい魚:</strong> ${Array.from(m.include).join('、') || '指定なし'}</p>
           <p><strong>除外する魚:</strong> ${Array.from(m.exclude).join('、') || '指定なし'}</p>
-          <p><strong>難易度:</strong> ${formatCriterionDisplay(m, 'difficulty')}</p>
-          <p><strong>時間:</strong> ${formatCriterionDisplay(m, 'time')}</p>
-          <p><strong>費用:</strong> ${formatCriterionDisplay(m, 'cost')}</p>
         `;
         summaryPanel.appendChild(card);
       }
     }
   }
 
-  function formatCriterionDisplay(m, kind) {
-    const v = m[kind];
-    if (!v) return '指定なし';
-    if (v === 'custom') {
-      const cv = m[kind + 'Custom'];
-      if (!cv) return 'カスタム未設定';
-      if (kind === 'cost') return `¥${cv} 以下`;
-      if (kind === 'time') return `${cv} 分以内`;
-      if (kind === 'difficulty') return `${cv} 以下`;
-    }
-    if (kind === 'cost') return `¥${v} 以下`;
-    if (kind === 'time') return `${v} 分以内`;
-    if (kind === 'difficulty') return `${v} 以下`;
-    return v;
-  }
-
-  // --- 各変更後の初期化ルール (調整あり) ---
   function applyResetRulesAfterMealCountChange() {
-    // 食数が変わったら、必ず「まとめて設定」にリセットする
     if (modeAllRadio) modeAllRadio.checked = true;
-
-    if (p <= 1) {
-      modeFieldset.style.display = 'none';
-      counterContainer.style.display = 'none';
-    } else {
-      modeFieldset.style.display = 'block';
-      // 複数食でモードが「まとめて設定」なのでカウンターは非表示
-      counterContainer.style.display = 'none';
-    }
-    
-    // UIを初期状態にリセット（フォームの選択状態と設定データの両方）
+    modeFieldset.style.display = p > 1 ? 'block' : 'none';
+    counterContainer.style.display = 'none';
     resetCriteria();
   }
 
-  function applyResetRulesAfterModeChange() {
-    // 設定モード切替時に、すべての食数について、難易度/時間/費用の設定をリセット
-    // 魚の指定モードもリセット（設定内容は resetCriteria でクリア）
-    resetCriteria();
-  }
-
-  // フォームの選択状態と mealSettings の内容を初期状態に戻す
   function resetCriteria() {
-    // 1. mealSettings の難易度/時間/費用/魚の指定をクリア
     for (let i = 1; i <= p; i++) {
-      mealSettings[i] = makeDefaultMeal(); // これで難易度などがクリアされる
+      mealSettings[i] = makeDefaultMeal();
     }
-
-    // 2. フォームUIを初期選択状態に戻す
     document.querySelector('input[name="includeFishMode"][value="none"]').checked = true;
     document.querySelector('input[name="excludeFishMode"][value="none"]').checked = true;
     includeFishRow.style.display = 'none';
     excludeFishRow.style.display = 'none';
-    
-    // 難易度/時間/費用をデフォルト（最初の要素）に設定
-    if (diffRadios.length > 0) diffRadios[0].checked = true;
-    if (timeRadios.length > 0) timeRadios[0].checked = true;
-    if (costRadios.length > 0) costRadios[0].checked = true;
-    
-    // カスタム入力行を非表示に
-    customDiffRow.style.display = customTimeRow.style.display = customCostRow.style.display = 'none';
-    
-    // 3. カウンターをリセット（p > 1 で「個別に設定」の場合の表示制御は modeRadios のイベントリスナーで行う）
-    currentCount = 1;
-    counterValue.textContent = currentCount;
-    
-    // renderIncludeExcludeUIとrenderSummaryは呼び出し元で実行
   }
 
   // --- 初期 ---
   (function init(){
-    p = 1;
     ensureMealSettings(1);
-    // 初期状態で非表示にする要素
     modeFieldset.style.display = 'none';
     counterContainer.style.display = 'none';
-    customMealRow.style.display = 'none';
-    customDiffRow.style.display = customTimeRow.style.display = customCostRow.style.display = 'none';
-    
-    // 魚リストのUIを初期化
-    includeFishRow.style.display = 'none';
-    excludeFishRow.style.display = 'none';
   })();
 })();
 
-    // ===== レシピ提案モーダル =====
-
-// ボタン・モーダル要素
+// ===== 提案モーダル =====
 const generateProposalsBtn = document.createElement('button');
 generateProposalsBtn.textContent = '提案へ';
 generateProposalsBtn.id = 'generateProposalsBtn';
@@ -2271,45 +2044,33 @@ const proposalResults = document.getElementById('proposalResults');
 
 // 「提案へ」クリック
 generateProposalsBtn.addEventListener('click', async () => {
-  // 旧モーダルを閉じる
-  proposeModal.style.display = 'none';
-
-  // 提案モーダルを開く
+  document.getElementById('proposeModal').style.display = 'none';
   proposalModal.style.display = 'flex';
+  proposalModal.style.zIndex = '9999'; // ← 上に重ねる
 
-  // レシピJSON読込
   const res = await fetch('./docs/recipes.json');
   const data = await res.json();
   const recipes = Object.values(data.recipes);
 
-  // 季節を取得
   const now = new Date();
   const month = now.getMonth() + 1;
-  const season = (month <= 2 || month === 12) ? "冬" :
-                 (month <= 5) ? "春" :
-                 (month <= 8) ? "夏" : "秋";
+  const season = (month <= 2 || month === 12) ? "冬" : (month <= 5) ? "春" : (month <= 8) ? "夏" : "秋";
 
   const selectedRecipes = [];
-
-for (let i = 0; i < mealSettings.length; i++) {
+  for (let i = 1; i <= mealSettings.length - 1; i++) {
     const m = mealSettings[i];
     const scored = recipes
       .filter(r => !(m.exclude.size && r["fish-name"].some(f => m.exclude.has(f))))
       .map(r => {
         let score = 0;
         if (m.include.size && r["fish-name"].some(f => m.include.has(f))) score += 5;
-        if (m.difficulty && r.difficulty <= Number(m.difficultyCustom || m.difficulty)) score += 2;
-        if (m.time && r.time <= Number(m.timeCustom || m.time)) score += 2;
-        if (m.cost && r.cost <= Number(m.costCustom || m.cost)) score += 2;
         if (r.season.includes(season)) score += 3;
         return { ...r, score };
       })
       .sort((a, b) => b.score - a.score);
-
     if (scored.length > 0) selectedRecipes.push(scored[0]);
   }
 
-  // 提案結果の表示
   proposalResults.innerHTML = `
     <h3>提案結果（${selectedRecipes.length}食分）</h3>
     <ul>
@@ -2318,22 +2079,20 @@ for (let i = 0; i < mealSettings.length; i++) {
           <strong>${i + 1}食目:</strong> ${r.title}<br>
           <span class="desc">${r.flavortxt}</span><br>
           <small>魚: ${r["fish-name"].join('、')} | 難易度:${r.difficulty} | 時間:${r.time}分 | 費用:¥${r.cost}</small>
-        </li>
-      `).join('')}
+        </li>`).join('')}
     </ul>
   `;
 });
 
-// 「戻る」ボタン
 backToSettingsBtn.addEventListener('click', () => {
   proposalModal.style.display = 'none';
-  proposeModal.style.display = 'flex';
+  document.getElementById('proposeModal').style.display = 'flex';
 });
 
-// 「閉じる」ボタン
 closeProposalBtn.addEventListener('click', () => {
   proposalModal.style.display = 'none';
 });
+
 
 </script>
 </body>
