@@ -1371,7 +1371,7 @@ button{cursor:pointer;}
     }
 
     // 詳細情報を表示する関数
-    function displayDetail(item){
+window.displayDetail = function(item){
         if(!detailTitle || !detailSubtitle || !detailMeta || !detailImageContainer || !detailIngredients || !detailRecipe || !detailMemo || !propsSection) {
             console.error("Missing detail element(s) in HTML.");
             return;
