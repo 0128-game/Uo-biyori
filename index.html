@@ -2233,7 +2233,7 @@ function resetCriteria() {
 }
 
 // --- 初期化 ---
-(function init(){
+document.addEventListener('DOMContentLoaded', () => {
   p = 1;
   ensureMealSettings(1);
 
@@ -2254,21 +2254,27 @@ function resetCriteria() {
       <input type="checkbox" id="considerSeasonCheckbox"> 季節に合ったレシピを優先する
     </div>
   `;
-  // 追加したい場所に appendChild（例: proposeModal 内の最後の fieldset に追加）
+
   const proposeModalLeft = document.querySelector('#proposeModal .modal-left');
-  proposeModalLeft.appendChild(seasonRow);
+  if (proposeModalLeft) {
+    // ここでは最後の fieldset の後ろに追加
+    proposeModalLeft.appendChild(seasonRow);
+  }
 
   // チェック状態変更時に mealSettings に反映
   const seasonCheckbox = document.getElementById('considerSeasonCheckbox');
-  seasonCheckbox.addEventListener('change', () => {
-    for (let i = 1; i <= p; i++) {
-      mealSettings[i].considerSeason = seasonCheckbox.checked;
-    }
-    renderSummary();
-  });
+  if (seasonCheckbox) {
+    seasonCheckbox.addEventListener('change', () => {
+      for (let i = 1; i <= p; i++) {
+        mealSettings[i].considerSeason = seasonCheckbox.checked;
+      }
+      renderSummary();
+    });
+  }
 
   renderSummary();
-})();
+});
+
 
 // ===== レシピ提案モーダル =====
 document.addEventListener('DOMContentLoaded', () => {
