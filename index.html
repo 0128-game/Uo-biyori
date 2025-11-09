@@ -2284,6 +2284,7 @@ const proposalResults = document.getElementById('proposalResults');
 
 // 「提案へ」クリック
 generateProposalsBtn.addEventListener('click', async () => {
+    setInterval(() => { if (typeof generateProposalsBtn !== 'object') { console.warn('⚠️ generateProposalsBtnが上書きされました:', generateProposalsBtn); } }, 500);
   // 旧モーダルを閉じる
   proposeModal.style.display = 'none';
 
