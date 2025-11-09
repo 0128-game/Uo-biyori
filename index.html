@@ -807,16 +807,20 @@ button{cursor:pointer;}
                 </div>
             </div>
         </fieldset>
-      <fieldset class="propose-group">
-        <legend>季節を考慮するか</legend>
-        <div class="grid-row">
-          <div class="grid-label">設定</div>
-          <div class="grid-control">
-            <label><input type="radio" name="considerSeason" value="yes" checked> 考慮する</label>
-            <label><input type="radio" name="considerSeason" value="no"> 考慮しない</label>
-          </div>
-        </div>
-      </fieldset>
+     <fieldset class="propose-group">
+  <legend>季節を考慮するか</legend>
+  <div class="grid-row">
+    <div class="grid-label">設定</div>
+    <div class="grid-control">
+      <label>
+        <input type="checkbox" id="considerSeasonCheckbox" checked>
+        季節に合ったレシピを優先する
+      </label>
+    </div>
+  </div>
+</fieldset>
+
+
 
       <!-- スコア同値時の優先基準 -->
       <fieldset class="propose-group">
@@ -2259,7 +2263,7 @@ function resetCriteria() {
 
   // 季節考慮用チェックボックスも初期化
   const seasonCheckbox = document.getElementById('considerSeasonCheckbox');
-  if (seasonCheckbox) seasonCheckbox.checked = false;
+  if (seasonCheckbox) seasonCheckbox.checked = true;
 
   // カウンター初期化
   currentCount = 1;
@@ -2281,31 +2285,6 @@ document.addEventListener('DOMContentLoaded', () => {
   customDiffRow.style.display = customTimeRow.style.display = customCostRow.style.display = 'none';
   includeFishRow.style.display = 'none';
   excludeFishRow.style.display = 'none';
-
-  // 季節考慮用チェックボックスを1回だけ追加
-  const proposeModalLeft = document.querySelector('#proposeModal .modal-left');
-  if (proposeModalLeft && !document.getElementById('considerSeasonCheckbox')) {
-    const seasonRow = document.createElement('div');
-    seasonRow.className = 'grid-row';
-    seasonRow.innerHTML = `
-      <div class="grid-label">季節考慮</div>
-      <div class="grid-control">
-        <input type="checkbox" id="considerSeasonCheckbox"> 季節に合ったレシピを優先する
-      </div>
-    `;
-    proposeModalLeft.appendChild(seasonRow);
-  }
-
-  // チェック状態変更時に mealSettings に反映
-  const seasonCheckbox = document.getElementById('considerSeasonCheckbox');
-  if (seasonCheckbox) {
-    seasonCheckbox.addEventListener('change', () => {
-      for (let i = 1; i <= p; i++) {
-        mealSettings[i].considerSeason = seasonCheckbox.checked;
-      }
-      renderSummary();
-    });
-  }
 
   renderSummary();
 });
@@ -2350,9 +2329,10 @@ document.addEventListener('DOMContentLoaded', () => {
 for (let i = 1; i < meals.length; i++) {
   const m = meals[i];
 
-  // ←ここに季節考慮のラジオ取得を追加
-  const seasonRadio = document.querySelector('input[name="considerSeason"]:checked');
-  const considerSeason = seasonRadio ? seasonRadio.value === 'yes' : true;
+// チェックボックスから値を取得
+const seasonCheckbox = document.getElementById('considerSeasonCheckbox');
+const considerSeason = seasonCheckbox ? seasonCheckbox.checked : true;
+
 
   const tieBreakerInput = document.querySelector('input[name="tieBreaker"]:checked');
   const tieBreaker = tieBreakerInput ? tieBreakerInput.value : 'difficulty';
