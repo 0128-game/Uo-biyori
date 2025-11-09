@@ -1852,7 +1852,7 @@ if (window.proposalModal) proposalModal.style.display = 'none';
   }
 
   // 食数 p に合わせて mealSettings の長さを保証（1ベースインデックスに対応）
-  function ensureMealSettings(len) {
+window.ensureMealSettings = function(len) {
     const newArr = [];
     // newArr[0] は undefined のまま
     for (let i = 1; i <= len; i++) newArr[i] = mealSettings[i] || makeDefaultMeal();
@@ -2196,7 +2196,7 @@ function formatCriterionDisplay(meal, key) {
 }
 
 // --- サマリー表示（季節考慮追加） ---
-function renderSummary() {
+window.renderSummary = function() {
   summaryPanel.innerHTML = '';
   const title = document.createElement('h3');
   title.textContent = '設定サマリー';
