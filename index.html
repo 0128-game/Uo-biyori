@@ -2162,20 +2162,7 @@ window.ensureMealSettings = function(len) {
     renderSummary();
   }
 
-function formatCriterionDisplay(meal, key) {
-  let value = meal[key];
 
-  // 文字列の場合も整数に変換
-  value = Number(value);
-
-  // 数値でない・空・負なら「指定なし」
-  if (isNaN(value) || value <= 0) {
-    return '指定なし';
-  }
-
-  // 単純に値を返す
-  return String(value);
-}
 
 
   // 数値評価を★表記に変換（例: 1→★☆☆）
@@ -2206,7 +2193,7 @@ function formatCriterionDisplay(meal, key) {
   return String(value);
 }
 
-// --- サマリー表示（季節考慮追加） ---
+// --- サマリー表示（★表記なしのシンプル版） ---
 window.renderSummary = function() {
   summaryPanel.innerHTML = '';
   const title = document.createElement('h3');
@@ -2221,9 +2208,9 @@ window.renderSummary = function() {
       <h4>1食分の設定</h4>
       <p><strong>使いたい魚:</strong> ${Array.from(m.include).join('、') || '指定なし'}</p>
       <p><strong>除外する魚:</strong> ${Array.from(m.exclude).join('、') || '指定なし'}</p>
-      <p><strong>難易度:</strong> ${formatCriterionDisplay(m, 'difficulty')}</p>
-      <p><strong>時間:</strong> ${formatCriterionDisplay(m, 'time')}</p>
-      <p><strong>費用:</strong> ${formatCriterionDisplay(m, 'cost')}</p>
+      <p><strong>難易度:</strong> ${m.difficulty || '指定なし'}</p>
+      <p><strong>時間:</strong> ${m.time || '指定なし'}</p>
+      <p><strong>費用:</strong> ¥${m.cost || '指定なし'}</p>
       <p><strong>季節考慮:</strong> ${m.considerSeason ? 'する' : 'しない'}</p>
     `;
     summaryPanel.appendChild(div);
@@ -2236,15 +2223,16 @@ window.renderSummary = function() {
         <h4>${i}食目 ${i===currentCount ? '(現在)' : ''}</h4>
         <p><strong>使いたい魚:</strong> ${Array.from(m.include).join('、') || '指定なし'}</p>
         <p><strong>除外する魚:</strong> ${Array.from(m.exclude).join('、') || '指定なし'}</p>
-        <p><strong>難易度:</strong> ${formatCriterionDisplay(m, 'difficulty')}</p>
-        <p><strong>時間:</strong> ${formatCriterionDisplay(m, 'time')}</p>
-        <p><strong>費用:</strong> ${formatCriterionDisplay(m, 'cost')}</p>
+        <p><strong>難易度:</strong> ${m.difficulty || '指定なし'}</p>
+        <p><strong>時間:</strong> ${m.time || '指定なし'}</p>
+        <p><strong>費用:</strong> ¥${m.cost || '指定なし'}</p>
         <p><strong>季節考慮:</strong> ${m.considerSeason ? 'する' : 'しない'}</p>
       `;
       summaryPanel.appendChild(card);
     }
   }
 }
+
 })();
 // --- 初期化・リセット処理 ---
 function resetCriteria() {
