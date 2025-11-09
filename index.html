@@ -2269,6 +2269,7 @@ if (window.proposalModal) proposalModal.style.display = 'none';
   })();
 })();
 
+// ===== レシピ提案モーダル =====
 document.addEventListener('DOMContentLoaded', () => {
   const generateProposalsBtn = document.createElement('button');
   generateProposalsBtn.textContent = '提案へ';
@@ -2280,118 +2281,119 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeProposalBtn = document.getElementById('closeProposalBtn');
   const proposalResults = document.getElementById('proposalResults');
 
-  // 履歴配列（グローバル保持、UI表示はなし）
+  // 履歴用配列（グローバル）
   window.proposalHistory = window.proposalHistory || [];
 
- // 「提案へ」クリック
-generateProposalsBtn.addEventListener('click', async () => {
-  // 旧モーダルを閉じる
-  proposeModal.style.display = 'none';
-  // 提案モーダルを開く
-  proposalModal.style.display = 'flex';
+  generateProposalsBtn.addEventListener('click', async () => {
+    // 旧モーダルを閉じる
+    proposeModal.style.display = 'none';
+    proposalModal.style.display = 'flex';
 
-  // レシピJSON読込
-  const res = await fetch('./docs/recipes.json');
-  const data = await res.json();
-  const recipes = Object.values(data.recipes);
+    // レシピJSON読込
+    const res = await fetch('./docs/recipes.json');
+    const data = await res.json();
+    const recipes = Object.values(data.recipes);
 
-  // 季節を取得
-  const now = new Date();
-  const month = now.getMonth() + 1;
-  const season = (month <= 2 || month === 12) ? "冬" :
-                 (month <= 5) ? "春" :
-                 (month <= 8) ? "夏" : "秋";
+    // 季節取得
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const season = (month <= 2 || month === 12) ? "冬" :
+                   (month <= 5) ? "春" :
+                   (month <= 8) ? "夏" : "秋";
 
-  const selectedRecipes = [];
+    const selectedRecipes = [];
+    const meals = window.mealSettings || [];
 
-  // 履歴配列（グローバル管理、重複防止）
-  window.proposalHistory = window.proposalHistory || [];
+    for (let i = 1; i < meals.length; i++) {
+      const m = meals[i];
+      const tieBreakerInput = document.querySelector('input[name="tieBreaker"]:checked');
+      const tieBreaker = tieBreakerInput ? tieBreakerInput.value : 'difficulty';
 
-  const meals = window.mealSettings || [];
-  for (let i = 1; i < meals.length; i++) {
-    const m = meals[i];
-    const tieBreakerInput = document.querySelector('input[name="tieBreaker"]:checked');
-    const tieBreaker = tieBreakerInput ? tieBreakerInput.value : 'difficulty';
-
-    // スコア計算
-    let scored = recipes
-      .filter(r => !(m.exclude.size && r["fish-name"].some(f => m.exclude.has(f))))
-      .map(r => {
+      // ===== 1. スコア計算 =====
+      let scored = recipes.map(r => {
         let score = 0;
+
         if (m.include.size && r["fish-name"].some(f => m.include.has(f))) score += 5;
         if (m.difficulty && r.difficulty <= Number(m.difficultyCustom || m.difficulty)) score += 2;
         if (m.time && r.time <= Number(m.timeCustom || m.time)) score += 2;
         if (m.cost && r.cost <= Number(m.costCustom || m.cost)) score += 2;
         if (r.season.includes(season)) score += 3;
+
+        // 履歴に残っている回数分マイナス
+        const historyCount = window.proposalHistory.filter(h => h.No === r.No).length;
+        score -= historyCount;
+
         return { ...r, score };
       });
 
-    // tieBreakerがrandomならシャッフル
-    if (tieBreaker === 'random') {
-      for (let j = scored.length - 1; j > 0; j--) {
-        const k = Math.floor(Math.random() * (j + 1));
-        [scored[j], scored[k]] = [scored[k], scored[j]];
+      // ===== 2. スコア同値グループ取得 =====
+      const maxScore = Math.max(...scored.map(r => r.score));
+      scored = scored.filter(r => r.score === maxScore);
+
+      // ===== 3. tiebreaker 適用 =====
+      let chosenRecipe;
+      if (tieBreaker === 'difficulty') {
+        scored.sort((a, b) => a.difficulty - b.difficulty);
+        chosenRecipe = scored[0];
+      } else if (tieBreaker === 'time') {
+        scored.sort((a, b) => a.time - b.time);
+        chosenRecipe = scored[0];
+      } else if (tieBreaker === 'cost') {
+        scored.sort((a, b) => a.cost - b.cost);
+        chosenRecipe = scored[0];
+      } else if (tieBreaker === 'random') {
+        const idx = Math.floor(Math.random() * scored.length);
+        chosenRecipe = scored[idx];
+      }
+
+      // ===== 4. 履歴管理 =====
+      if (chosenRecipe) {
+        selectedRecipes.push(chosenRecipe);
+        window.proposalHistory.push(chosenRecipe);
+
+        // 最大15件保持
+        if (window.proposalHistory.length > 15) {
+          window.proposalHistory.shift();
+        }
       }
     }
 
-    // スコア順ソート
-    scored.sort((a, b) => b.score - a.score);
+    // ===== 5. 表示 =====
+    proposalResults.innerHTML = `
+      <h3>提案結果（${selectedRecipes.length}食分）</h3>
+      <ul>
+        ${selectedRecipes.map((r, i) => `
+          <li>
+            <strong>${i + 1}食目:</strong> ${r.title}<br>
+            <span class="desc">${r.flavortxt}</span><br>
+            <small>魚: ${r["fish-name"].join('、')} | 難易度:${r.difficulty} | 時間:${r.time}分 | 費用:¥${r.cost}</small><br>
+            <button class="recipe-btn" data-index="${i}">レシピへ</button>
+          </li>
+        `).join('')}
+      </ul>
+    `;
 
-    // 同点グループからランダムに選ぶ
-    if (scored.length > 0) {
-      const topScore = scored[0].score;
-      const topGroup = scored.filter(r => r.score === topScore);
-      let choice = topGroup[Math.floor(Math.random() * topGroup.length)];
-
-      // 履歴に存在する場合は他を選ぶ
-      const unusedGroup = topGroup.filter(r => !window.proposalHistory.some(h => h.No === r.No));
-      if (unusedGroup.length > 0) choice = unusedGroup[Math.floor(Math.random() * unusedGroup.length)];
-
-      // 選択
-      selectedRecipes.push(choice);
-
-      // 履歴に追加（最大10件、重複なし）
-      if (!window.proposalHistory.some(r => r.No === choice.No)) {
-        window.proposalHistory.push(choice);
-        if (window.proposalHistory.length > 10) window.proposalHistory.shift();
+    // レシピボタンクリック（詳細表示）
+    proposalResults.addEventListener('click', e => {
+      if (e.target.classList.contains('recipe-btn')) {
+        const index = e.target.dataset.index;
+        displayDetail(selectedRecipes[index]);
       }
-    }
-  }
-
-  // 提案結果の表示
-  proposalResults.innerHTML = `
-    <h3>提案結果（${selectedRecipes.length}食分）</h3>
-    <ul>
-      ${selectedRecipes.map((r, i) => `
-        <li>
-          <strong>${i + 1}食目:</strong> ${r.title}<br>
-          <span class="desc">${r.flavortxt}</span><br>
-          <small>魚: ${r["fish-name"].join('、')} | 難易度:${r.difficulty} | 時間:${r.time}分 | 費用:¥${r.cost}</small><br>
-          <button class="recipe-btn" data-index="${i}">レシピへ</button>
-        </li>
-      `).join('')}
-    </ul>
-  `;
-
-  // 提案結果エリアのクリック監視
-  proposalResults.addEventListener('click', e => {
-    if (e.target.classList.contains('recipe-btn')) {
-      const index = e.target.dataset.index;
-      const recipe = selectedRecipes[index];
-      displayDetail(recipe);
-    }
+    });
   });
-});
 
+  // 「戻る」ボタン
   backToSettingsBtn.addEventListener('click', () => {
     proposalModal.style.display = 'none';
     proposeModal.style.display = 'flex';
   });
+
+  // 「閉じる」ボタン
   closeProposalBtn.addEventListener('click', () => {
     proposalModal.style.display = 'none';
   });
 
-  // 初期設定
+  // 提案モーダルの初期設定
   proposalModal.style.display = 'none';
   proposalModal.style.position = 'fixed';
   proposalModal.style.inset = '0';
@@ -2400,6 +2402,7 @@ generateProposalsBtn.addEventListener('click', async () => {
   proposalModal.style.alignItems = 'center';
   proposalModal.style.zIndex = '1000';
 });
+
 
 
     
