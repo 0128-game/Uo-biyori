@@ -1838,7 +1838,7 @@ if (window.proposalModal) proposalModal.style.display = 'none';
   window.mealSettings = []; 
 
   // --- 初期設定 ---
-  function makeDefaultMeal() {
+window.makeDefaultMeal = function() {
     return {
       include: new Set(),
       exclude: new Set(),
