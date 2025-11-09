@@ -2158,6 +2158,43 @@ if (window.proposalModal) proposalModal.style.display = 'none';
     renderSummary();
   }
 
+    // --- 評価基準を表示用に整形する関数 ---
+function formatCriterionDisplay(meal, key) {
+  const value = meal[key];
+
+  // もし値が数値でない・空なら「指定なし」を返す
+  if (value == null || value === '' || value === 'none') {
+    return '指定なし';
+  }
+
+  // 数値評価を★表記に変換（例: 1→★☆☆）
+  const stars = '★'.repeat(value) + '☆'.repeat(3 - value);
+
+  // 各項目の意味を付ける
+  switch (key) {
+    case 'difficulty':
+      if (value === 1) return `${stars}（やさしい）`;
+      if (value === 2) return `${stars}（ふつう）`;
+      if (value === 3) return `${stars}（むずかしい）`;
+      break;
+
+    case 'time':
+      if (value === 1) return `${stars}（短い）`;
+      if (value === 2) return `${stars}（ふつう）`;
+      if (value === 3) return `${stars}（長い）`;
+      break;
+
+    case 'cost':
+      if (value === 1) return `${stars}（安い）`;
+      if (value === 2) return `${stars}（ふつう）`;
+      if (value === 3) return `${stars}（高い）`;
+      break;
+  }
+
+  // 該当しない場合
+  return String(value);
+}
+
 // --- サマリー表示（季節考慮追加） ---
 function renderSummary() {
   summaryPanel.innerHTML = '';
