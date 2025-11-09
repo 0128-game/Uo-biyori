@@ -2282,19 +2282,17 @@ document.addEventListener('DOMContentLoaded', () => {
   includeFishRow.style.display = 'none';
   excludeFishRow.style.display = 'none';
 
-  // 季節考慮用チェックボックス追加
-  const seasonRow = document.createElement('div');
-  seasonRow.className = 'grid-row';
-  seasonRow.innerHTML = `
-    <div class="grid-label">季節考慮</div>
-    <div class="grid-control">
-      <input type="checkbox" id="considerSeasonCheckbox"> 季節に合ったレシピを優先する
-    </div>
-  `;
-
+  // 季節考慮用チェックボックスを1回だけ追加
   const proposeModalLeft = document.querySelector('#proposeModal .modal-left');
-  if (proposeModalLeft) {
-    // ここでは最後の fieldset の後ろに追加
+  if (proposeModalLeft && !document.getElementById('considerSeasonCheckbox')) {
+    const seasonRow = document.createElement('div');
+    seasonRow.className = 'grid-row';
+    seasonRow.innerHTML = `
+      <div class="grid-label">季節考慮</div>
+      <div class="grid-control">
+        <input type="checkbox" id="considerSeasonCheckbox"> 季節に合ったレシピを優先する
+      </div>
+    `;
     proposeModalLeft.appendChild(seasonRow);
   }
 
@@ -2307,6 +2305,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       renderSummary();
     });
+  }
+
+  renderSummary();
+});
+
   }
 
   renderSummary();
