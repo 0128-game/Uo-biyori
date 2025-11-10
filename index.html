@@ -2215,7 +2215,7 @@ window.renderSummary = function() {
     `;
     summaryPanel.appendChild(div);
   } else {
-    for (let i = 1; i <= mealcount; i++) {
+    for (let i = 1; i <= window.mealcount; i++) {
       const m = mealSettings[i];
       const card = document.createElement('div');
       card.className = 'summary-card' + (i === currentCount ? ' active' : '');
@@ -2235,7 +2235,7 @@ window.renderSummary = function() {
 
 // --- 初期化・リセット処理 ---
 function resetCriteria() {
-  for (let i = 1; i <= mealcount; i++) {
+  for (let i = 1; i <= window.mealcount; i++) {
     const defaultMeal = makeDefaultMeal();
     defaultMeal.considerSeason = false; // 季節考慮を初期化
     mealSettings[i] = defaultMeal;
@@ -2269,7 +2269,7 @@ function resetCriteria() {
 
 // --- 初期化 ---
 document.addEventListener('DOMContentLoaded', () => {
-  mealcount = 1;
+  window.mealcount = 1;
   ensureMealSettings(1);
 
   // 非表示要素
