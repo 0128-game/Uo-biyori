@@ -931,20 +931,20 @@ button{cursor:pointer;}
         return el;
     }
 
-    // Try fetching from multiple paths in order
-    async function fetchAny(paths){
-        for (const  of paths){
-            try {
-                const res = await fetch(, {cache: "no-store"});
-                if (!res.ok) continue;
-                const json = await res.json();
-                return json;
-            } catch(e){
-                console.warn('fetch failed for', , e);
-            }
+async function fetchAny(paths){
+    for (const path of paths){  // ✅ 変数名「path」を追加
+        try {
+            const res = await fetch(path, {cache: "no-store"});  // ✅ path を指定
+            if (!res.ok) continue;
+            const json = await res.json();
+            return json;
+        } catch(e){
+            console.warn('fetch failed for', path, e);  // ✅ path を指定
         }
-        throw new Error('recipes.json を見つけられませんでした。期待する場所: ' + paths.join(', '));
     }
+    throw new Error('recipes.json を見つけられませんでした。期待する場所: ' + paths.join(', '));
+}
+
 
     // Normalize and flatten recipes + preparations into an array for table
     function buildFlatList(data){
