@@ -2011,7 +2011,7 @@ window.ensureMealSettings = function(len) {
           }
         } else {
           // まとめて設定
-          for (let i = 1; i <= ; i++) {
+          for (let i = 1; i <= mealcount; i++) {
             if (exc.checked) {
               mealSettings[i].exclude.add(f);
               mealSettings[i].include.delete(f); // 含むとの排他処理
