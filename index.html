@@ -385,7 +385,7 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
 }
 
 /* 基本リセット */
-body, h1,h2,h3,h4,p,ul,ol,li,table,thead,tbody,tr,th,td,fieldset,legend{
+body, h1,h2,h3,h4,,ul,ol,li,table,thead,tbody,tr,th,td,fieldset,legend{
     margin:0;
     padding:0;
     box-sizing:border-box;
@@ -564,7 +564,7 @@ button{cursor:pointer;}
     </header>
 
     <main id="app">
-        <p id="message" class="muted">データを読み込み中です...</p>
+        < id="message" class="muted">データを読み込み中です...</>
         
         <table id="recipeTable">
             <thead>
@@ -933,14 +933,14 @@ button{cursor:pointer;}
 
     // Try fetching from multiple paths in order
     async function fetchAny(paths){
-        for (const p of paths){
+        for (const  of paths){
             try {
-                const res = await fetch(p, {cache: "no-store"});
+                const res = await fetch(, {cache: "no-store"});
                 if (!res.ok) continue;
                 const json = await res.json();
                 return json;
             } catch(e){
-                console.warn('fetch failed for', p, e);
+                console.warn('fetch failed for', , e);
             }
         }
         throw new Error('recipes.json を見つけられませんでした。期待する場所: ' + paths.join(', '));
@@ -993,7 +993,7 @@ button{cursor:pointer;}
         fieldset.appendChild(legend);
 
         if (hintText) {
-             const hint = elText('p', hintText, 'filter-hint');
+             const hint = elText('', hintText, 'filter-hint');
              fieldset.appendChild(hint);
         }
 
@@ -1039,7 +1039,7 @@ button{cursor:pointer;}
         fieldset.appendChild(legend);
 
         if (hintText) {
-             const hint = elText('p', hintText, 'filter-hint');
+             const hint = elText('', hintText, 'filter-hint');
              fieldset.appendChild(hint);
         }
         
@@ -1835,7 +1835,7 @@ if (window.proposalModal) proposalModal.style.display = 'none';
   const summaryPanel = document.getElementById('summaryPanel');
 
   // --- 状態 ---
-  let p = 1; // 食数 (1から始まる)
+window.p = 1;
   let currentCount = 1; // 現在の設定対象の食数 (1から始まる)
   let fishList = [];
   // mealSettings[1], mealSettings[2], ... を使用し、0インデックスは使用しない (1ベースインデックス)
@@ -1862,6 +1862,7 @@ window.ensureMealSettings = function(len) {
     for (let i = 1; i <= len; i++) newArr[i] = mealSettings[i] || makeDefaultMeal();
     mealSettings = newArr;
   }
+
 
   // --- モーダル開閉 ---
   proposeBtn.addEventListener('click', async () => {
