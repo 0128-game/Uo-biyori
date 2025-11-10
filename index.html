@@ -1835,7 +1835,7 @@ if (window.proposalModal) proposalModal.style.display = 'none';
   const summaryPanel = document.getElementById('summaryPanel');
 
   // --- 状態 ---
-window.p = 1;
+window.mealcount = 1;
   let currentCount = 1; // 現在の設定対象の食数 (1から始まる)
   let fishList = [];
   // mealSettings[1], mealSettings[2], ... を使用し、0インデックスは使用しない (1ベースインデックス)
@@ -1855,7 +1855,7 @@ window.makeDefaultMeal = function() {
     };
   }
 
-  // 食数 p に合わせて mealSettings の長さを保証（1ベースインデックスに対応）
+  // 食数 mealcount に合わせて mealSettings の長さを保証（1ベースインデックスに対応）
 window.ensureMealSettings = function(len) {
     const newArr = [];
     // newArr[0] は undefined のまま
@@ -1874,9 +1874,9 @@ window.ensureMealSettings = function(len) {
     const selected = document.querySelector('input[name="meals"]:checked');
     const initialP = selected && selected.value !== 'custom' ? Number(selected.value) || 1 : (Number(customMealInput.value) || 1);
     
-    // p の値を初期化し、設定を準備
-    p = initialP;
-    ensureMealSettings(p);
+    // mealcount の値を初期化し、設定を準備
+    mealcount = initialP;
+    ensureMealSettings(mealcount);
     
     // カスタム入力行の表示を制御
     if (selected && selected.value === 'custom') {
@@ -1948,7 +1948,7 @@ window.ensureMealSettings = function(len) {
       currentExcludeSet = mealSettings[currentCount]?.exclude || new Set();
     } else {
       // まとめて設定モード: すべての食数から収集した設定を表示（UI上の表示のみ）
-      for (let i = 1; i <= p; i++) {
+      for (let i = 1; i <= mealcount; i++) {
         mealSettings[i]?.include.forEach(v => currentIncludeSet.add(v));
         mealSettings[i]?.exclude.forEach(v => currentExcludeSet.add(v));
       }
@@ -1975,7 +1975,7 @@ window.ensureMealSettings = function(len) {
           }
         } else {
           // まとめて設定
-          for (let i = 1; i <= p; i++) {
+          for (let i = 1; i <= mealcount; i++) {
             if (inc.checked) {
               mealSettings[i].include.add(f);
               mealSettings[i].exclude.delete(f); // 除外との排他処理
@@ -2011,7 +2011,7 @@ window.ensureMealSettings = function(len) {
           }
         } else {
           // まとめて設定
-          for (let i = 1; i <= p; i++) {
+          for (let i = 1; i <= ; i++) {
             if (exc.checked) {
               mealSettings[i].exclude.add(f);
               mealSettings[i].include.delete(f); // 含むとの排他処理
@@ -2037,7 +2037,7 @@ window.ensureMealSettings = function(len) {
       includeFishRow.style.display = 'grid';
     } else {
       // 'none' または 'random' の場合はすべての include 設定をクリア
-      for (let i = 1; i <= p; i++) mealSettings[i].include.clear();
+      for (let i = 1; i <= mealcount; i++) mealSettings[i].include.clear();
       includeFishRow.style.display = 'none';
     }
     renderIncludeExcludeUI();
@@ -2050,7 +2050,7 @@ window.ensureMealSettings = function(len) {
       excludeFishRow.style.display = 'grid';
     } else {
       // 'none' または 'random' の場合はすべての exclude 設定をクリア
-      for (let i = 1; i <= p; i++) mealSettings[i].exclude.clear();
+      for (let i = 1; i <= mealcount; i++) mealSettings[i].exclude.clear();
       excludeFishRow.style.display = 'none';
     }
     renderIncludeExcludeUI();
@@ -2077,8 +2077,8 @@ window.ensureMealSettings = function(len) {
   });
 
   function applyOnMealCountChange(newP) {
-    p = newP;
-    ensureMealSettings(p);
+    mealcount = newP;
+    ensureMealSettings(mealcount);
     // 食数変更時には、設定モードと基準値をリセット
     resetCriteria();
     renderIncludeExcludeUI();
@@ -2088,7 +2088,7 @@ window.ensureMealSettings = function(len) {
   // --- 設定方法切替 (調整あり: カウンター表示制御を追加) ---
   modeRadios.forEach(r => r.addEventListener('change', (e) => {
     const mode = e.target.value;
-    if (p > 1 && mode === 'each') {
+    if (mealcount > 1 && mode === 'each') {
       // 複数食 + 個別設定の場合にのみカウンターを表示
       counterContainer.style.display = 'flex';
     } else {
@@ -2112,7 +2112,7 @@ window.ensureMealSettings = function(len) {
     }
   });
   rightBtn.addEventListener('click', () => {
-    if (currentCount < p) {
+    if (currentCount < mealcount) {
       currentCount++;
       counterValue.textContent = currentCount;
       // カウンター変更時はUIを再描画
@@ -2152,7 +2152,7 @@ window.ensureMealSettings = function(len) {
 
   function applyCriterionToMeals(kind, value, customVal) {
     const mode = document.querySelector('input[name="mode"]:checked')?.value || 'all';
-    const mealsToUpdate = (mode === 'each') ? [currentCount] : Array.from({length: p}, (_, i) => i + 1);
+    const mealsToUpdate = (mode === 'each') ? [currentCount] : Array.from({length: mealcount}, (_, i) => i + 1);
     
     mealsToUpdate.forEach(i => {
       if (mealSettings[i]) {
@@ -2200,7 +2200,7 @@ window.renderSummary = function() {
   title.textContent = '設定サマリー';
   summaryPanel.appendChild(title);
 
-  if (p === 1) {
+  if (mealcount === 1) {
     const m = mealSettings[1] || makeDefaultMeal();
     const div = document.createElement('div');
     div.className = 'summary-single';
@@ -2215,7 +2215,7 @@ window.renderSummary = function() {
     `;
     summaryPanel.appendChild(div);
   } else {
-    for (let i = 1; i <= p; i++) {
+    for (let i = 1; i <= mealcount; i++) {
       const m = mealSettings[i];
       const card = document.createElement('div');
       card.className = 'summary-card' + (i === currentCount ? ' active' : '');
@@ -2235,7 +2235,7 @@ window.renderSummary = function() {
 
 // --- 初期化・リセット処理 ---
 function resetCriteria() {
-  for (let i = 1; i <= p; i++) {
+  for (let i = 1; i <= mealcount; i++) {
     const defaultMeal = makeDefaultMeal();
     defaultMeal.considerSeason = false; // 季節考慮を初期化
     mealSettings[i] = defaultMeal;
@@ -2269,7 +2269,7 @@ function resetCriteria() {
 
 // --- 初期化 ---
 document.addEventListener('DOMContentLoaded', () => {
-  p = 1;
+  mealcount = 1;
   ensureMealSettings(1);
 
   // 非表示要素
