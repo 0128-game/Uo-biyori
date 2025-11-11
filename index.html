@@ -616,90 +616,91 @@ button{cursor:pointer;}
 </div>
 
 <!-- 絞り込みモーダル -->
+
 <div id="filterModal" class="modal-overlay">
-  <div class="modal-content">
-    <button id="closeFilterBtn" style="position:absolute;top:10px;right:10px;font-size:1.5rem;background:none;border:none;cursor:pointer;">&times;</button>
-    <h2>絞り込み設定</h2>
+  <div class="modal-content" id="filterContent">
+    <button id="closeFilterBtn" style="position:absolute;top:10px;right:10px;font-size:1.5rem;background:none;border:none;cursor:pointer;">&times;</button>
+    <h2>絞り込み設定</h2>
 
-    <!-- 難易度 -->
-    <fieldset class="propose-group">
-        <legend>難易度</legend>
-        <div class="grid-row">
-            <div class="grid-label">上限</div>
-            <div class="grid-control">
-                <label><input type="radio" name="filterDifficulty" value=""> 指定なし</label>
-                <label><input type="radio" name="filterDifficulty" value="1"> ～1</label>
-                <label><input type="radio" name="filterDifficulty" value="2"> ～2</label>
-                <label><input type="radio" name="filterDifficulty" value="3"> ～3</label>
-                <label><input type="radio" name="filterDifficulty" value="4"> ～4</label>
-            </div>
-        </div>
-    </fieldset>
+    <!-- 難易度 -->
+    <fieldset class="propose-group">
+        <legend>難易度</legend>
+        <div class="grid-row">
+            <div class="grid-label">上限</div>
+            <div class="grid-control">
+                <label><input type="radio" name="filterDifficulty" value=""> 指定なし</label>
+                <label><input type="radio" name="filterDifficulty" value="1"> ～1</label>
+                <label><input type="radio" name="filterDifficulty" value="2"> ～2</label>
+                <label><input type="radio" name="filterDifficulty" value="3"> ～3</label>
+                <label><input type="radio" name="filterDifficulty" value="4"> ～4</label>
+            </div>
+        </div>
+    </fieldset>
 
-    <!-- 調理時間 -->
-    <fieldset class="propose-group" id="timeFilterFieldset">
-        <legend>調理時間 (分)</legend>
-        <div class="grid-row">
-            <div class="grid-label">上限</div>
-            <div class="grid-control">
-                <label><input type="radio" name="filterTime" value=""> 制限なし</label>
-                <label><input type="radio" name="filterTime" value="15"> 15分以内</label>
-                <label><input type="radio" name="filterTime" value="30"> 30分以内</label>
-                <label><input type="radio" name="filterTime" value="60"> 60分以内</label>
-                <label><input type="radio" name="filterTime" value="custom"> カスタム</label>
-            </div>
-        </div>
-        <div id="customTimeContainer" style="display:none; margin-top:10px;">
-            <input type="number" id="customTimeInput" placeholder="分を入力" style="width:100px;"> 
-            <button id="applyCustomTimeBtn">決定</button>
-        </div>
-    </fieldset>
+    <!-- 調理時間 -->
+    <fieldset class="propose-group" id="timeFilterFieldset">
+        <legend>調理時間 (分)</legend>
+        <div class="grid-row">
+            <div class="grid-label">上限</div>
+            <div class="grid-control">
+                <label><input type="radio" name="filterTime" value=""> 制限なし</label>
+                <label><input type="radio" name="filterTime" value="15"> 15分以内</label>
+                <label><input type="radio" name="filterTime" value="30"> 30分以内</label>
+                <label><input type="radio" name="filterTime" value="60"> 60分以内</label>
+                <label><input type="radio" name="filterTime" value="custom"> カスタム</label>
+            </div>
+        </div>
+        <div id="customTimeContainer" style="display:none; margin-top:10px;">
+            <input type="number" id="customTimeInput" placeholder="分を入力" style="width:100px;"> 
+            <button id="applyCustomTimeBtn">決定</button>
+        </div>
+    </fieldset>
 
-    <!-- 費用 -->
-    <fieldset class="propose-group" id="costFilterFieldset">
-        <legend>費用 (円)</legend>
-        <div class="grid-row">
-            <div class="grid-label">上限</div>
-            <div class="grid-control">
-                <label><input type="radio" name="filterCost" value=""> 制限なし</label>
-                <label><input type="radio" name="filterCost" value="500"> 500円以下</label>
-                <label><input type="radio" name="filterCost" value="1000"> 1000円以下</label>
-                <label><input type="radio" name="filterCost" value="2000"> 2000円以下</label>
-                <label><input type="radio" name="filterCost" value="custom"> カスタム</label>
-            </div>
-        </div>
-        <div id="customCostContainer" style="display:none; margin-top:10px;">
-            <input type="number" id="customCostInput" placeholder="円を入力" style="width:100px;"> 
-            <button id="applyCustomCostBtn">決定</button>
-        </div>
-    </fieldset>
+    <!-- 費用 -->
+    <fieldset class="propose-group" id="costFilterFieldset">
+        <legend>費用 (円)</legend>
+        <div class="grid-row">
+            <div class="grid-label">上限</div>
+            <div class="grid-control">
+                <label><input type="radio" name="filterCost" value=""> 制限なし</label>
+                <label><input type="radio" name="filterCost" value="500"> 500円以下</label>
+                <label><input type="radio" name="filterCost" value="1000"> 1000円以下</label>
+                <label><input type="radio" name="filterCost" value="2000"> 2000円以下</label>
+                <label><input type="radio" name="filterCost" value="custom"> カスタム</label>
+            </div>
+        </div>
+        <div id="customCostContainer" style="display:none; margin-top:10px;">
+            <input type="number" id="customCostInput" placeholder="円を入力" style="width:100px;"> 
+            <button id="applyCustomCostBtn">決定</button>
+        </div>
+    </fieldset>
 
-    <!-- 季節 -->
-    <fieldset class="propose-group" id="seasonFilterFieldset">
-        <legend>季節</legend>
-        <div class="grid-row">
-            <div class="grid-label">指定</div>
-            <div class="grid-control">
-                <label><input type="radio" name="filterSeasonMode" value="none" checked> 指定しない</label>
-                <label><input type="radio" name="filterSeasonMode" value="select"> 指定する</label>
-            </div>
-        </div>
-        <div id="seasonCheckboxContainer" style="display:none; margin-top:10px;">
-            <label><input type="checkbox" name="filterSeason" value="春"> 春</label>
-            <label><input type="checkbox" name="filterSeason" value="夏"> 夏</label>
-            <label><input type="checkbox" name="filterSeason" value="秋"> 秋</label>
-            <label><input type="checkbox" name="filterSeason" value="冬"> 冬</label>
-        </div>
-    </fieldset>
+    <!-- 季節 -->
+    <fieldset class="propose-group" id="seasonFilterFieldset">
+        <legend>季節</legend>
+        <div class="grid-row">
+            <div class="grid-label">指定</div>
+            <div class="grid-control">
+                <label><input type="radio" name="filterSeasonMode" value="none" checked> 指定しない</label>
+                <label><input type="radio" name="filterSeasonMode" value="select"> 指定する</label>
+            </div>
+        </div>
+        <div id="seasonCheckboxContainer" style="display:none; margin-top:10px;">
+            <label><input type="checkbox" name="filterSeason" value="春"> 春</label>
+            <label><input type="checkbox" name="filterSeason" value="夏"> 夏</label>
+            <label><input type="checkbox" name="filterSeason" value="秋"> 秋</label>
+            <label><input type="checkbox" name="filterSeason" value="冬"> 冬</label>
+        </div>
+    </fieldset>
 
-    <!-- 操作ボタン -->
-    <div style="margin-top:20px; text-align:center;">
-        <button id="applyFilterBtn" style="margin-right:10px;">適用して閉じる</button>
-        <button id="cancelFilterBtn">適用せずに閉じる</button>
-    </div>
-  </div>
+    <!-- 操作ボタン -->
+    <div style="margin-top:20px; text-align:center;">
+        <button id="applyFilterBtn" style="margin-right:10px;">適用して閉じる</button>
+        <button id="cancelFilterBtn">適用せずに閉じる</button>
+    </div>
+  </div>
 </div>
-
+    
 <!-- レシピ提案モーダル -->
 <div id="proposeModal">
   <div class="modal-content">
