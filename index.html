@@ -1214,26 +1214,95 @@ function setupFilterModal(list){
         }
     });
     const uniqueFish = Array.from(fishSet).sort();
-    fragment.appendChild(createCheckboxGroup('魚種', 'fish-name', uniqueFish, 'レシピ/下処理に使う魚が、選択した魚種のすべてに含まれるものを表示 (b ⊆ a)'));
+    fragment.appendChild(createCheckboxGroup(
+        '魚種', 'fish-name', uniqueFish,
+        'レシピ/下処理に使う魚が、選択した魚種のすべてに含まれるものを表示 (b ⊆ a)'
+    ));
 
     // 難易度フィルター
-    fragment.appendChild(createRadioGroup('難易度 (最大)', 'difficulty', DIFFICULTY_OPTIONS, '選択した難易度以下のアイテムを表示', DIFFICULTY_OPTIONS.map(d => `難易度 ${d} 以下`)));
+    fragment.appendChild(createRadioGroup(
+        '難易度 (最大)', 'difficulty', DIFFICULTY_OPTIONS,
+        '選択した難易度以下のアイテムを表示',
+        DIFFICULTY_OPTIONS.map(d => `難易度 ${d} 以下`)
+    ));
 
     // 所要時間フィルター
-    fragment.appendChild(createRadioGroup('所要時間 (分・最大)', 'time', TIME_OPTIONS, '選択肢またはカスタム入力で指定した時間以下のアイテムを表示', TIME_OPTIONS.map(t => `${t}分以内`), 'radio-input', {min: 1, max: TIME_MAX}));
+    fragment.appendChild(createRadioGroup(
+        '所要時間 (分・最大)', 'time', TIME_OPTIONS,
+        '選択肢またはカスタム入力で指定した時間以下のアイテムを表示',
+        TIME_OPTIONS.map(t => `${t}分以内`),
+        'radio-input', {min: 1, max: TIME_MAX}
+    ));
 
     // 費用フィルター
-    fragment.appendChild(createRadioGroup('費用 (円・最大)', 'cost', COST_OPTIONS, '選択肢またはカスタム入力で指定した費用以下のアイテムを表示', COST_OPTIONS.map(c => `¥${c}以下`), 'radio-input', {min: 100, max: COST_MAX}));
+    fragment.appendChild(createRadioGroup(
+        '費用 (円・最大)', 'cost', COST_OPTIONS,
+        '選択肢またはカスタム入力で指定した費用以下のアイテムを表示',
+        COST_OPTIONS.map(c => `¥${c}以下`),
+        'radio-input', {min: 100, max: COST_MAX}
+    ));
 
+    // === 季節フィルター ===
+    const seasonField = document.createElement('fieldset');
+    const legend = elText('legend', '季節');
+    seasonField.appendChild(legend);
+
+    const seasonSelect = createRadioGroup(
+        '', 'season-mode',
+        [
+            { value: 'none', label: '指定しない' },
+            { value: 'custom', label: '指定する' }
+        ]
+    );
+    seasonField.appendChild(seasonSelect);
+
+    const seasonCheckbox = createCheckboxGroup(
+        '', 'season',
+        ['春', '夏', '秋', '冬'],
+        '指定する季節を選択'
+    );
+    seasonCheckbox.style.display = 'none';
+    seasonField.appendChild(seasonCheckbox);
+
+    // ラジオ切替イベント
+    seasonSelect.querySelectorAll('input').forEach(input => {
+        input.addEventListener('change', () => {
+            seasonCheckbox.style.display = (input.value === 'custom') ? '' : 'none';
+        });
+    });
+
+    fragment.appendChild(seasonField);
+
+    // === 適用・閉じるボタン ===
+    const controls = document.createElement('div');
+    controls.className = 'filter-controls';
+
+    const applyBtn = elText('button', '適用して閉じる', 'filter-apply-btn');
+    const cancelBtn = elText('button', '適用せずに閉じる', 'filter-cancel-btn');
+
+    controls.appendChild(applyBtn);
+    controls.appendChild(cancelBtn);
+    fragment.appendChild(controls);
+
+    // --- まとめて追加 ---
     filterContent.appendChild(fragment);
 
-    // イベントリスナー再設定
+    // --- イベントリスナー ---
     filterContent.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', updateActiveFilters);
     });
     filterContent.querySelectorAll('input[type="radio"], input[type="number"]').forEach(input => {
         input.addEventListener('change', handleRadioInputChange);
         input.addEventListener('input', handleRadioInputChange);
+    });
+
+    // --- ボタン動作 ---
+    applyBtn.addEventListener('click', () => {
+        applyFilters();
+        filterModal.classList.remove('show');
+    });
+    cancelBtn.addEventListener('click', () => {
+        filterModal.classList.remove('show');
     });
 }
 
