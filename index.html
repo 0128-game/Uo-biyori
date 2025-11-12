@@ -1275,14 +1275,22 @@ function setupFilterModal(list) {
     fragment.appendChild(seasonField);
 
     // --- イベント登録 ---
-    document.getElementById('applyFilterBtn').addEventListener('click', () => {
-        if (typeof applyFiltersAndRender === 'function') applyFiltersAndRender();
-        filterModal.classList.remove('show');
-    });
+   const applyFilterBtn = document.getElementById('applyFilterBtn');
+const cancelFilterBtn = document.getElementById('cancelFilterBtn');
 
-    document.getElementById('cancelFilterBtn').addEventListener('click', () => {
-        filterModal.classList.remove('show');
-    });
+if (applyFilterBtn) {
+  applyFilterBtn.addEventListener('click', () => {
+    if (typeof applyFiltersAndRender === 'function') applyFiltersAndRender();
+    filterModal.classList.remove('show');
+  });
+}
+
+if (cancelFilterBtn) {
+  cancelFilterBtn.addEventListener('click', () => {
+    filterModal.classList.remove('show');
+  });
+}
+
 }
 
 
