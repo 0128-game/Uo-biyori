@@ -1201,12 +1201,13 @@ function createRadioGroup(title, key, values, hintText = '', labels = null, type
 /**
  * フィルターモーダルの設定
  */
-function setupFilterModal(list){
+function setupFilterModal(list) {
     if (!filterContent) return;
 
     filterContent.innerHTML = '';
     const fragment = document.createDocumentFragment();
 
+    // --- フィルター作成処理はそのまま ---
     // 魚種フィルター
     const fishSet = new Set();
     list.forEach(item => {
@@ -1246,7 +1247,7 @@ function setupFilterModal(list){
         'radio-input', {min: 100, max: COST_MAX}
     ));
 
-    // === 季節フィルター ===
+    // 季節フィルター
     const seasonField = document.createElement('fieldset');
     const legend = elText('legend', '季節');
     seasonField.appendChild(legend);
@@ -1268,7 +1269,6 @@ function setupFilterModal(list){
     seasonCheckbox.style.display = 'none';
     seasonField.appendChild(seasonCheckbox);
 
-    // ラジオ切替イベント
     seasonSelect.querySelectorAll('input').forEach(input => {
         input.addEventListener('change', () => {
             seasonCheckbox.style.display = (input.value === 'custom') ? '' : 'none';
@@ -1277,27 +1277,17 @@ function setupFilterModal(list){
 
     fragment.appendChild(seasonField);
 
-    applyBtn.addEventListener('click', () => {
-    console.log('applyBtn clicked');
-    console.log('before remove show:', filterModal.classList.toString());
+    // --- イベント登録（変数なしで直接取得） ---
+    document.getElementById('applyFilterBtn').addEventListener('click', () => {
+        if (typeof applyFiltersAndRender === 'function') {
+            applyFiltersAndRender();
+        }
+        filterModal.classList.remove('show');
+    });
 
-    if (typeof applyFiltersAndRender === 'function') {
-        applyFiltersAndRender();
-    } else {
-        console.warn('applyFiltersAndRender is not defined');
-    }
-
-    filterModal.classList.remove('show');
-    console.log('after remove show:', filterModal.classList.toString());
-});
-
-cancelBtn.addEventListener('click', () => {
-    console.log('cancelBtn clicked');
-    console.log('before remove show:', filterModal.classList.toString());
-
-    filterModal.classList.remove('show');
-    console.log('after remove show:', filterModal.classList.toString());
-});
+    document.getElementById('cancelFilterBtn').addEventListener('click', () => {
+        filterModal.classList.remove('show');
+    });
 }
 
 /**
