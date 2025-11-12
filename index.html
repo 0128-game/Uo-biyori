@@ -1298,6 +1298,7 @@ cancelBtn.addEventListener('click', () => {
     filterModal.classList.remove('show');
     console.log('after remove show:', filterModal.classList.toString());
 });
+}
 
 /**
  * ラジオ/入力欄の変更処理
@@ -1856,7 +1857,6 @@ if (window.proposalModal) proposalModal.style.display = 'none';
         getFlat: ()=> flatList,
         activeFilters: activeFilters 
     };
-};
 })();
 // ===== レシピ提案モーダル制御（完全修正版 3.0 - デバッグログ挿入済み） =====
 (function(){
