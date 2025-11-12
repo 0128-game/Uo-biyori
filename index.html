@@ -1027,7 +1027,7 @@ function createCheckboxGroup(title, key, values, hintText = '') {
     fieldset.appendChild(legend);
 
     if (hintText) {
-        const hint = elText('', hintText, 'filter-hint');
+        const hint = elText('span', hintText, 'filter-hint');
         fieldset.appendChild(hint);
     }
 
