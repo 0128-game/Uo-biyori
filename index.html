@@ -956,10 +956,6 @@ window.proposalModal = document.getElementById('proposalModal');
 
 // Utility: safe text node creation
 function elText(tag, text, cls){
-        if (!tag) {  // ← ★ これを追加！
-        console.warn("⚠ elText に空のタグが渡されたため、'span' に置き換えました。");
-        tag = "span";
-    }
     const el = document.createElement(tag);
     if (cls) el.className = cls;
     el.textContent = (text === undefined || text === null) ? '' : String(text);
@@ -1201,6 +1197,10 @@ function createRadioGroup(title, key, values, hintText = '', labels = null, type
 /**
  * フィルターモーダルの設定
  */
+document.addEventListener('DOMContentLoaded', () => {
+    setupFilterModal(list);
+});
+
 function setupFilterModal(list) {
     if (!filterContent) return;
 
@@ -1208,7 +1208,6 @@ function setupFilterModal(list) {
     const fragment = document.createDocumentFragment();
 
     // --- フィルター作成処理はそのまま ---
-    // 魚種フィルター
     const fishSet = new Set();
     list.forEach(item => {
         if (Array.isArray(item['fish-name'])) {
@@ -1224,14 +1223,12 @@ function setupFilterModal(list) {
         'レシピ/下処理に使う魚が、選択した魚種のすべてに含まれるものを表示 (b ⊆ a)'
     ));
 
-    // 難易度フィルター
     fragment.appendChild(createRadioGroup(
         '難易度 (最大)', 'difficulty', DIFFICULTY_OPTIONS,
         '選択した難易度以下のアイテムを表示',
         DIFFICULTY_OPTIONS.map(d => `難易度 ${d} 以下`)
     ));
 
-    // 所要時間フィルター
     fragment.appendChild(createRadioGroup(
         '所要時間 (分・最大)', 'time', TIME_OPTIONS,
         '選択肢またはカスタム入力で指定した時間以下のアイテムを表示',
@@ -1239,7 +1236,6 @@ function setupFilterModal(list) {
         'radio-input', {min: 1, max: TIME_MAX}
     ));
 
-    // 費用フィルター
     fragment.appendChild(createRadioGroup(
         '費用 (円・最大)', 'cost', COST_OPTIONS,
         '選択肢またはカスタム入力で指定した費用以下のアイテムを表示',
@@ -1247,7 +1243,6 @@ function setupFilterModal(list) {
         'radio-input', {min: 100, max: COST_MAX}
     ));
 
-    // 季節フィルター
     const seasonField = document.createElement('fieldset');
     const legend = elText('legend', '季節');
     seasonField.appendChild(legend);
@@ -1277,11 +1272,9 @@ function setupFilterModal(list) {
 
     fragment.appendChild(seasonField);
 
-    // --- イベント登録（変数なしで直接取得） ---
+    // --- イベント登録 ---
     document.getElementById('applyFilterBtn').addEventListener('click', () => {
-        if (typeof applyFiltersAndRender === 'function') {
-            applyFiltersAndRender();
-        }
+        if (typeof applyFiltersAndRender === 'function') applyFiltersAndRender();
         filterModal.classList.remove('show');
     });
 
@@ -1289,7 +1282,6 @@ function setupFilterModal(list) {
         filterModal.classList.remove('show');
     });
 }
-
 /**
  * ラジオ/入力欄の変更処理
  */
