@@ -1194,14 +1194,6 @@ function createRadioGroup(title, key, values, hintText = '', labels = null, type
     return fieldset;
 }
 
-/**
- * フィルターモーダルの設定
- */
-document.addEventListener('DOMContentLoaded', () => {
-    setupFilterModal(flatList); // listではなく、実際のデータ変数を渡す
-});
-
-
 function setupFilterModal(list) {
     if (!filterContent) return;
 
@@ -1274,24 +1266,27 @@ function setupFilterModal(list) {
 
     fragment.appendChild(seasonField);
 
+    // --- fragment を DOM に追加 ---
+    filterContent.appendChild(fragment);
+
     // --- イベント登録 ---
-   const applyFilterBtn = document.getElementById('applyFilterBtn');
-const cancelFilterBtn = document.getElementById('cancelFilterBtn');
+    const applyFilterBtn = document.getElementById('applyFilterBtn');
+    const cancelFilterBtn = document.getElementById('cancelFilterBtn');
 
-if (applyFilterBtn) {
-  applyFilterBtn.addEventListener('click', () => {
-    if (typeof applyFiltersAndRender === 'function') applyFiltersAndRender();
-    filterModal.classList.remove('show');
-  });
+    if (applyFilterBtn) {
+        applyFilterBtn.addEventListener('click', () => {
+            if (typeof applyFiltersAndRender === 'function') applyFiltersAndRender();
+            filterModal.classList.remove('show');
+        });
+    }
+
+    if (cancelFilterBtn) {
+        cancelFilterBtn.addEventListener('click', () => {
+            filterModal.classList.remove('show');
+        });
+    }
 }
 
-if (cancelFilterBtn) {
-  cancelFilterBtn.addEventListener('click', () => {
-    filterModal.classList.remove('show');
-  });
-}
-
-}
 
 
 function handleRadioInputChange(event) {
