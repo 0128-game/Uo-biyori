@@ -1204,10 +1204,12 @@ const savedFilters = {
     season: new Set()
 };
 
-
+// モーダル要素
+const filterModal = document.getElementById('filterModal');
+const filterContent = document.getElementById('filterContent');
 
 // --- モーダル初期化＆開く ---
-function openFilterModal(list) {
+function setupFilterModal(list) {
     initializeFilterModal(list);
     filterModal.classList.add('show');
 }
