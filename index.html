@@ -695,14 +695,15 @@ button{cursor:pointer;}
         <label><input type="checkbox" name="filterSeason" value="冬"> 冬</label>
       </div>
     </fieldset>
-  </div>
 
-  <!-- 操作ボタンは modal-content の外 -->
-  <div style="margin-top:20px; text-align:center;">
-    <button id="applyFilterBtn" style="margin-right:10px;">適用して閉じる</button>
-    <button id="cancelFilterBtn">適用せずに閉じる</button>
+    <!-- 操作ボタン -->
+    <div style="margin-top:20px; text-align:center;">
+      <button id="applyFilterBtn" style="margin-right:10px;">適用して閉じる</button>
+      <button id="cancelFilterBtn">適用せずに閉じる</button>
+    </div>
   </div>
 </div>
+
 
 <!-- レシピ提案モーダル -->
 <div id="proposeModal">
@@ -1196,7 +1197,13 @@ function createRadioGroup(title, key, values, hintText = '', labels = null, type
 function setupFilterModal(list) {
     if (!filterContent) return;
 
-    filterContent.innerHTML = '';
+    // --- ボタン要素だけ残す ---
+    const buttons = Array.from(filterContent.querySelectorAll('button'));
+    const buttonHTML = buttons.map(btn => btn.outerHTML).join('');
+
+    // filterContent をクリアしてボタンだけ残す
+    filterContent.innerHTML = buttonHTML;
+
     const fragment = document.createDocumentFragment();
 
     // --- フィルター作成処理 ---
@@ -1265,24 +1272,29 @@ function setupFilterModal(list) {
 
     fragment.appendChild(seasonField);
 
-    // --- fragment を DOM に追加 ---
-    filterContent.appendChild(fragment);
+    // --- fragment をボタンの前に追加 ---
+    const firstButton = filterContent.querySelector('button');
+    if (firstButton) {
+        filterContent.insertBefore(fragment, firstButton);
+    } else {
+        filterContent.appendChild(fragment);
+    }
 
-    // --- イベント登録 ---
+    // --- ボタンのイベントを再登録 ---
     const applyFilterBtn = document.getElementById('applyFilterBtn');
     const cancelFilterBtn = document.getElementById('cancelFilterBtn');
 
     if (applyFilterBtn) {
-        applyFilterBtn.addEventListener('click', () => {
+        applyFilterBtn.onclick = () => {
             if (typeof applyFiltersAndRender === 'function') applyFiltersAndRender();
             filterModal.classList.remove('show');
-        });
+        };
     }
 
     if (cancelFilterBtn) {
-        cancelFilterBtn.addEventListener('click', () => {
+        cancelFilterBtn.onclick = () => {
             filterModal.classList.remove('show');
-        });
+        };
     }
 }
 
