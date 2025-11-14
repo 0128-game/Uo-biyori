@@ -1328,21 +1328,20 @@ function saveCurrentFilters() {
         if (cb.dataset.filterKey === 'fish-name') savedFilters['fish-name'].add(cb.value);
     });
 
- ['difficulty', 'time', 'cost'].forEach(key => {
-        let inputName, customInputId;
-
-        if (key === 'difficulty') { inputName = 'filterDifficulty'; customInputId = null; }
-        if (key === 'time') { inputName = 'filterTime'; customInputId = 'customTimeInput'; }
-        if (key === 'cost') { inputName = 'filterCost'; customInputId = 'customCostInput'; }
-
-        const checked = filterContent.querySelector(`input[name="${inputName}"]:checked`);
-        if (!checked || checked.value === '') {
-            savedFilters[key] = null;
-        } else if (checked.value === 'custom' && customInputId) {
-            const val = parseFloat(document.getElementById(customInputId).value);
-            savedFilters[key] = !isNaN(val) && val > 0 ? val : null;
+   // 難易度・時間・費用
+    const filterKeys = [
+        { key: 'difficulty', inputName: 'filterDifficulty', customId: null },
+        { key: 'time', inputName: 'filterTime', customId: 'customTimeInput' },
+        { key: 'cost', inputName: 'filterCost', customId: 'customCostInput' }
+    ];
+    filterKeys.forEach(f => {
+        const checked = filterContent.querySelector(`input[name="${f.inputName}"]:checked`);
+        if (!checked || checked.value === '') savedFilters[f.key] = null;
+        else if (checked.value === 'custom' && f.customId) {
+            const val = parseFloat(document.getElementById(f.customId).value);
+            savedFilters[f.key] = (!isNaN(val) && val > 0) ? val : null;
         } else {
-            savedFilters[key] = parseFloat(checked.value);
+            savedFilters[f.key] = parseFloat(checked.value);
         }
     });
 
