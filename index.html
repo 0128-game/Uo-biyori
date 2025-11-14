@@ -1342,12 +1342,17 @@ function saveCurrentFilters() {
         const checked = filterContent.querySelector(`input[name="${inputName}"]:checked`);
         if (!checked || checked.value === '') {
             savedFilters[key] = null;
-        } else if (checked.value === 'custom') {
+            return;
+        }
+
+        if (checked.value === 'custom') {
+            // カスタム入力を使用
             const input = document.getElementById(customId);
             const val = parseFloat(input.value);
-            savedFilters[key] = (!isNaN(val) && val > 0) ? val : null;
+            savedFilters[key] = (val > 0) ? val : null;
         } else {
-            savedFilters[key] = parseFloat(checked.value); // ラジオの value をそのまま数値に
+            // 通常ラジオ選択（文字列の数値を数値型に変換）
+            savedFilters[key] = parseFloat(checked.value);
         }
     });
 
