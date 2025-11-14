@@ -1324,10 +1324,6 @@ function initializeFilterModal(list) {
 // --- 現在の設定内容を savedFilters に保存 ---
 function saveCurrentFilters() {
     console.log('--- saveCurrentFilters 開始 ---');
-    console.log('保存前:', JSON.stringify(savedFilters, (key, value) => {
-        if (value instanceof Set) return Array.from(value);
-        return value;
-    }, 2));
 
     // --- 魚種 ---
     savedFilters['fish-name'].clear();
@@ -1336,24 +1332,22 @@ function saveCurrentFilters() {
     });
 
     // --- 難易度・時間・費用 ---
-    const filterKeys = [
+    const filterItems = [
         { key: 'difficulty', inputName: 'filterDifficulty', customId: null },
         { key: 'time', inputName: 'filterTime', customId: 'customTimeInput' },
         { key: 'cost', inputName: 'filterCost', customId: 'customCostInput' }
     ];
 
-    filterKeys.forEach(fk => {
-        const checked = filterContent.querySelector(`input[name="${fk.inputName}"]:checked`);
+    filterItems.forEach(({ key, inputName, customId }) => {
+        const checked = filterContent.querySelector(`input[name="${inputName}"]:checked`);
         if (!checked || checked.value === '') {
-            savedFilters[fk.key] = null;
-        } else if (checked.value === 'custom' && fk.customId) {
-            const input = document.getElementById(fk.customId);
+            savedFilters[key] = null;
+        } else if (checked.value === 'custom') {
+            const input = document.getElementById(customId);
             const val = parseFloat(input.value);
-            savedFilters[fk.key] = (!isNaN(val) && val > 0) ? val : null;
+            savedFilters[key] = (!isNaN(val) && val > 0) ? val : null;
         } else {
-            // 数値に変換して保存
-            const numVal = parseFloat(checked.value);
-            savedFilters[fk.key] = !isNaN(numVal) ? numVal : null;
+            savedFilters[key] = parseFloat(checked.value); // ラジオの value をそのまま数値に
         }
     });
 
@@ -1366,10 +1360,7 @@ function saveCurrentFilters() {
         filterContent.querySelectorAll('input[name="filterSeason"]:checked').forEach(cb => savedFilters.season.add(cb.value));
     }
 
-    console.log('保存後:', JSON.stringify(savedFilters, (key, value) => {
-        if (value instanceof Set) return Array.from(value);
-        return value;
-    }, 2));
+    console.log('保存後:', savedFilters);
     console.log('--- saveCurrentFilters 終了 ---');
 }
 
