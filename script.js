@@ -338,7 +338,6 @@ function initializeFilterModal(list) {
     });
     const uniqueFish = Array.from(fishSet).sort();
 
-    // 魚種用 container を用意
     let fishContainer = document.getElementById('fishCheckboxContainer');
     if (!fishContainer) {
         fishContainer = document.createElement('div');
@@ -363,22 +362,26 @@ function initializeFilterModal(list) {
     const difficultyRadios = filterContent.querySelectorAll('input[name="filterDifficulty"]');
     difficultyRadios.forEach(r => {
         const val = r.value === '' ? null : Number(r.value);
-        r.checked = (savedFilters.difficulty === val);
+        r.checked = savedFilters.difficulty === val;
     });
 
     // --- 調理時間 ---
     const timeRadios = filterContent.querySelectorAll('input[name="filterTime"]');
     const customTimeContainer = document.getElementById('customTimeContainer');
     const customTimeInput = document.getElementById('customTimeInput');
+
     let matchedTime = false;
     timeRadios.forEach(r => {
         const val = r.value === '' ? null : Number(r.value);
-        r.checked = (savedFilters.time === val);
+        r.checked = savedFilters.time === val;
         if (r.checked) matchedTime = true;
     });
+
     if (!matchedTime && savedFilters.time !== null) {
         customTimeContainer.style.display = '';
         customTimeInput.value = savedFilters.time;
+        const customRadio = filterContent.querySelector('input[name="filterTime"][value="custom"]');
+        if (customRadio) customRadio.checked = true;
     } else {
         customTimeContainer.style.display = 'none';
         customTimeInput.value = '';
@@ -388,15 +391,19 @@ function initializeFilterModal(list) {
     const costRadios = filterContent.querySelectorAll('input[name="filterCost"]');
     const customCostContainer = document.getElementById('customCostContainer');
     const customCostInput = document.getElementById('customCostInput');
+
     let matchedCost = false;
     costRadios.forEach(r => {
         const val = r.value === '' ? null : Number(r.value);
-        r.checked = (savedFilters.cost === val);
+        r.checked = savedFilters.cost === val;
         if (r.checked) matchedCost = true;
     });
+
     if (!matchedCost && savedFilters.cost !== null) {
         customCostContainer.style.display = '';
         customCostInput.value = savedFilters.cost;
+        const customRadio = filterContent.querySelector('input[name="filterCost"][value="custom"]');
+        if (customRadio) customRadio.checked = true;
     } else {
         customCostContainer.style.display = 'none';
         customCostInput.value = '';
