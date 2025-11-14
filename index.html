@@ -1335,7 +1335,7 @@ function saveCurrentFilters() {
         } else if (checked.value === 'custom') {
             const input = filterContent.querySelector(`input[type="number"]`);
             const val = parseFloat(input.value);
-            savedFilters[key] = (!isNaN(val) && val > 0) ? String(val) : null;
+            savedFilters[key] = (!isNaN(val) && val > 0) ? val : null;
         } else {
             savedFilters[key] = checked.value;
         }
