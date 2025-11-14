@@ -43,13 +43,15 @@ let rawData = null;
 let flatList = []; // merged list with type annotation
 
 // フィルタの状態を保持するオブジェクト (魚種はSet、難易度/時間/費用は単一の値)
+// フィルタの状態を保持するオブジェクト
 let activeFilters = {
-    'fish-name': new Set(), // チェックボックス形式 (複数選択)
-    difficulty: null,       // ラジオボタン形式 (単一値)
-    time: null,             // ラジオボタン/入力形式 (単一値)
-    cost: null,              // ラジオボタン/入力形式 (単一値)
-    'selectedSeasons': new Set()
+    "fish-name": new Set(),      // チェックボックス形式 (複数選択)
+    difficulty: null,            // ラジオボタン形式 (単一値)
+    time: null,                  // ラジオボタン/入力形式 (単一値)
+    cost: null,                  // ラジオボタン/入力形式 (単一値)
+    selectedSeasons: new Set()   // 季節のチェックボックス (複数選択)
 };
+
 
 // 固定オプション
 const DIFFICULTY_OPTIONS = ['1', '2', '3', '4', '5'];
