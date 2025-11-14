@@ -125,7 +125,7 @@ function clearTable(){
 
 
 
-//hello
+
 // 保存された設定内容
 const savedFilters = {
     'fish-name': new Set(),
@@ -362,7 +362,10 @@ function saveCurrentFilters() {
 /**
  * activeFilters を更新
  */
+/**hello*/
+
 function updateActiveFilters() {
+    // --- 魚種 ---
     activeFilters['fish-name'].clear();
     filterContent.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
         if (checkbox.dataset.filterKey === 'fish-name') {
@@ -370,6 +373,7 @@ function updateActiveFilters() {
         }
     });
 
+    // --- 難易度・時間・費用 ---
     ['difficulty', 'time', 'cost'].forEach(key => {
         activeFilters[key] = null;
 
@@ -377,8 +381,10 @@ function updateActiveFilters() {
         if (checkedRadio) {
             if (checkedRadio.value === '') {
                 activeFilters[key] = null;
-            } else if (checkedRadio.value === 'CUSTOM') {
-                const customInput = filterContent.querySelector(`input[type="number"][data-filter-key="${key}"][data-input-type="custom"]`);
+            } else if (checkedRadio.value === 'custom') {
+                const customInput = filterContent.querySelector(
+                    `input[type="number"][data-filter-key="${key}"][data-input-type="custom"]`
+                );
                 const val = parseFloat(customInput.value);
                 if (!isNaN(val) && val > 0) {
                     activeFilters[key] = String(val);
@@ -388,7 +394,22 @@ function updateActiveFilters() {
             }
         }
     });
+
+    // --- 季節 ---
+    // まずモードを取得
+    const seasonModeRadio = filterContent.querySelector('input[name="filterSeasonMode"]:checked');
+    activeFilters.seasonMode = seasonModeRadio ? seasonModeRadio.value : 'none';
+
+    // 選択モードならチェックされた季節を反映
+    activeFilters.season.clear();
+    if (activeFilters.seasonMode === 'select') {
+        const seasonCheckboxes = filterContent.querySelectorAll('input[name="filterSeason"]:checked');
+        seasonCheckboxes.forEach(cb => {
+            activeFilters.season.add(cb.value);
+        });
+    }
 }
+
 
     // 絞り込みここまで
     // render table rows from list
