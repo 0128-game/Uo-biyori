@@ -397,20 +397,22 @@ function updateActiveFilters() {
         }
     });
 
-    // --- 季節 ---
-    // まずモードを取得
-    const seasonModeRadio = filterContent.querySelector('input[name="filterSeasonMode"]:checked');
-    activeFilters.seasonMode = seasonModeRadio ? seasonModeRadio.value : 'none';
+ // --- 季節 ---
+// まずモードを取得
+const seasonModeRadio = filterContent.querySelector('input[name="filterSeasonMode"]:checked');
+activeFilters.seasonMode = seasonModeRadio ? seasonModeRadio.value : 'none';
 
-    // 選択モードならチェックされた季節を反映
-    activeFilters.season.clear();
-    if (activeFilters.seasonMode === 'select') {
-        const seasonCheckboxes = filterContent.querySelectorAll('input[name="filterSeason"]:checked');
-        seasonCheckboxes.forEach(cb => {
-            activeFilters.season.add(cb.value);
-        });
-    }
-    console.log(activeFilters)
+// 選択モードならチェックされた季節を反映
+activeFilters.selectedSeasons.clear();     // ← 修正ポイント
+
+if (activeFilters.seasonMode === 'select') {
+    const seasonCheckboxes = filterContent.querySelectorAll('input[name="filterSeason"]:checked');
+    seasonCheckboxes.forEach(cb => {
+        activeFilters.selectedSeasons.add(cb.value);  // ← 修正ポイント
+    });
+}
+
+console.log(activeFilters);
 }
 
 
