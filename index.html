@@ -1328,18 +1328,34 @@ function saveCurrentFilters() {
         if (cb.dataset.filterKey === 'fish-name') savedFilters['fish-name'].add(cb.value);
     });
 
-    ['difficulty', 'time', 'cost'].forEach(key => {
-        const checked = filterContent.querySelector(`input[name="${key}"]:checked`);
-        if (!checked || checked.value === '') {
-            savedFilters[key] = null;
-        } else if (checked.value === 'custom') {
-            const input = filterContent.querySelector(`input[type="number"]`);
-            const val = parseFloat(input.value);
-            savedFilters[key] = (!isNaN(val) && val > 0) ? val : null;
-        } else {
-            savedFilters[key] = checked.value;
-        }
-    });
+  ['difficulty', 'time', 'cost'].forEach(key => {
+    let inputName = '';
+    let customInputId = '';
+
+    if (key === 'difficulty') {
+        inputName = 'filterDifficulty';
+        customInputId = null; // カスタムなし
+    } else if (key === 'time') {
+        inputName = 'filterTime';
+        customInputId = 'customTimeInput';
+    } else if (key === 'cost') {
+        inputName = 'filterCost';
+        customInputId = 'customCostInput';
+    }
+
+    const checked = filterContent.querySelector(`input[name="${inputName}"]:checked`);
+    if (!checked || checked.value === '') {
+        savedFilters[key] = null;
+    } else if (checked.value === 'custom' && customInputId) {
+        const input = document.getElementById(customInputId);
+        const val = parseFloat(input.value);
+        savedFilters[key] = (!isNaN(val) && val > 0) ? val : null;
+    } else {
+        const val = parseFloat(checked.value);
+        savedFilters[key] = !isNaN(val) ? val : null;
+    }
+});
+
 
     const seasonModeChecked = filterContent.querySelector('input[name="filterSeasonMode"]:checked');
     savedFilters.seasonMode = seasonModeChecked ? seasonModeChecked.value : 'none';
