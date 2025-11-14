@@ -1230,7 +1230,6 @@ function initializeFilterModal(list) {
     });
     const uniqueFish = Array.from(fishSet).sort();
 
-    // 魚種用 container を用意
     let fishContainer = document.getElementById('fishCheckboxContainer');
     if (!fishContainer) {
         fishContainer = document.createElement('div');
@@ -1253,25 +1252,42 @@ function initializeFilterModal(list) {
 
     // --- 難易度 ---
     const difficultyRadios = filterContent.querySelectorAll('input[name="filterDifficulty"]');
-    difficultyRadios.forEach(r => r.checked = (savedFilters.difficulty === r.value) || (r.value === '' && savedFilters.difficulty === null));
+    difficultyRadios.forEach(r => {
+        const val = r.value === '' ? null : Number(r.value);
+        r.checked = (savedFilters.difficulty === val);
+    });
 
     // --- 調理時間 ---
     const timeRadios = filterContent.querySelectorAll('input[name="filterTime"]');
     const customTimeContainer = document.getElementById('customTimeContainer');
     const customTimeInput = document.getElementById('customTimeInput');
-    timeRadios.forEach(r => r.checked = (savedFilters.time === r.value) || (r.value === '' && savedFilters.time === null));
-    customTimeContainer.style.display = (savedFilters.time && !['', 'custom'].includes(savedFilters.time)) ? 'none' :
-                                      (savedFilters.time === 'custom' ? '' : 'none');
-    customTimeInput.value = (savedFilters.time && savedFilters.time !== 'custom') ? savedFilters.time : '';
+    timeRadios.forEach(r => {
+        const val = r.value === '' ? null : Number(r.value);
+        r.checked = (savedFilters.time === val);
+    });
+    if (savedFilters.time !== null && ![...timeRadios].some(r => Number(r.value) === savedFilters.time)) {
+        customTimeContainer.style.display = '';
+        customTimeInput.value = savedFilters.time;
+    } else {
+        customTimeContainer.style.display = 'none';
+        customTimeInput.value = '';
+    }
 
     // --- 費用 ---
     const costRadios = filterContent.querySelectorAll('input[name="filterCost"]');
     const customCostContainer = document.getElementById('customCostContainer');
     const customCostInput = document.getElementById('customCostInput');
-    costRadios.forEach(r => r.checked = (savedFilters.cost === r.value) || (r.value === '' && savedFilters.cost === null));
-    customCostContainer.style.display = (savedFilters.cost && !['', 'custom'].includes(savedFilters.cost)) ? 'none' :
-                                       (savedFilters.cost === 'custom' ? '' : 'none');
-    customCostInput.value = (savedFilters.cost && savedFilters.cost !== 'custom') ? savedFilters.cost : '';
+    costRadios.forEach(r => {
+        const val = r.value === '' ? null : Number(r.value);
+        r.checked = (savedFilters.cost === val);
+    });
+    if (savedFilters.cost !== null && ![...costRadios].some(r => Number(r.value) === savedFilters.cost)) {
+        customCostContainer.style.display = '';
+        customCostInput.value = savedFilters.cost;
+    } else {
+        customCostContainer.style.display = 'none';
+        customCostInput.value = '';
+    }
 
     // --- 季節 ---
     const seasonModeRadios = filterContent.querySelectorAll('input[name="filterSeasonMode"]');
@@ -1286,12 +1302,10 @@ function initializeFilterModal(list) {
         customTimeContainer.style.display = (r.value === 'custom' && r.checked) ? '' : 'none';
         if (r.value !== 'custom') customTimeInput.value = '';
     }));
-
     costRadios.forEach(r => r.addEventListener('change', () => {
         customCostContainer.style.display = (r.value === 'custom' && r.checked) ? '' : 'none';
         if (r.value !== 'custom') customCostInput.value = '';
     }));
-
     seasonModeRadios.forEach(r => r.addEventListener('change', () => {
         seasonContainer.style.display = (r.value === 'select') ? '' : 'none';
         if (r.value !== 'select') seasonCheckboxes.forEach(cb => cb.checked = false);
@@ -1320,6 +1334,7 @@ function initializeFilterModal(list) {
         if (filterModal) filterModal.style.display = 'none';
     };
 }
+
 
 // --- 現在の設定内容を savedFilters に保存 ---
 function saveCurrentFilters() {
