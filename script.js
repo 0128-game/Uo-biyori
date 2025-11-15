@@ -251,65 +251,59 @@ function setupModalButtons() {
 }
 
 
-async function initializeFilterModal(list) {
-    console.log('--- initializeFilterModal 開始 ---');
+function initializeFilterModal() {
+    if (!filterContent) return;
 
-    // ------------------------------
-    // 魚チェックボックス生成
-    // ------------------------------
-    if (!filterContent.querySelector('#fishCheckboxContainer')) {
-        const fishFieldset = document.createElement('fieldset');
-        fishFieldset.className = 'propose-group';
-        const legend = document.createElement('legend');
-        legend.textContent = '魚';
-        fishFieldset.appendChild(legend);
-
-        const container = document.createElement('div');
-        container.id = 'fishCheckboxContainer';
-        container.className = 'grid-row';
-        fishFieldset.appendChild(container);
-
-        // JSON から魚リストを作成
-        let fishList = [];
-        try {
-            const data = await fetchAny([
-                './recipes.json',
-                '/data/recipes.json',
-                'https://0128-game.github.io/recipes.json'
-            ]);
-            const flat = buildFlatList(data);
-            const fishSet = new Set();
-            flat.forEach(item => {
-                if (item._type === 'recipe' && item['魚']) {
-                    const names = Array.isArray(item['魚']) ? item['魚'] : [item['魚']];
-                    names.forEach(name => fishSet.add(name));
-                }
-            });
-            fishList = Array.from(fishSet).sort();
-        } catch (e) {
-            console.warn(e);
+    // ==========================
+    // 魚種チェックボックス生成（モーダル開くたびに）
+    // ==========================
+    const fishSet = new Set();
+    flatList.forEach(item => {
+        if (item._type === 'recipe' && item['魚の名前']) {
+            fishSet.add(item['魚の名前']);
         }
+    });
 
-        // チェックボックス生成
-        fishList.forEach(fish => {
-            const label = document.createElement('label');
-            label.style.display = 'block';
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.dataset.filterKey = 'fish-name';
-            checkbox.value = fish;
-            checkbox.checked = activeFilters['fish-name'].has(fish);
-            label.appendChild(checkbox);
-            label.appendChild(document.createTextNode(fish));
-            container.appendChild(label);
-        });
+    // 既存の魚フィールドセットがあれば削除
+    const oldFishFieldset = filterContent.querySelector('#fish-fieldset');
+    if (oldFishFieldset) oldFishFieldset.remove();
 
-        filterContent.appendChild(fishFieldset);
-    }
+    const fishFieldset = document.createElement('fieldset');
+    fishFieldset.className = 'propose-group';
+    fishFieldset.id = 'fish-fieldset';
 
-    // ------------------------------
-    // 以下は既存の難易度・時間・費用ラジオ処理
-    // ------------------------------
+    const legend = document.createElement('legend');
+    legend.textContent = '魚の種類';
+    fishFieldset.appendChild(legend);
+
+    const gridRow = document.createElement('div');
+    gridRow.className = 'grid-row';
+    const gridLabel = document.createElement('div');
+    gridLabel.className = 'grid-label';
+    gridLabel.textContent = '種類';
+    gridRow.appendChild(gridLabel);
+
+    const gridControl = document.createElement('div');
+    gridControl.className = 'grid-control';
+
+    fishSet.forEach(fish => {
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.value = fish;
+        input.setAttribute('data-filter-key', 'fish-name');
+
+        // savedFilters を反映
+        if (savedFilters['fish-name'].has(fish)) input.checked = true;
+
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(' ' + fish));
+        gridControl.appendChild(label);
+    });
+
+    gridRow.appendChild(gridControl);
+    fishFieldset.appendChild(gridRow);
+    filterContent.appendChild(fishFieldset);
     const difficultyRadios = filterContent.querySelectorAll('input[name="difficulty"]');
     const predefinedDifficulty = ['', '1', '2', '3', '4'];
     difficultyRadios.forEach(r => {
