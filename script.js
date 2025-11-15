@@ -14,7 +14,9 @@ const tryPaths = [
     './recipes.json'
 ];
 
-// ★★★ リスト/フィルター関連の要素 (既存のHTML要素を使用) ★★★
+// ------------------------------
+// カスタム入力表示切替と決定ボタン
+// ------------------------------
 const wrap = document.getElementById('wrap');
 const tbody = document.getElementById('tbody');
 const qInput = document.getElementById('q');
@@ -23,12 +25,15 @@ const sortBy = document.getElementById('sortBy');
 const reloadBtn = document.getElementById('reloadBtn');
 const message = document.getElementById('message');
 
-// ★★★ 新しいフィルターモーダル関連の要素 (HTMLへの追加が必要です) ★★★
+// ★★★ 新しいフィルターモーダル関連の要素 ★★★
 const filterOpenBtn = document.getElementById('filterOpenBtn'); 
 const filterModal = document.getElementById('filterModal');     
 const filterContent = document.getElementById('filterContent'); 
 const applyFilterBtn = document.getElementById('applyFilterBtn'); 
 const filterClearBtn = document.getElementById('filterClearBtn'); 
+const btnApply = document.getElementById('filterApplyBtn');            // 適用して閉じる
+const btnCancel = document.getElementById('filterCancelBtn');          // キャンセル
+
 // ★★★ 詳細コンテナの要素 ★★★
 const detailTitle = document.getElementById('detailTitle');
 const detailSubtitle = document.getElementById('detailSubtitle');
@@ -147,47 +152,6 @@ function closeFilterModal() {
     }
 }
 
-// ------------------------------
-// カスタム入力表示切替と決定ボタン
-// ------------------------------
-const wrap = document.getElementById('wrap');
-const tbody = document.getElementById('tbody');
-const qInput = document.getElementById('q');
-const filterType = document.getElementById('filterType');
-const sortBy = document.getElementById('sortBy');
-const reloadBtn = document.getElementById('reloadBtn');
-const message = document.getElementById('message');
-
-// ★★★ 新しいフィルターモーダル関連の要素 ★★★
-const filterOpenBtn = document.getElementById('filterOpenBtn'); 
-const filterModal = document.getElementById('filterModal');     
-const filterContent = document.getElementById('filterContent'); 
-const applyFilterBtn = document.getElementById('applyFilterBtn'); 
-const filterClearBtn = document.getElementById('filterClearBtn'); 
-const btnApply = document.getElementById('filterApplyBtn');            // 適用して閉じる
-const btnCancel = document.getElementById('filterCancelBtn');          // キャンセル
-
-// ★★★ 詳細コンテナの要素 ★★★
-const detailTitle = document.getElementById('detailTitle');
-const detailSubtitle = document.getElementById('detailSubtitle');
-const detailImageContainer = document.getElementById('detailImageContainer');
-const detailMeta = document.getElementById('detailMeta');
-const detailIngredients = document.getElementById('detailIngredients');
-const detailRecipe = document.getElementById('detailRecipe');
-const detailMemo = document.getElementById('detailMemo');
-const backToListBtn = document.getElementById('backToListBtn');
-const detailProps = document.getElementById('detailProps');
-const propsSection = document.getElementById('propsSection');
-
-// ------------------------------
-// カスタム入力表示切替と決定ボタン
-// ------------------------------
-function setupCustomInputHandlers() {
-    // 時間カスタム
-    const timeRadios = filterContent.querySelectorAll('input[name="time"]');
-    const customTimeContainer = filterContent.querySelector('#customTimeInputContainer');
-    const customTimeInput = filterContent.querySelector('#customTimeInput');
-    const applyTimeBtn = filterContent.querySelector('#applyCustomTimeBtn');
 
     timeRadios.forEach(r => {
         r.addEventListener('change', () => {
