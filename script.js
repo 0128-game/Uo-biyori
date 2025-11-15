@@ -150,6 +150,38 @@ function closeFilterModal() {
 // ------------------------------
 // カスタム入力表示切替と決定ボタン
 // ------------------------------
+const wrap = document.getElementById('wrap');
+const tbody = document.getElementById('tbody');
+const qInput = document.getElementById('q');
+const filterType = document.getElementById('filterType');
+const sortBy = document.getElementById('sortBy');
+const reloadBtn = document.getElementById('reloadBtn');
+const message = document.getElementById('message');
+
+// ★★★ 新しいフィルターモーダル関連の要素 ★★★
+const filterOpenBtn = document.getElementById('filterOpenBtn'); 
+const filterModal = document.getElementById('filterModal');     
+const filterContent = document.getElementById('filterContent'); 
+const applyFilterBtn = document.getElementById('applyFilterBtn'); 
+const filterClearBtn = document.getElementById('filterClearBtn'); 
+const btnApply = document.getElementById('filterApplyBtn');            // 適用して閉じる
+const btnCancel = document.getElementById('filterCancelBtn');          // キャンセル
+
+// ★★★ 詳細コンテナの要素 ★★★
+const detailTitle = document.getElementById('detailTitle');
+const detailSubtitle = document.getElementById('detailSubtitle');
+const detailImageContainer = document.getElementById('detailImageContainer');
+const detailMeta = document.getElementById('detailMeta');
+const detailIngredients = document.getElementById('detailIngredients');
+const detailRecipe = document.getElementById('detailRecipe');
+const detailMemo = document.getElementById('detailMemo');
+const backToListBtn = document.getElementById('backToListBtn');
+const detailProps = document.getElementById('detailProps');
+const propsSection = document.getElementById('propsSection');
+
+// ------------------------------
+// カスタム入力表示切替と決定ボタン
+// ------------------------------
 function setupCustomInputHandlers() {
     // 時間カスタム
     const timeRadios = filterContent.querySelectorAll('input[name="time"]');
@@ -196,24 +228,24 @@ function setupCustomInputHandlers() {
             console.log('カスタム費用決定:', activeFilters.cost);
         };
     }
-// --- 季節 ---
-const seasonModeRadios = filterContent.querySelectorAll('input[name="filterSeasonMode"]');
-const seasonSelectArea = filterContent.querySelector('#seasonSelectArea');
 
-seasonModeRadios.forEach(r => {
-    r.addEventListener('change', () => {
-        if (r.value === 'select') {
-            seasonSelectArea.style.display = 'block';
-        } else {
-            seasonSelectArea.style.display = 'none';
-        }
+    // --- 季節 ---
+    const seasonModeRadios = filterContent.querySelectorAll('input[name="filterSeasonMode"]');
+    const seasonSelectArea = filterContent.querySelector('#seasonCheckboxContainer');
+
+    seasonModeRadios.forEach(r => {
+        r.addEventListener('change', () => {
+            if (r.value === 'select') {
+                seasonSelectArea.style.display = 'block';
+            } else {
+                seasonSelectArea.style.display = 'none';
+            }
+        });
     });
-});
-
 }
 
 // ------------------------------
-// ボタン動作（適用・キャンセル・閉じる）
+// ボタン動作（適用・キャンセル）
 // ------------------------------
 function setupModalButtons() {
     // --- 適用 ---
@@ -238,32 +270,28 @@ function setupModalButtons() {
                 activeFilters.cost = null;
             }
 
-            // --- 季節 ---
-const seasonMode = filterContent.querySelector('input[name="filterSeasonMode"]:checked');
-activeFilters.seasonMode = seasonMode ? seasonMode.value : 'none';
-
-activeFilters.selectedSeasons.clear();
-if (activeFilters.seasonMode === 'select') {
-    filterContent.querySelectorAll('input[name="filterSeason"]:checked')
-        .forEach(cb => activeFilters.selectedSeasons.add(cb.value));
-}
-
+            // 季節
+            const seasonMode = filterContent.querySelector('input[name="filterSeasonMode"]:checked');
+            activeFilters.seasonMode = seasonMode ? seasonMode.value : 'none';
+            activeFilters.selectedSeasons.clear();
+            if (activeFilters.seasonMode === 'select') {
+                filterContent.querySelectorAll('input[name="filterSeason"]:checked')
+                    .forEach(cb => activeFilters.selectedSeasons.add(cb.value));
+            }
 
             closeFilterModal();
             applyFiltersAndRender();
         };
     }
 
-// --- キャンセル（適用せずに閉じる） ---
-const cancelBtn = filterContent.querySelector('#cancelFilterBtn');
-if (cancelBtn) {
-    cancelBtn.onclick = () => {
-        console.log('キャンセルボタンが押されました');
-        closeFilterModal();
-    };
-}
-
-
+    // --- キャンセル（適用せずに閉じる） ---
+    const cancelBtn = filterContent.querySelector('#cancelFilterBtn');
+    if (cancelBtn) {
+        cancelBtn.onclick = () => {
+            console.log('キャンセルボタンが押されました');
+            closeFilterModal();
+        };
+    }
 }
 
 // ------------------------------
@@ -336,33 +364,27 @@ function initializeFilterModal(list) {
     });
 
     // --- 季節 ---
-const seasonModeRadio = filterContent.querySelectorAll('input[name="filterSeasonMode"]');
-seasonModeRadio.forEach(r => {
-    r.checked = (r.value === activeFilters.seasonMode);
-});
+    const seasonModeRadios = filterContent.querySelectorAll('input[name="filterSeasonMode"]');
+    seasonModeRadios.forEach(r => {
+        r.checked = (r.value === activeFilters.seasonMode);
+    });
 
-// 選択モードの場合のみチェックを反映
-const seasonCheckboxes = filterContent.querySelectorAll('input[name="filterSeason"]');
-seasonCheckboxes.forEach(cb => {
-    cb.checked = activeFilters.selectedSeasons.has(cb.value);
-});
+    const seasonCheckboxes = filterContent.querySelectorAll('input[name="filterSeason"]');
+    seasonCheckboxes.forEach(cb => {
+        cb.checked = activeFilters.selectedSeasons.has(cb.value);
+    });
 
-// モードによる表示切り替え
-const seasonSelectArea = filterContent.querySelector('#seasonSelectArea');
-if (seasonSelectArea) {
-    seasonSelectArea.style.display = (activeFilters.seasonMode === 'select') ? 'block' : 'none';
-}
-
+    const seasonSelectArea = filterContent.querySelector('#seasonCheckboxContainer');
+    if (seasonSelectArea) {
+        seasonSelectArea.style.display = (activeFilters.seasonMode === 'select') ? 'block' : 'none';
+    }
 
     // イベントセット
     setupCustomInputHandlers();
     setupModalButtons();
 
-    
-
     console.log('--- initializeFilterModal 終了 ---');
 }
-
 
 // ------------------------------
 // activeFilters 更新
