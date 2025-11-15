@@ -193,6 +193,64 @@ function setupCustomInputHandlers() {
     }
 }
 
+function setupModalButtons() {
+    // カスタム時間入力欄
+    const customTimeInput = document.querySelector('#custom-time');
+    // カスタム費用入力欄
+    const customCostInput = document.querySelector('#custom-cost');
+
+    // 時間ラジオボタン一覧
+    const timeRadios = document.querySelectorAll('input[name="time"]');
+    // 費用ラジオボタン一覧
+    const costRadios = document.querySelectorAll('input[name="cost"]');
+
+    if (customTimeInput) {
+        customTimeInput.addEventListener('input', () => {
+            const val = customTimeInput.value.trim();
+            let matched = false;
+
+            timeRadios.forEach(radio => {
+                if (radio.value === val) {
+                    radio.checked = true;
+                    matched = true;
+                } else {
+                    radio.checked = false;
+                }
+            });
+
+            // 入力値が既存のラジオ値に合致したらカスタム欄を非表示
+            if (matched) {
+                customTimeInput.style.display = 'none';
+            } else {
+                customTimeInput.style.display = 'inline-block';
+            }
+        });
+    }
+
+    if (customCostInput) {
+        customCostInput.addEventListener('input', () => {
+            const val = customCostInput.value.trim();
+            let matched = false;
+
+            costRadios.forEach(radio => {
+                if (radio.value === val) {
+                    radio.checked = true;
+                    matched = true;
+                } else {
+                    radio.checked = false;
+                }
+            });
+
+            if (matched) {
+                customCostInput.style.display = 'none';
+            } else {
+                customCostInput.style.display = 'inline-block';
+            }
+        });
+    }
+}
+
+
 // --- モーダル初期化（保存された activeFilters を反映） ---
 function initializeFilterModal(list) {
     console.log('--- initializeFilterModal 開始 ---');
