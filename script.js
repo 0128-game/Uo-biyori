@@ -143,6 +143,15 @@ function setupFilterModal(list) {
 }
 
 // ------------------------------
+// モーダルを閉じる
+// ------------------------------
+function closeFilterModal() {
+    if (filterModal) {
+        filterModal.style.display = 'none';
+    }
+}
+
+// ------------------------------
 // カスタム入力表示切替と決定ボタン
 // ------------------------------
 function setupCustomInputHandlers() {
@@ -193,71 +202,63 @@ function setupCustomInputHandlers() {
     }
 }
 
+// ------------------------------
+// ボタン動作（適用・キャンセル・閉じる）
+// ------------------------------
 function setupModalButtons() {
-    // カスタム時間入力欄
-    const customTimeInput = document.querySelector('#custom-time');
-    // カスタム費用入力欄
-    const customCostInput = document.querySelector('#custom-cost');
+    // --- 適用 ---
+    const applyBtn = filterContent.querySelector('#filter-apply');
+    if (applyBtn) {
+        applyBtn.onclick = () => {
+            // 難易度
+            const diffChecked = filterContent.querySelector('input[name="difficulty"]:checked');
+            activeFilters.difficulty = diffChecked ? diffChecked.value : null;
 
-    // 時間ラジオボタン一覧
-    const timeRadios = document.querySelectorAll('input[name="time"]');
-    // 費用ラジオボタン一覧
-    const costRadios = document.querySelectorAll('input[name="cost"]');
+            // 時間
+            const timeChecked = filterContent.querySelector('input[name="time"]:checked');
+            activeFilters.time = timeChecked ? timeChecked.value : null;
 
-    if (customTimeInput) {
-        customTimeInput.addEventListener('input', () => {
-            const val = customTimeInput.value.trim();
-            let matched = false;
-
-            timeRadios.forEach(radio => {
-                if (radio.value === val) {
-                    radio.checked = true;
-                    matched = true;
-                } else {
-                    radio.checked = false;
+            // 費用
+            const costChecked = filterContent.querySelector('input[name="cost"]:checked');
+            if (costChecked) {
+                if (costChecked.value !== 'custom') {
+                    activeFilters.cost = costChecked.value;
                 }
-            });
-
-            // 入力値が既存のラジオ値に合致したらカスタム欄を非表示
-            if (matched) {
-                customTimeInput.style.display = 'none';
             } else {
-                customTimeInput.style.display = 'inline-block';
+                activeFilters.cost = null;
             }
-        });
+
+            closeFilterModal();
+            applyFiltersAndRender();
+        };
     }
 
-    if (customCostInput) {
-        customCostInput.addEventListener('input', () => {
-            const val = customCostInput.value.trim();
-            let matched = false;
+    // --- キャンセル ---
+    const cancelBtn = filterContent.querySelector('#filter-cancel');
+    if (cancelBtn) {
+        cancelBtn.onclick = () => {
+            closeFilterModal();
+        };
+    }
 
-            costRadios.forEach(radio => {
-                if (radio.value === val) {
-                    radio.checked = true;
-                    matched = true;
-                } else {
-                    radio.checked = false;
-                }
-            });
-
-            if (matched) {
-                customCostInput.style.display = 'none';
-            } else {
-                customCostInput.style.display = 'inline-block';
-            }
-        });
+    // --- 閉じる（× ボタンなど） ---
+    const closeBtn = filterContent.querySelector('#filter-close');
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            closeFilterModal();
+        };
     }
 }
 
-
-// --- モーダル初期化（保存された activeFilters を反映） ---
+// ------------------------------
+// モーダル初期化（保存された activeFilters を反映）
+// ------------------------------
 function initializeFilterModal(list) {
     console.log('--- initializeFilterModal 開始 ---');
 
-    // --- 難易度ラジオ反映 ---
+    // --- 難易度 ---
     const difficultyRadios = filterContent.querySelectorAll('input[name="difficulty"]');
-    const predefinedDifficulty = ['', '1', '2', '3', '4']; // 既存ラジオ値
+    const predefinedDifficulty = ['', '1', '2', '3', '4'];
     difficultyRadios.forEach(r => {
         if (activeFilters.difficulty !== null) {
             if (predefinedDifficulty.includes(activeFilters.difficulty)) {
@@ -274,12 +275,11 @@ function initializeFilterModal(list) {
         } else {
             r.checked = (r.value === '');
         }
-        console.log('難易度反映:', r.value, r.checked);
     });
 
-    // --- 時間ラジオ反映 ---
+    // --- 時間 ---
     const timeRadios = filterContent.querySelectorAll('input[name="time"]');
-    const predefinedTime = ['', '15', '30', '60']; // 既存ラジオ値
+    const predefinedTime = ['', '15', '30', '60'];
     timeRadios.forEach(r => {
         if (activeFilters.time !== null) {
             if (predefinedTime.includes(activeFilters.time)) {
@@ -296,12 +296,11 @@ function initializeFilterModal(list) {
         } else {
             r.checked = (r.value === '');
         }
-        console.log('時間反映:', r.value, r.checked);
     });
 
-    // --- 費用ラジオ反映 ---
+    // --- 費用 ---
     const costRadios = filterContent.querySelectorAll('input[name="cost"]');
-    const predefinedCost = ['', '500', '1000', '2000']; // 既存ラジオ値
+    const predefinedCost = ['', '500', '1000', '2000'];
     costRadios.forEach(r => {
         if (activeFilters.cost !== null) {
             if (predefinedCost.includes(activeFilters.cost)) {
@@ -318,13 +317,10 @@ function initializeFilterModal(list) {
         } else {
             r.checked = (r.value === '');
         }
-        console.log('費用反映:', r.value, r.checked);
     });
 
-    // --- カスタム入力表示切替と決定ボタン ---
+    // イベントセット
     setupCustomInputHandlers();
-
-    // --- ボタンイベント ---
     setupModalButtons();
 
     console.log('--- initializeFilterModal 終了 ---');
