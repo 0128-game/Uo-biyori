@@ -386,26 +386,29 @@ function updateActiveFilters() {
     });
 
     // --- 難易度・時間・費用 ---
-    ['difficulty', 'time', 'cost'].forEach(key => {
-        activeFilters[key] = null;
-        const filterKeys = ['difficulty', 'time', 'cost'];
-        const checkedRadio = filterContent.querySelector(`input[type="radio"][name="${key}"]:checked`);
-        if (checkedRadio) {
-            if (checkedRadio.value === '') {
-                activeFilters[key] = null;
-            } else if (checkedRadio.value === 'custom') {
-                const customInput = filterContent.querySelector(
-                    `input[type="number"][data-filter-key="${key}"][data-input-type="custom"]`
-                );
+['difficulty', 'time', 'cost'].forEach(key => {
+    activeFilters[key] = null;
+
+    const checkedRadio = filterContent.querySelector(`input[type="radio"][name="${key}"]:checked`);
+    if (checkedRadio) {
+        if (checkedRadio.value === '') {
+            activeFilters[key] = null;
+        } else if (checkedRadio.value === 'custom') {
+            const customInput = filterContent.querySelector(
+                `input[type="number"][id="custom${key.charAt(0).toUpperCase() + key.slice(1)}Input"]`
+            );
+            if (customInput) {
                 const val = parseFloat(customInput.value);
                 if (!isNaN(val) && val > 0) {
                     activeFilters[key] = String(val);
                 }
-            } else {
-                activeFilters[key] = checkedRadio.value;
             }
+        } else {
+            activeFilters[key] = checkedRadio.value;
         }
-    });
+    }
+});
+
 
  // --- 季節 ---
 // まずモードを取得
