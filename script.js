@@ -318,40 +318,45 @@ function saveCurrentFilters() {
     // --- 魚種 ---
     savedFilters['fish-name'].clear();
     filterContent.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
-        if (cb.dataset.filterKey === 'fish-name') savedFilters['fish-name'].add(cb.value);
+        if (cb.dataset.filterKey === 'fish-name') {
+            savedFilters['fish-name'].add(cb.value);
+        }
     });
 
     // --- 難易度・時間・費用 ---
-    const filterItems = [
-        { key: 'difficulty', inputName: 'filterDifficulty', customId: null },
-        { key: 'time', inputName: 'filterTime', customId: 'customTimeInput' },
-        { key: 'cost', inputName: 'filterCost', customId: 'customCostInput' }
-    ];
+    const filterKeys = ['difficulty', 'time', 'cost'];
 
-const filterKeys = ['difficulty', 'time', 'cost'];
+    filterKeys.forEach(filterKey => {
+        // 選択中のラジオボタンを取得
+        const checkedRadio = filterContent.querySelector(`input[type="radio"][name="${filterKey}"]:checked`);
 
-//hello
-filterKeys.forEach(filterKey => {
-    const checkedRadio = filterContent.querySelector(`input[type="radio"][name="${filterKey}"]:checked`);
-    if (checkedRadio) {
+        if (!checkedRadio) return; // もし選択なしならスキップ
+
         if (checkedRadio.value === '') {
+            // 制限なし
             activeFilters[filterKey] = null;
         } else if (checkedRadio.value === 'custom') {
+            // カスタム入力
             const customInput = filterContent.querySelector(
-                `input[type="number"][id="custom${filterKey}Input"]`
+                `input[type="number"][id="custom${filterKey.charAt(0).toUpperCase() + filterKey.slice(1)}Input"]`
             );
             if (customInput) {
                 const val = parseFloat(customInput.value);
                 if (!isNaN(val) && val > 0) {
                     activeFilters[filterKey] = String(val);
+                } else {
+                    // 入力が無効なら null に
+                    activeFilters[filterKey] = null;
                 }
+            } else {
+                // input が見つからなければ null
+                activeFilters[filterKey] = null;
             }
         } else {
+            // 通常のラジオ値
             activeFilters[filterKey] = checkedRadio.value;
         }
-    }
-});
-
+    });
 
     // --- 季節 ---
     const seasonModeChecked = filterContent.querySelector('input[name="filterSeasonMode"]:checked');
