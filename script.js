@@ -233,27 +233,15 @@ function setupModalButtons() {
         };
     }
 
-// --- キャンセル ---
-const cancelBtn = filterContent.querySelector('#filter-cancel');
-console.log("cancelBtn =", cancelBtn);   // ボタンが取得できているか確認
-
+// --- キャンセル（適用せずに閉じる） ---
+const cancelBtn = filterContent.querySelector('#cancelFilterBtn');
 if (cancelBtn) {
     cancelBtn.onclick = () => {
-        console.log("❌『適用せずに閉じる（キャンセル）』が押された");
+        console.log('キャンセルボタンが押されました');
         closeFilterModal();
     };
 }
 
-// --- 閉じる（× ボタンなど） ---
-const closeBtn = filterContent.querySelector('#filter-close');
-console.log("closeBtn =", closeBtn);     // ボタンが取得できているか確認
-
-if (closeBtn) {
-    closeBtn.onclick = () => {
-        console.log("❌『×（閉じる）』が押された");
-        closeFilterModal();
-    };
-}
 
 }
 
