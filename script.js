@@ -159,6 +159,56 @@ function setupFilterModal(list) {
     filterModal.style.display = 'block';
 }
 
+// --- カスタム入力表示切替と決定ボタン ---
+function setupCustomInputHandlers() {
+    // 時間カスタム
+    const timeRadios = filterContent.querySelectorAll('input[name="time"]');
+    const customTimeContainer = filterContent.querySelector('#customTimeInputContainer');
+    const customTimeInput = filterContent.querySelector('#customTimeInput');
+    const applyTimeBtn = filterContent.querySelector('#applyCustomTimeBtn');
+
+    timeRadios.forEach(r => {
+        r.addEventListener('change', () => {
+            if (r.value === 'custom' && r.checked) {
+                customTimeContainer.style.display = 'block';
+            } else if (r.checked) {
+                customTimeContainer.style.display = 'none';
+            }
+        });
+    });
+
+    if (applyTimeBtn) {
+        applyTimeBtn.onclick = () => {
+            activeFilters.time = customTimeInput.value;
+            console.log('カスタム時間決定:', activeFilters.time);
+        };
+    }
+
+    // 費用カスタム
+    const costRadios = filterContent.querySelectorAll('input[name="cost"]');
+    const customCostContainer = filterContent.querySelector('#customCostInputContainer');
+    const customCostInput = filterContent.querySelector('#customCostInput');
+    const applyCostBtn = filterContent.querySelector('#applyCustomCostBtn');
+
+    costRadios.forEach(r => {
+        r.addEventListener('change', () => {
+            if (r.value === 'custom' && r.checked) {
+                customCostContainer.style.display = 'block';
+            } else if (r.checked) {
+                customCostContainer.style.display = 'none';
+            }
+        });
+    });
+
+    if (applyCostBtn) {
+        applyCostBtn.onclick = () => {
+            activeFilters.cost = customCostInput.value;
+            console.log('カスタム費用決定:', activeFilters.cost);
+        };
+    }
+}
+
+
 // --- モーダル初期化（保存された activeFilters を反映） ---
 function initializeFilterModal(list) {
     console.log('--- initializeFilterModal 開始 ---');
