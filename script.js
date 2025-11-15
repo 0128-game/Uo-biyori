@@ -28,7 +28,9 @@ const filterOpenBtn = document.getElementById('filterOpenBtn');
 const filterModal = document.getElementById('filterModal');     
 const filterContent = document.getElementById('filterContent'); 
 const applyFilterBtn = document.getElementById('applyFilterBtn'); 
-const filterClearBtn = document.getElementById('filterClearBtn'); 
+const filterClearBtn = document.getElementById('filterClearBtn');     
+const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+
 // ★★★ 詳細コンテナの要素 ★★★
 const detailTitle = document.getElementById('detailTitle');
 const detailSubtitle = document.getElementById('detailSubtitle');
@@ -145,6 +147,19 @@ function closeFilterModal() {
     if (filterModal) {
         filterModal.style.display = 'none';
     }
+}
+
+if (resetFiltersBtn) {
+    resetFiltersBtn.addEventListener('click', () => {
+        // 各設定を初期化
+        resetCriteria();
+
+        // include/excludeのUIもリセット
+        renderIncludeExcludeUI();
+
+        // サマリー更新
+        window.renderSummary();
+    });
 }
 
 // ------------------------------
