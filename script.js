@@ -147,167 +147,194 @@ const savedFilters = {
 
 
     
-// --- モーダル初期化＆開く ---
+// ------------------------------
+// モーダル関連の設定
+// ------------------------------
+
 function setupFilterModal(list) {
+    console.log('--- setupFilterModal 開始 ---');
     initializeFilterModal(list);
-    if (filterModal) filterModal.style.display = 'flex';
+
+    // モーダル開く
+    filterModal.style.display = 'block';
 }
 
-function initializeFilterModal() {
+// モーダル初期化（保存された activeFilters を反映）
+function initializeFilterModal(list) {
     console.log('--- initializeFilterModal 開始 ---');
 
-    if (!filterContent) {
-        console.warn('filterContent が存在しません');
-        return;
-    }
-
-    // --- 魚種チェックボックス ---
+    // --- 魚種チェックボックス反映 ---
     const fishCheckboxes = filterContent.querySelectorAll('input[type="checkbox"][data-filter-key="fish-name"]');
     fishCheckboxes.forEach(cb => {
-        cb.checked = savedFilters['fish-name'].has(cb.value);
+        cb.checked = activeFilters['fish-name'].has(cb.value);
     });
-    console.log('魚種チェックボックス反映:', Array.from(savedFilters['fish-name']));
+    console.log('魚種チェックボックス反映:', [...activeFilters['fish-name']]);
 
-    // --- 難易度ラジオ ---
-    const difficultyRadios = filterContent.querySelectorAll('input[type="radio"][name="difficulty"]');
+    // --- 難易度ラジオ反映 ---
+    const difficultyRadios = filterContent.querySelectorAll('input[name="difficulty"]');
     difficultyRadios.forEach(r => {
-        r.checked = (savedFilters.difficulty !== null && String(r.value) === String(savedFilters.difficulty));
+        r.checked = (activeFilters.difficulty !== null && r.value === activeFilters.difficulty);
         console.log('難易度反映:', r.value, r.checked);
     });
 
-    // --- 時間ラジオ & カスタム ---
-    const timeRadios = filterContent.querySelectorAll('input[type="radio"][name="time"]');
-    const customTimeInput = filterContent.querySelector('#customTimeInput');
-    let matchedTime = false;
+    // --- 時間ラジオ反映 ---
+    const timeRadios = filterContent.querySelectorAll('input[name="time"]');
     timeRadios.forEach(r => {
-        if (savedFilters.time !== null && String(r.value) === String(savedFilters.time)) {
-            r.checked = true;
-            matchedTime = true;
-        } else if (r.value === 'custom') {
-            r.checked = false; // 後で custom にするか判定
+        if (r.value === 'custom') {
+            // カスタムの場合
+            const val = activeFilters.time;
+            if (val !== null && !isNaN(Number(val))) {
+                r.checked = true;
+                const input = filterContent.querySelector('#customTimeInput');
+                input.value = val;
+                filterContent.querySelector('#customTimeInputContainer').style.display = 'block';
+            }
         } else {
-            r.checked = false;
+            r.checked = (activeFilters.time !== null && r.value === activeFilters.time);
         }
-        console.log('時間ラジオ反映:', r.value, r.checked);
+        console.log('時間反映:', r.value, r.checked);
     });
-    if (!matchedTime && savedFilters.time !== null && customTimeInput) {
-        const customRadio = filterContent.querySelector('input[type="radio"][name="time"][value="custom"]');
-        if (customRadio) customRadio.checked = true;
-        customTimeInput.value = savedFilters.time;
-        console.log('カスタム時間反映:', savedFilters.time);
-    }
 
-    // --- 費用ラジオ & カスタム ---
-    const costRadios = filterContent.querySelectorAll('input[type="radio"][name="cost"]');
-    const customCostInput = filterContent.querySelector('#customCostInput');
-    let matchedCost = false;
+    // --- 費用ラジオ反映 ---
+    const costRadios = filterContent.querySelectorAll('input[name="cost"]');
     costRadios.forEach(r => {
-        if (savedFilters.cost !== null && String(r.value) === String(savedFilters.cost)) {
-            r.checked = true;
-            matchedCost = true;
-        } else if (r.value === 'custom') {
-            r.checked = false;
+        if (r.value === 'custom') {
+            const val = activeFilters.cost;
+            if (val !== null && !isNaN(Number(val))) {
+                r.checked = true;
+                const input = filterContent.querySelector('#customCostInput');
+                input.value = val;
+                filterContent.querySelector('#customCostInputContainer').style.display = 'block';
+            }
         } else {
-            r.checked = false;
+            r.checked = (activeFilters.cost !== null && r.value === activeFilters.cost);
         }
-        console.log('費用ラジオ反映:', r.value, r.checked);
+        console.log('費用反映:', r.value, r.checked);
     });
-    if (!matchedCost && savedFilters.cost !== null && customCostInput) {
-        const customRadio = filterContent.querySelector('input[type="radio"][name="cost"][value="custom"]');
-        if (customRadio) customRadio.checked = true;
-        customCostInput.value = savedFilters.cost;
-        console.log('カスタム費用反映:', savedFilters.cost);
-    }
 
-    // --- 季節 ---
+    // --- 季節反映 ---
     const seasonModeRadios = filterContent.querySelectorAll('input[name="filterSeasonMode"]');
-    seasonModeRadios.forEach(r => {
-        r.checked = (r.value === savedFilters.seasonMode);
-        console.log('季節モード反映:', r.value, r.checked);
-    });
+    seasonModeRadios.forEach(r => r.checked = (r.value === (activeFilters.seasonMode || 'none')));
     const seasonCheckboxes = filterContent.querySelectorAll('input[name="filterSeason"]');
     seasonCheckboxes.forEach(cb => {
-        cb.checked = savedFilters.selectedSeasons.has(cb.value);
+        cb.checked = activeFilters.selectedSeasons.has(cb.value);
     });
-    console.log('季節チェックボックス反映:', Array.from(savedFilters.selectedSeasons));
+    console.log('季節反映:', activeFilters.seasonMode, [...activeFilters.selectedSeasons]);
 
-    // --- Apply / Cancel / Close ---
-    if (btnApply) btnApply.onclick = () => {
-        console.log('適用ボタン押下');
-        updateActiveFilters();   // 保存
-        filterModal.style.display = 'none';
-    };
-    if (btnCancel) btnCancel.onclick = () => {
-        console.log('キャンセルボタン押下');
-        filterModal.style.display = 'none';
-        initializeFilterModal(); // 保存状態を再反映
-    };
-    if (btnClose) btnClose.onclick = () => {
-        console.log('閉じるボタン押下');
-        filterModal.style.display = 'none';
-        initializeFilterModal(); // 保存状態を再反映
-    };
+    // --- カスタム入力表示切替 ---
+    setupCustomInputHandlers();
+
+    // --- ボタンイベント ---
+    setupModalButtons();
 
     console.log('--- initializeFilterModal 終了 ---');
 }
 
+// カスタム入力欄の表示制御
+function setupCustomInputHandlers() {
+    // 時間ラジオ
+    filterContent.querySelectorAll('input[name="time"]').forEach(r => {
+        r.addEventListener('change', e => {
+            if (r.value === 'custom') {
+                filterContent.querySelector('#customTimeInputContainer').style.display = 'block';
+            } else {
+                filterContent.querySelector('#customTimeInputContainer').style.display = 'none';
+            }
+            console.log('時間ラジオ変更:', r.value, r.checked);
+        });
+    });
 
+    // 費用ラジオ
+    filterContent.querySelectorAll('input[name="cost"]').forEach(r => {
+        r.addEventListener('change', e => {
+            if (r.value === 'custom') {
+                filterContent.querySelector('#customCostInputContainer').style.display = 'block';
+            } else {
+                filterContent.querySelector('#customCostInputContainer').style.display = 'none';
+            }
+            console.log('費用ラジオ変更:', r.value, r.checked);
+        });
+    });
 
-/**
- * activeFilters を更新
- */
+    // カスタム決定ボタン
+    const btnTime = filterContent.querySelector('#applyCustomTimeBtn');
+    if (btnTime) btnTime.onclick = () => {
+        const val = parseFloat(filterContent.querySelector('#customTimeInput').value);
+        if (!isNaN(val) && val > 0) activeFilters.time = String(val);
+        console.log('カスタム時間決定:', activeFilters.time);
+    };
 
+    const btnCost = filterContent.querySelector('#applyCustomCostBtn');
+    if (btnCost) btnCost.onclick = () => {
+        const val = parseFloat(filterContent.querySelector('#customCostInput').value);
+        if (!isNaN(val) && val > 0) activeFilters.cost = String(val);
+        console.log('カスタム費用決定:', activeFilters.cost);
+    };
+}
+
+// Apply / Cancel / Close のボタン
+function setupModalButtons() {
+    const btnApply = filterContent.querySelector('#filterApplyBtn');
+    const btnCancel = filterContent.querySelector('#filterCancelBtn');
+    const btnClose = filterContent.querySelector('#closeFilterBtn');
+
+    if (btnApply) btnApply.onclick = () => {
+        updateActiveFilters();
+        console.log('Apply クリック:', activeFilters);
+        filterModal.style.display = 'none';
+    };
+
+    if (btnCancel) btnCancel.onclick = () => {
+        console.log('Cancel クリック');
+        filterModal.style.display = 'none';
+    };
+
+    if (btnClose) btnClose.onclick = () => {
+        console.log('Close クリック');
+        filterModal.style.display = 'none';
+    };
+}
+
+// activeFilters 更新
 function updateActiveFilters() {
     // --- 魚種 ---
     activeFilters['fish-name'].clear();
-    filterContent.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-        if (checkbox.dataset.filterKey === 'fish-name') {
-            activeFilters['fish-name'].add(checkbox.value);
-        }
-    });
+    filterContent.querySelectorAll('input[type="checkbox"][data-filter-key="fish-name"]:checked')
+        .forEach(cb => activeFilters['fish-name'].add(cb.value));
 
     // --- 難易度・時間・費用 ---
-['difficulty', 'time', 'cost'].forEach(key => {
-    activeFilters[key] = null;
-
-    const checkedRadio = filterContent.querySelector(`input[type="radio"][name="${key}"]:checked`);
-    if (checkedRadio) {
-        if (checkedRadio.value === '') {
-            activeFilters[key] = null;
-        } else if (checkedRadio.value === 'custom') {
-            const customInput = filterContent.querySelector(
-                `input[type="number"][id="custom${key.charAt(0).toUpperCase() + key.slice(1)}Input"]`
-            );
-            if (customInput) {
-                const val = parseFloat(customInput.value);
-                if (!isNaN(val) && val > 0) {
-                    activeFilters[key] = String(val);
+    ['difficulty', 'time', 'cost'].forEach(key => {
+        activeFilters[key] = null;
+        const checkedRadio = filterContent.querySelector(`input[type="radio"][name="${key}"]:checked`);
+        if (checkedRadio) {
+            if (checkedRadio.value === 'custom') {
+                const input = filterContent.querySelector(
+                    `#custom${key.charAt(0).toUpperCase() + key.slice(1)}Input`
+                );
+                if (input) {
+                    const val = parseFloat(input.value);
+                    if (!isNaN(val) && val > 0) activeFilters[key] = String(val);
                 }
+            } else if (checkedRadio.value !== '') {
+                activeFilters[key] = checkedRadio.value;
             }
-        } else {
-            activeFilters[key] = checkedRadio.value;
         }
-    }
-});
-
-
- // --- 季節 ---
-// まずモードを取得
-const seasonModeRadio = filterContent.querySelector('input[name="filterSeasonMode"]:checked');
-activeFilters.seasonMode = seasonModeRadio ? seasonModeRadio.value : 'none';
-
-// 選択モードならチェックされた季節を反映
-activeFilters.selectedSeasons.clear();     // ← 修正ポイント
-
-if (activeFilters.seasonMode === 'select') {
-    const seasonCheckboxes = filterContent.querySelectorAll('input[name="filterSeason"]:checked');
-    seasonCheckboxes.forEach(cb => {
-        activeFilters.selectedSeasons.add(cb.value);  // ← 修正ポイント
     });
+
+    // --- 季節 ---
+    const seasonModeRadio = filterContent.querySelector('input[name="filterSeasonMode"]:checked');
+    activeFilters.seasonMode = seasonModeRadio ? seasonModeRadio.value : 'none';
+    activeFilters.selectedSeasons.clear();
+    if (activeFilters.seasonMode === 'select') {
+        filterContent.querySelectorAll('input[name="filterSeason"]:checked')
+            .forEach(cb => activeFilters.selectedSeasons.add(cb.value));
+    }
+
+    console.log('updateActiveFilters 完了:', activeFilters);
 }
 
-console.log(activeFilters);
-}
+// モーダルを開くボタン
+filterOpenBtn.onclick = () => setupFilterModal(flatList);
 
 
     // 絞り込みここまで
