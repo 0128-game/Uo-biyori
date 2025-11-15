@@ -223,7 +223,7 @@ uniqueFish.forEach(fish => {
 
     // --- 調理時間 ---
     const timeRadios = filterContent.querySelectorAll('input[name="filterTime"]');
-    const customTimeContainer = document.getElementById('customTimeContainer');
+    const customTimeContainer = document.getElementById('customTimeInputContainer');
     const customTimeInput = document.getElementById('customTimeInput');
 
     let matchedTime = false;
@@ -244,7 +244,7 @@ uniqueFish.forEach(fish => {
 
     // --- 費用 ---
     const costRadios = filterContent.querySelectorAll('input[name="filterCost"]');
-    const customCostContainer = document.getElementById('customCostContainer');
+    const customCostContainer = document.getElementById('customCostInputContainer');
     const customCostInput = document.getElementById('customCostInput');
 
     let matchedCost = false;
