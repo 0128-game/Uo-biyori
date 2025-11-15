@@ -729,6 +729,10 @@ function applyFiltersAndRender(){
 
     // 3. 各種フィルター
     list = list.filter(item => {
+        console.log("difficulty:", item.No, item.difficulty);
+console.log("time:", item.No, item.time);
+console.log("cost:", item.No, item.cost);
+
         // --- 魚種 ---
         const activeFish = activeFilters['fish-name'];
         const itemFish = Array.isArray(item['fish-name']) ? item['fish-name'].map(f=>f.trim()) : [];
