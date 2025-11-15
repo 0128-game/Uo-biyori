@@ -29,10 +29,6 @@ const filterModal = document.getElementById('filterModal');
 const filterContent = document.getElementById('filterContent'); 
 const applyFilterBtn = document.getElementById('applyFilterBtn'); 
 const filterClearBtn = document.getElementById('filterClearBtn'); 
-const btnApply = document.getElementById('filterApplyBtn');            // 適用して閉じる
-const btnCancel = document.getElementById('filterCancelBtn');          // キャンセル
-const btnClose = document.getElementById('filterCloseBtn');  
-
 // ★★★ 詳細コンテナの要素 ★★★
 const detailTitle = document.getElementById('detailTitle');
 const detailSubtitle = document.getElementById('detailSubtitle');
