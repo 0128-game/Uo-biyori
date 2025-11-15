@@ -1125,6 +1125,7 @@ function renderIncludeExcludeUI() {
         incCheckbox.type = 'checkbox';
         incCheckbox.id = `inc-${fish}`;
         incCheckbox.checked = currentIncludeSet.has(fish);
+        incCheckbox.disabled = currentExcludeSet.has(fish); // ← 追加
         incCheckbox.addEventListener('change', () => {
             targetMeals.forEach(i => {
                 const meal = window.mealSettings[i];
@@ -1136,6 +1137,9 @@ function renderIncludeExcludeUI() {
                     meal.include.delete(fish);
                 }
             });
+            // Exclude 側のチェックボックスを無効/有効にする
+            const excCheckbox = document.getElementById(`exc-${fish}`);
+            if (excCheckbox) excCheckbox.disabled = incCheckbox.checked;
             window.renderSummary();
         });
         const incLabel = document.createElement('label');
@@ -1149,6 +1153,7 @@ function renderIncludeExcludeUI() {
         excCheckbox.type = 'checkbox';
         excCheckbox.id = `exc-${fish}`;
         excCheckbox.checked = currentExcludeSet.has(fish);
+        excCheckbox.disabled = currentIncludeSet.has(fish); // ← 追加
         excCheckbox.addEventListener('change', () => {
             targetMeals.forEach(i => {
                 const meal = window.mealSettings[i];
@@ -1160,6 +1165,9 @@ function renderIncludeExcludeUI() {
                     meal.exclude.delete(fish);
                 }
             });
+            // Include 側のチェックボックスを無効/有効にする
+            const incCheckbox = document.getElementById(`inc-${fish}`);
+            if (incCheckbox) incCheckbox.disabled = excCheckbox.checked;
             window.renderSummary();
         });
         const excLabel = document.createElement('label');
