@@ -155,7 +155,6 @@ function setupFilterModal(list) {
 
 function initializeFilterModal(list) {
     if (!filterContent) return;
-
     console.log('--- initializeFilterModal 開始 ---');
 
     // -------------------- 魚種チェックボックス --------------------
@@ -208,8 +207,7 @@ function initializeFilterModal(list) {
         label.appendChild(document.createTextNode(' ' + fish));
         fishContainer.appendChild(label);
     });
-
-    console.log('魚種チェックボックス反映:', Array.from(savedFilters['fish-name']));
+    console.log('魚種反映:', Array.from(savedFilters['fish-name']));
 
     // -------------------- 難易度 --------------------
     const diffRadios = filterContent.querySelectorAll('input[name="difficulty"]');
@@ -302,7 +300,7 @@ function initializeFilterModal(list) {
         console.log('季節モード変更:', r.value, seasonContainer.style.display);
     }));
 
-    // -------------------- 適用して閉じる --------------------
+    // -------------------- Apply --------------------
     if (btnApply) btnApply.onclick = () => {
         saveCurrentFilters();
         updateActiveFilters();
@@ -311,17 +309,17 @@ function initializeFilterModal(list) {
         if (filterModal) filterModal.style.display = 'none';
     };
 
-    // -------------------- キャンセル --------------------
+    // -------------------- Cancel --------------------
     if (btnCancel) btnCancel.onclick = () => {
-        initializeFilterModal(list); // 保存済みの設定を反映
-        console.log('Cancel押下 - savedFilters再反映');
+        console.log('Cancel押下 - savedFiltersを反映');
+        initializeFilterModal(list); // 保存済みの設定を再反映
         if (filterModal) filterModal.style.display = 'none';
     };
 
-    // -------------------- ×ボタン --------------------
+    // -------------------- Close --------------------
     if (btnClose) btnClose.onclick = () => {
-        initializeFilterModal(list); // 保存済みの設定を反映
-        console.log('Close押下 - savedFilters再反映');
+        console.log('Close押下 - savedFiltersを反映');
+        initializeFilterModal(list); // 保存済みの設定を再反映
         if (filterModal) filterModal.style.display = 'none';
     };
 
