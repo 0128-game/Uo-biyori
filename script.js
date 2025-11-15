@@ -151,22 +151,38 @@ function closeFilterModal() {
 
 if (resetFiltersBtn) {
     resetFiltersBtn.addEventListener('click', () => {
-        // --- 難易度リセット ---
-        document.querySelectorAll('input[name="difficulty"]').forEach(r => {
-            r.checked = (r.value === ''); // 空文字のラジオだけチェック
-        });
+        // 1. HTMLのラジオボタンを「指定なし／制限なし」に強制
+        const difficultyNone = document.querySelector('input[name="difficulty"][value=""]');
+        const timeNone = document.querySelector('input[name="time"][value=""]');
+        const costNone = document.querySelector('input[name="cost"][value=""]');
 
-        // --- 調理時間リセット ---
-        document.querySelectorAll('input[name="time"]').forEach(r => {
-            r.checked = (r.value === '');
-        });
+        document.querySelectorAll('input[name="difficulty"]').forEach(r => r.checked = false);
+        if (difficultyNone) difficultyNone.checked = true;
 
-        // --- 費用リセット ---
-        document.querySelectorAll('input[name="cost"]').forEach(r => {
-            r.checked = (r.value === '');
-        });
+        document.querySelectorAll('input[name="time"]').forEach(r => r.checked = false);
+        if (timeNone) timeNone.checked = true;
 
-        // サマリーを更新
+        document.querySelectorAll('input[name="cost"]').forEach(r => r.checked = false);
+        if (costNone) costNone.checked = true;
+
+        // 2. 内部のフィルター状態もリセット
+        if (window.activeFilters) {
+            window.activeFilters.difficulty = null;
+            window.activeFilters.time = null;
+            window.activeFilters.cost = null;
+        }
+
+        // 3. 各 mealSettings の値もリセット
+        if (window.mealSettings) {
+            Object.values(window.mealSettings).forEach(meal => {
+                if (meal) {
+                    meal.include?.clear();
+                    meal.exclude?.clear();
+                }
+            });
+        }
+
+        // 4. サマリー更新
         window.renderSummary();
     });
 }
