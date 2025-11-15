@@ -313,7 +313,6 @@ uniqueFish.forEach(fish => {
 
 // --- 現在の設定内容を savedFilters に保存 ---
 function saveCurrentFilters() {
-    console.log('--- saveCurrentFilters 開始 ---');
 
     // --- 魚種 ---
     savedFilters['fish-name'].clear();
@@ -355,8 +354,7 @@ function saveCurrentFilters() {
         filterContent.querySelectorAll('input[name="filterSeason"]:checked').forEach(cb => savedFilters.season.add(cb.value));
     }
 
-    console.log('保存後:', savedFilters);
-    console.log('--- saveCurrentFilters 終了 ---');
+
 }
 
 
@@ -703,12 +701,10 @@ function applyFiltersAndRender(){
     const sortVal = sortBy.value;
 
     let list = flatList.slice();
-    console.log('初期リスト:', list.map(i=>i.No));
 
     // 1. タイプフィルター
     if(type !== 'all'){
         list = list.filter(i => i._type === type);
-        console.log('タイプフィルター後:', list.map(i=>i.No));
     }
 
     // 2. 検索フィルター
@@ -728,50 +724,39 @@ function applyFiltersAndRender(){
             const hay = parts.filter(Boolean).join(' ').toLowerCase();
             return hay.includes(q);
         });
-        console.log('検索フィルター後:', list.map(i=>i.No));
     }
 
     // 3. 各種フィルター
     list = list.filter(item => {
-        console.log('--- フィルター前 ---', item.No);
-
         // --- 魚種 ---
         const activeFish = activeFilters['fish-name'];
         const itemFish = Array.isArray(item['fish-name']) ? item['fish-name'].map(f=>f.trim()) : [];
-        console.log('魚種チェック:', item.No, 'itemFish:', itemFish, 'activeFish:', Array.from(activeFish));
         if(activeFish.size > 0){
             if(itemFish.length === 0 || !itemFish.every(f=>activeFish.has(f))){
-                console.log('→ 魚種フィルターで除外:', item.No);
                 return false;
             }
         }
 
         // --- 難易度 ---
         const diff = Number(item.difficulty);
-        console.log('難易度チェック:', item.No, 'itemDiff:', item.difficulty, 'activeDiff:', activeFilters.difficulty);
         if(activeFilters.difficulty != null && activeFilters.difficulty !== ''){
             if(isNaN(diff) || diff > Number(activeFilters.difficulty)){
-                console.log('→ 難易度フィルターで除外:', item.No);
                 return false;
             }
         }
 
         // --- 時間 ---
         const time = Number(item.time);
-        console.log('時間チェック:', item.No, 'itemTime:', item.time, 'activeTime:', activeFilters.time);
         if(activeFilters.time != null && activeFilters.time !== ''){
             if(isNaN(time) || time > Number(activeFilters.time)){
-                console.log('→ 時間フィルターで除外:', item.No);
                 return false;
             }
         }
 
         // --- 費用 ---
         const cost = Number(item.cost);
-        console.log('費用チェック:', item.No, 'itemCost:', item.cost, 'activeCost:', activeFilters.cost);
         if(activeFilters.cost != null && activeFilters.cost !== ''){
             if(isNaN(cost) || cost > Number(activeFilters.cost)){
-                console.log('→ 費用フィルターで除外:', item.No);
                 return false;
             }
         }
@@ -780,21 +765,16 @@ function applyFiltersAndRender(){
         if(activeFilters.seasonMode === 'select'){
             const selectedSeasons = activeFilters.season;
             const itemSeasons = Array.isArray(item.season) ? item.season : [];
-            console.log('季節チェック:', item.No, 'itemSeasons:', itemSeasons, 'selectedSeasons:', Array.from(selectedSeasons));
             if(itemSeasons.length === 0){
-                console.log('→ 季節フィルター除外 (空)', item.No);
                 return false;
             }
             if(!itemSeasons.some(s=>selectedSeasons.has(s))){
-                console.log('→ 季節フィルター除外 (不一致)', item.No);
                 return false;
             }
         }
 
         return true;
     });
-
-    console.log('フィルター後リスト:', list.map(i=>i.No));
 
     // 4. ソート
     const desc = sortVal.startsWith('-');
