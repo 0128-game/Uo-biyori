@@ -1298,6 +1298,10 @@ function renderIncludeExcludeUI() {
   }));
 
   mealRadios.forEach(r => r.addEventListener('change', (e) => {
+    if (modeFieldset) {
+    modeFieldset.style.display = (Number(e.target.value) > 1 || e.target.value === 'custom') ? 'block' : 'none';
+  }
+
     if (e.target.value === 'custom') {
       customMealRow.style.display = 'grid';
     } else {
