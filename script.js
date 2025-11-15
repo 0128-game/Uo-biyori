@@ -328,23 +328,30 @@ function saveCurrentFilters() {
         { key: 'cost', inputName: 'filterCost', customId: 'customCostInput' }
     ];
 
-    filterItems.forEach(({ key, inputName, customId }) => {
-        const checked = filterContent.querySelector(`input[name="${inputName}"]:checked`);
-        if (!checked || checked.value === '') {
-            savedFilters[key] = null;
-            return;
-        }
+const filterKeys = ['difficulty', 'time', 'cost'];
 
-        if (checked.value === 'custom') {
-            // カスタム入力を使用
-            const input = document.getElementById(customId);
-            const val = parseFloat(input.value);
-            savedFilters[key] = (val > 0) ? val : null;
+//hello
+filterKeys.forEach(filterKey => {
+    const checkedRadio = filterContent.querySelector(`input[type="radio"][name="${filterKey}"]:checked`);
+    if (checkedRadio) {
+        if (checkedRadio.value === '') {
+            activeFilters[filterKey] = null;
+        } else if (checkedRadio.value === 'custom') {
+            const customInput = filterContent.querySelector(
+                `input[type="number"][id="custom${filterKey}Input"]`
+            );
+            if (customInput) {
+                const val = parseFloat(customInput.value);
+                if (!isNaN(val) && val > 0) {
+                    activeFilters[filterKey] = String(val);
+                }
+            }
         } else {
-            // 通常ラジオ選択（文字列の数値を数値型に変換）
-            savedFilters[key] = parseFloat(checked.value);
+            activeFilters[filterKey] = checkedRadio.value;
         }
-    });
+    }
+});
+
 
     // --- 季節 ---
     const seasonModeChecked = filterContent.querySelector('input[name="filterSeasonMode"]:checked');
