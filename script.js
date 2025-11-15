@@ -151,13 +151,22 @@ function closeFilterModal() {
 
 if (resetFiltersBtn) {
     resetFiltersBtn.addEventListener('click', () => {
-        // 各設定を初期化
-        resetCriteria();
+        // --- 難易度・時間・費用・モードのラジオボタンをリセット ---
+        const radioNames = ['difficulty', 'time', 'cost', 'mode'];
+        radioNames.forEach(name => {
+            document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.checked = false);
+        });
 
-        // include/excludeのUIもリセット
+        // --- include/exclude の設定をリセット ---
+        Object.values(window.mealSettings || {}).forEach(meal => {
+            if (meal.include) meal.include.clear();
+            if (meal.exclude) meal.exclude.clear();
+        });
+
+        // --- include/exclude の UI を再描画 ---
         renderIncludeExcludeUI();
 
-        // サマリー更新
+        // --- サマリー更新 ---
         window.renderSummary();
     });
 }
