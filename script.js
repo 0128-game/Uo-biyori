@@ -156,6 +156,8 @@ function setupFilterModal(list) {
 function initializeFilterModal(list) {
     if (!filterContent) return;
 
+    console.log('--- initializeFilterModal 開始 ---');
+
     // -------------------- 魚種チェックボックス --------------------
     const fishSet = new Set();
     list.forEach(item => {
@@ -207,11 +209,14 @@ function initializeFilterModal(list) {
         fishContainer.appendChild(label);
     });
 
+    console.log('魚種チェックボックス反映:', Array.from(savedFilters['fish-name']));
+
     // -------------------- 難易度 --------------------
     const diffRadios = filterContent.querySelectorAll('input[name="difficulty"]');
     diffRadios.forEach(r => {
         r.checked = r.value === savedFilters.difficulty;
     });
+    console.log('難易度反映:', savedFilters.difficulty);
 
     // -------------------- 時間 --------------------
     const timeRadios = filterContent.querySelectorAll('input[name="time"]');
@@ -235,6 +240,7 @@ function initializeFilterModal(list) {
         customTimeContainer.style.display = 'none';
         customTimeInput.value = '';
     }
+    console.log('時間反映:', savedFilters.time);
 
     // -------------------- 費用 --------------------
     const costRadios = filterContent.querySelectorAll('input[name="cost"]');
@@ -258,6 +264,7 @@ function initializeFilterModal(list) {
         customCostContainer.style.display = 'none';
         customCostInput.value = '';
     }
+    console.log('費用反映:', savedFilters.cost);
 
     // -------------------- 季節 --------------------
     const seasonModeRadios = filterContent.querySelectorAll('input[name="filterSeasonMode"]');
@@ -266,6 +273,7 @@ function initializeFilterModal(list) {
     seasonContainer.style.display = (savedFilters.seasonMode === 'select') ? '' : 'none';
     const seasonCheckboxes = seasonContainer.querySelectorAll('input[name="filterSeason"]');
     seasonCheckboxes.forEach(cb => cb.checked = savedFilters.season.has(cb.value));
+    console.log('季節反映:', savedFilters.seasonMode, Array.from(savedFilters.season));
 
     // -------------------- イベント登録 --------------------
     timeRadios.forEach(r => r.addEventListener('change', () => {
@@ -275,7 +283,9 @@ function initializeFilterModal(list) {
             customTimeContainer.style.display = 'none';
             customTimeInput.value = '';
         }
+        console.log('時間ラジオ変更:', r.value, r.checked, customTimeInput.value);
     }));
+
     costRadios.forEach(r => r.addEventListener('change', () => {
         if (r.value === 'custom' && r.checked) {
             customCostContainer.style.display = '';
@@ -283,10 +293,13 @@ function initializeFilterModal(list) {
             customCostContainer.style.display = 'none';
             customCostInput.value = '';
         }
+        console.log('費用ラジオ変更:', r.value, r.checked, customCostInput.value);
     }));
+
     seasonModeRadios.forEach(r => r.addEventListener('change', () => {
         seasonContainer.style.display = r.value === 'select' ? '' : 'none';
         if (r.value !== 'select') seasonCheckboxes.forEach(cb => cb.checked = false);
+        console.log('季節モード変更:', r.value, seasonContainer.style.display);
     }));
 
     // -------------------- 適用して閉じる --------------------
@@ -294,21 +307,27 @@ function initializeFilterModal(list) {
         saveCurrentFilters();
         updateActiveFilters();
         applyFiltersAndRender();
+        console.log('Apply押下後 activeFilters:', activeFilters);
         if (filterModal) filterModal.style.display = 'none';
     };
 
     // -------------------- キャンセル --------------------
     if (btnCancel) btnCancel.onclick = () => {
         initializeFilterModal(list); // 保存済みの設定を反映
+        console.log('Cancel押下 - savedFilters再反映');
         if (filterModal) filterModal.style.display = 'none';
     };
 
     // -------------------- ×ボタン --------------------
     if (btnClose) btnClose.onclick = () => {
         initializeFilterModal(list); // 保存済みの設定を反映
+        console.log('Close押下 - savedFilters再反映');
         if (filterModal) filterModal.style.display = 'none';
     };
+
+    console.log('--- initializeFilterModal 終了 ---');
 }
+
 
 
 
