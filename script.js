@@ -695,54 +695,124 @@ if (window.proposalModal) proposalModal.style.display = 'none';
 /**
  * フィルターを適用し、テーブルを再描画する
  */
-function applyFiltersAndRender(list) {
-    if (!list || !Array.isArray(list)) return;
+function applyFiltersAndRender(){
+        if(!qInput || !filterType || !sortBy || !message) { return; }
 
-    const filteredList = list.filter(item => {
-        // --- 難易度フィルター ---
-        if (activeFilters.difficulty != null && activeFilters.difficulty !== '') {
-            const diff = Number(item.difficulty);
-            console.log('難易度チェック:', item.No, 'activeFilters.difficulty =', activeFilters.difficulty);
-            if (isNaN(diff) || diff > Number(activeFilters.difficulty)) return false;
+        const q = (qInput.value || '').trim().toLowerCase();
+        const type = filterType.value;
+        const sortVal = sortBy.value;
+
+        let list = flatList.slice();
+
+        // 1. タイプのフィルター
+        if (type !== 'all') list = list.filter(i => i._type === type);
+
+        // 2. 検索 (Search)
+        if (q){
+            list = list.filter(item => {
+                const parts = [
+                    item.title, item.flavortxt,
+                    joinIfArray(item['fish-name']),
+                    joinIfArray(item.feature),
+                    joinIfArray(item.season),
+                    item.No,
+                    Object.keys(item.ingredients || {}).join(' '),
+                    joinIfArray(item.recipe),
+                    joinIfArray(item.memo),
+                    joinIfArray(item.props)
+                ];
+                const hay = parts.filter(Boolean).join(' ').toLowerCase();
+                return hay.includes(q);
+            });
         }
 
-        // --- 時間フィルター ---
-        if (activeFilters.time != null && activeFilters.time !== '') {
-            const itemTime = Number(item.time);
-            console.log('時間チェック:', item.No, 'activeFilters.time =', activeFilters.time);
-            if (isNaN(itemTime) || itemTime > Number(activeFilters.time)) return false;
+        // ★★★ 3. フィルターロジックの適用 (下処理アイテムにも適用) ★★★
+        list = list.filter(item => {
+            // NOTE: item._type === 'pre' のスキップ処理を削除したため、
+            // 下処理アイテムにも魚種、難易度、時間、費用のフィルターが適用される。
+
+            // --- 魚種フィルター (fish-name) - AND条件 (b ⊆ a) ---
+            const activeFish = activeFilters['fish-name']; // a: ユーザーが選択した魚種リスト (Set)
+            if (activeFish.size > 0) {
+                // b: レシピ/下処理で使われている魚種を取得し、整形
+                const itemFish = Array.isArray(item['fish-name']) ? item['fish-name'].map(f => f.trim()) : [];
+                
+                // b ⊆ a のチェック: レシピ/下処理で使われている魚 (b) すべてが、ユーザーの選択肢 (a) に含まれているか？
+                const allMatch = itemFish.every(f => activeFish.has(f));
+                
+                // itemFishが空の配列の場合 (魚種が定義されていないアイテム)、every()はtrueを返すため通過
+                if (!allMatch) return false;
+            }
+
+            // --- 難易度フィルター (difficulty) - 最大値条件 ---
+            const maxDiff = activeFilters.difficulty ? parseFloat(activeFilters.difficulty) : null;
+            if (maxDiff !== null && item.difficulty != null) {
+                const itemDiff = parseFloat(item.difficulty);
+                if (!isNaN(itemDiff) && itemDiff > maxDiff) return false;
+            }
+
+            // --- 所要時間フィルター (time) - 最大値条件 ---
+            const maxTime = activeFilters.time ? parseFloat(activeFilters.time) : null;
+            if (maxTime !== null && item.time != null) {
+                const itemTime = parseFloat(item.time);
+                if (!isNaN(itemTime) && itemTime > maxTime) return false;
+            }
+            
+            // --- 費用フィルター (cost) - 最大値条件 ---
+            const maxCost = activeFilters.cost ? parseFloat(activeFilters.cost) : null;
+            if (maxCost !== null && item.cost != null) {
+                const itemCost = parseFloat(item.cost);
+                if (!isNaN(itemCost) && itemCost > maxCost) return false;
+            }
+
+            return true;
+        });
+        // ★★★ フィルタリングロジックの適用 ここまで ★★★
+
+
+        // 4. ソート (Sort)
+        const desc = sortVal.startsWith('-');
+        const key = desc ? sortVal.slice(1) : sortVal;
+
+        list.sort((a,b)=>{
+            const av = a[key];
+            const bv = b[key];
+
+            if (key === 'No'){
+                const extractNum = (val) => {
+                    const s = String(val||'');
+                    const isPre = s.startsWith('P');
+                    const num = parseInt(s.replace(/^P/,'') || '0', 10);
+                    return isPre ? num + 0.5 : num;
+                };
+                const na = extractNum(av);
+                const nb = extractNum(bv);
+                return desc ? nb - na : na - nb;
+            }
+
+            const an = (av == null) ? Number.POSITIVE_INFINITY : Number(av);
+            const bn = (bv == null) ? Number.POSITIVE_INFINITY : Number(bv);
+            if (!isFinite(an) || !isFinite(bn)){
+                return desc ? String(bv).localeCompare(String(av)) : String(av).localeCompare(String(bv));
+            }
+            return desc ? bn - an : an - bn;
+        });
+
+
+        renderTable(list);
+        
+        let activeCount = activeFilters['fish-name'].size;
+        ['difficulty', 'time', 'cost'].forEach(key => {
+            if (activeFilters[key] !== null) activeCount++;
+        });
+
+        let filterText = '';
+        if (activeCount > 0) {
+             filterText = ` (${activeCount} 種類のフィルター適用中)`;
         }
 
-        // --- 費用フィルター ---
-        if (activeFilters.cost != null && activeFilters.cost !== '') {
-            const itemCost = Number(item.cost);
-            console.log('費用チェック:', item.No, 'activeFilters.cost =', activeFilters.cost);
-            if (isNaN(itemCost) || itemCost > Number(activeFilters.cost)) return false;
-        }
-
-        // --- 魚種フィルター ---
-        if (activeFilters['fish-name'] && activeFilters['fish-name'].size > 0) {
-            console.log('魚種チェック:', item.No, 'activeFilters.fish-name =', Array.from(activeFilters['fish-name']));
-            const hasFish = item['fish-name'].some(f => activeFilters['fish-name'].has(f));
-            if (!hasFish) return false;
-        }
-
-        // --- 季節フィルター ---
-        if (activeFilters.season && activeFilters.season.size > 0) {
-            console.log('季節チェック:', item.No, 'activeFilters.season =', Array.from(activeFilters.season));
-            const hasSeason = item.season.some(s => activeFilters.season.has(s));
-            if (!hasSeason) return false;
-        }
-
-        return true;
-    });
-
-    // フィルター後リストを表示
-    console.log('フィルター後リスト:', filteredList.map(i => i.No));
-
-    // ここでレンダリング関数を呼ぶ
-    renderRecipeList(filteredList);
-}
+        message.textContent = `${list.length} 件の結果を表示中 (全 ${flatList.length} 件)${filterText}`;
+    }
 
 
 
