@@ -167,11 +167,16 @@ if (resetFiltersBtn) {
         if (costNone) costNone.checked = true;
 
         // --- カスタム入力欄を非表示＆値クリア ---
-        if (customTimeInputContainer) customTimeInputContainer.style.display = 'none';
-        if (customTimeInput) customTimeInput.value = '';
+if (customTimeInputContainer) {
+    customTimeInputContainer.style.display = 'none';
+    if (customTimeInput) customTimeInput.value = '';
+}
 
-        if (customCostInputContainer) customCostInputContainer.style.display = 'none';
-        if (customCostInput) customCostInput.value = '';
+if (customCostInputContainer) {
+    customCostInputContainer.style.display = 'none';
+    if (customCostInput) customCostInput.value = '';
+}
+
 
         // --- 内部フィルター状態をリセット ---
         if (window.activeFilters) {
