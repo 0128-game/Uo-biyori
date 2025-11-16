@@ -258,13 +258,13 @@ tbody tr:hover { background: rgba(43, 108, 176, 0.03); }
 }
 
 /* =======================================================
-   4. モーダル（背景オーバーレイ付き、中央表示）
+   4. モーダル共通設定（全モーダルを proposalModal と同じに統一）
 ======================================================= */
 .modal-base {
     display: none; /* 初期非表示 */
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.55); /* 半透明黒オーバーレイ */
+    background: rgba(0,0,0,0.55); /* 半透明オーバーレイ */
     z-index: 1000;
     justify-content: center; /* 横中央 */
     align-items: center; /* 縦中央 */
@@ -281,23 +281,50 @@ tbody tr:hover { background: rgba(43, 108, 176, 0.03); }
     box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     display: flex;
     flex-direction: column;
-    position: relative; /* 内部絶対配置用 */
+    position: relative;
     max-height: 90vh;
     overflow-y: auto;
-    width: 90%;
-    max-width: 720px; /* Proposal用、他モーダルは個別で調整 */
-}
-
-/* Proposal Modal 固有 */
-#proposalModal.modal-base {
-    display: none; /* 初期非表示 */
-}
-#proposalModal .modal-content {
     width: 90%;
     max-width: 720px;
     padding: 20px;
 }
-#proposalModal h2 {
+
+/* fieldset / legend */
+.modal-content fieldset {
+    margin-bottom: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+}
+.modal-content legend {
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Proposal Modal 固有調整（他モーダルも同じ設定） */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#proposalModal,
+#filterModal,
+#proposeModal {
+    /* 全て proposalModal と同じ設定 */
+    display: none;
+}
+#proposalModal .modal-content,
+#filterModal .modal-content,
+#proposeModal .modal-content {
+    width: 90%;
+    max-width: 720px;
+    padding: 20px;
+}
+#proposalModal h2,
+#filterModal h2,
+#proposeModal h2 {
     margin-bottom: 16px;
     color: var(--accent);
 }
@@ -306,10 +333,4 @@ tbody tr:hover { background: rgba(43, 108, 176, 0.03); }
     padding: 0.8em;
     background: #f8fafc;
     border-radius: 8px;
-}
-#proposalModal .modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
 }
