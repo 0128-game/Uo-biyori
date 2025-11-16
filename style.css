@@ -68,7 +68,11 @@ header h1{
     font-size:1.6rem;
     color:var(--accent);
 }
-
+.small-text {
+    font-size: 0.6em; /* h1に対して小さくする */
+    font-weight: normal; /* 必要に応じて太さを調整 */
+    vertical-align: middle; /* h1との縦位置調整 */
+}
 .controls{
     margin-left:auto;
     display:flex;
