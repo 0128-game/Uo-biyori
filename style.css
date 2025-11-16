@@ -344,4 +344,33 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     overflow-y:auto;           /* 右サマリー独立スクロール */
     max-height:92vh;           /* モーダル高さに合わせる */
 }
+/* ======================================================
+   Summary Panel 内カードスタイル
+======================================================= */
+#summaryPanel {
+    display: flex;
+    flex-direction: column;
+    gap:16px; /* カード間の余白 */
+    overflow-y: auto; /* モーダル内でスクロール可能に */
+    padding: 10px;
+    max-height: 80vh; /* モーダルに合わせた高さ */
+}
+
+#summaryPanel .summary-card,
+#summaryPanel .summary-single {
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    padding:16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#summaryPanel .summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow:0 6px 18px rgba(0,0,0,0.12);
+}
+
+#summaryPanel .summary-card.active {
+    border:2px solid var(--accent);
+}
 
