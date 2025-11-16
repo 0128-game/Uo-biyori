@@ -41,6 +41,17 @@ body{
     color: #222;
 }
 
+/* --- 追加: モーダル表示時に背景スクロールを無効化 --- */
+/*
+  このクラスは、モーダルを開くときにJavaScriptを使ってbody要素に追加してください。
+  (例: document.body.classList.add('modal-open');)
+*/
+body.modal-open {
+    overflow: hidden;
+    /* スクロールバーが消えたことによるレイアウトのズレを防ぐための微調整 */
+    padding-right: 15px;
+}
+
 .wrap{
     /* ボックスモデル */
     width: 100%;
@@ -403,12 +414,12 @@ tbody tr:hover{
 /* --- 共通基底スタイル --- */
 .modal-base{
     /* レイアウト/配置 */
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
+    display: none; /* デフォルトでは非表示 */
+    position: fixed; /* 画面に固定 */
+    inset: 0; /* 画面全体を覆う */
+    z-index: 1000; /* 他の要素より上に表示 */
+    justify-content: center; /* 水平方向の中央揃え */
+    align-items: center; /* 垂直方向の中央揃え */
     padding: 30px;
 
     /* 視覚的表現 */
@@ -416,7 +427,7 @@ tbody tr:hover{
 }
 
 .modal-base.show{
-    display: flex;
+    display: flex; /* JavaScriptでこのクラスが追加されると表示される */
 }
 
 .modal-content{
