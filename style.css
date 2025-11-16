@@ -152,8 +152,8 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
 .actions button:nth-child(2){background:#a0aec0;}
 
 
-/* ======================================================
-   3. 詳細ビュー（あなたの元コードそのまま）
+/* =======================================================
+   3. 詳細ビュー
 ======================================================= */
 .detail-container{
     padding:25px;
@@ -173,7 +173,6 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     margin-bottom:20px;
     position:relative;
 }
-
 .back-button{
     background:#909090 !important;
     color:white;
@@ -257,30 +256,6 @@ tbody tr:hover{background:rgba(43,108,176,0.03);}
     border-radius:4px;
     margin-bottom:10px;
 }
-
-
-/* ======================================================
-   3.5 ★ページ転移風レイアウト（追加部分）
-======================================================= */
-.detail-view {
-    position:fixed;
-    inset:0;
-    background:rgba(255,255,255,0.92);
-    backdrop-filter:blur(8px); 
-    z-index:999;
-    overflow-y:auto;
-    padding:40px;
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-}
-
-#detailContainer {
-    width:100%;
-    max-width:1000px;
-}
-
-
 /* ======================================================
    4. モーダル（proposalModal基準）
 ======================================================= */
