@@ -292,20 +292,30 @@ if (cancelBtn) {
 function initializeFilterModal(list) {
     console.log('--- initializeFilterModal 開始 ---');
 
+    // DOM取得（何度もquerySelectorしないようまとめて取得）
+    const customDifficultyContainer = filterContent.querySelector('#customDifficultyInputContainer');
+    const customDifficultyInput = filterContent.querySelector('#customDifficultyInput');
+
+    const customTimeContainer = filterContent.querySelector('#customTimeInputContainer');
+    const customTimeInput = filterContent.querySelector('#customTimeInput');
+
+    const customCostContainer = filterContent.querySelector('#customCostInputContainer');
+    const customCostInput = filterContent.querySelector('#customCostInput');
+
     // --- 難易度 ---
     const difficultyRadios = filterContent.querySelectorAll('input[name="difficulty"]');
     const predefinedDifficulty = ['', '1', '2', '3', '4'];
+
     difficultyRadios.forEach(r => {
         if (activeFilters.difficulty !== null) {
             if (predefinedDifficulty.includes(activeFilters.difficulty)) {
                 r.checked = (activeFilters.difficulty === r.value);
-                filterContent.querySelector('#customDifficultyInputContainer').style.display = 'none';
+                if (customDifficultyContainer) customDifficultyContainer.style.display = 'none';
             } else {
                 r.checked = (r.value === 'custom');
                 if (r.checked) {
-                    const input = filterContent.querySelector('#customDifficultyInput');
-                    input.value = activeFilters.difficulty;
-                    filterContent.querySelector('#customDifficultyInputContainer').style.display = 'block';
+                    if (customDifficultyInput) customDifficultyInput.value = activeFilters.difficulty;
+                    if (customDifficultyContainer) customDifficultyContainer.style.display = 'block';
                 }
             }
         } else {
@@ -316,17 +326,17 @@ function initializeFilterModal(list) {
     // --- 時間 ---
     const timeRadios = filterContent.querySelectorAll('input[name="time"]');
     const predefinedTime = ['', '15', '30', '60'];
+
     timeRadios.forEach(r => {
         if (activeFilters.time !== null) {
             if (predefinedTime.includes(activeFilters.time)) {
                 r.checked = (activeFilters.time === r.value);
-                filterContent.querySelector('#customTimeInputContainer').style.display = 'none';
+                if (customTimeContainer) customTimeContainer.style.display = 'none';
             } else {
                 r.checked = (r.value === 'custom');
                 if (r.checked) {
-                    const input = filterContent.querySelector('#customTimeInput');
-                    input.value = activeFilters.time;
-                    filterContent.querySelector('#customTimeInputContainer').style.display = 'block';
+                    if (customTimeInput) customTimeInput.value = activeFilters.time;
+                    if (customTimeContainer) customTimeContainer.style.display = 'block';
                 }
             }
         } else {
@@ -337,17 +347,17 @@ function initializeFilterModal(list) {
     // --- 費用 ---
     const costRadios = filterContent.querySelectorAll('input[name="cost"]');
     const predefinedCost = ['', '500', '1000', '2000'];
+
     costRadios.forEach(r => {
         if (activeFilters.cost !== null) {
             if (predefinedCost.includes(activeFilters.cost)) {
                 r.checked = (activeFilters.cost === r.value);
-                filterContent.querySelector('#customCostInputContainer').style.display = 'none';
+                if (customCostContainer) customCostContainer.style.display = 'none';
             } else {
                 r.checked = (r.value === 'custom');
                 if (r.checked) {
-                    const input = filterContent.querySelector('#customCostInput');
-                    input.value = activeFilters.cost;
-                    filterContent.querySelector('#customCostInputContainer').style.display = 'block';
+                    if (customCostInput) customCostInput.value = activeFilters.cost;
+                    if (customCostContainer) customCostContainer.style.display = 'block';
                 }
             }
         } else {
@@ -361,7 +371,6 @@ function initializeFilterModal(list) {
 
     console.log('--- initializeFilterModal 終了 ---');
 }
-
 
 // ------------------------------
 // activeFilters 更新
