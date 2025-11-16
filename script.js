@@ -962,12 +962,7 @@ if(activeFilters.seasonMode === 'select'){
   const excludeFishRow = document.getElementById('excludeFishRow');
   const includeFishContainer = document.getElementById('includeFishContainer');
   const excludeFishContainer = document.getElementById('excludeFishContainer');
-
-  window.diffRadios = document.querySelectorAll('input[name="difficulty"]');
-  const customDiffRow = document.getElementById('customDiffRow');
-  const customDiffInput = document.getElementById('customDiffInput');
-  const customDiffConfirm = document.getElementById('customDiffConfirm');
-
+    
   window.timeRadios = document.querySelectorAll('input[name="time"]');
   const customTimeRow = document.getElementById('customTimeRow');
   const customTimeInput = document.getElementById('customTimeInput');
@@ -1125,9 +1120,7 @@ window.renderSummary = function() {
     if (window.timeRadios && window.timeRadios.length > 0) window.timeRadios[0].checked = true;
     if (window.costRadios && window.costRadios.length > 0) window.costRadios[0].checked = true;
 
-    // カスタム入力行非表示
-    customDiffRow.style.display = customTimeRow.style.display = customCostRow.style.display = 'none';
-
+  
     // 季節考慮用チェックボックスも初期化
     const seasonCheckbox = document.getElementById('considerSeasonCheckbox');
     if (seasonCheckbox) seasonCheckbox.checked = true;
@@ -1382,9 +1375,6 @@ function renderIncludeExcludeUI() {
     });
   }
 
-  handleCriterionRadioChange(window.diffRadios, customDiffRow, 'difficulty');
-  handleCriterionCustomConfirm(customDiffConfirm, customDiffInput, 'difficulty');
-
   handleCriterionRadioChange(window.timeRadios, customTimeRow, 'time');
   handleCriterionCustomConfirm(customTimeConfirm, customTimeInput, 'time');
 
@@ -1400,7 +1390,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const modeFieldset = document.getElementById('modeFieldset');
   const counterContainer = document.getElementById('counterContainer');
   const customMealRow = document.getElementById('customMealRow');
-  const customDiffRow = document.getElementById('customDiffRow');
   const customTimeRow = document.getElementById('customTimeRow');
   const customCostRow = document.getElementById('customCostRow');
   const includeFishRow = document.getElementById('includeFishRow');
@@ -1415,7 +1404,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modeFieldset) modeFieldset.style.display = 'none';
   if (counterContainer) counterContainer.style.display = 'none';
   if (customMealRow) customMealRow.style.display = 'none';
-  if (customDiffRow) customDiffRow.style.display = 'none';
   if (customTimeRow) customTimeRow.style.display = 'none';
   if (customCostRow) customCostRow.style.display = 'none';
   if (includeFishRow) includeFishRow.style.display = 'none';
@@ -1425,9 +1413,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.renderSummary(); 
 });
 
-// ❌ 以前残っていた無効な呼び出しをすべて削除しました ❌
-
-// --- これ以降に他の DOMContentLoaded リスナーやコードがあれば続きます ---
 
 // ===== レシピ提案モーダル =====
 document.addEventListener('DOMContentLoaded', () => {
