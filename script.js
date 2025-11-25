@@ -1026,35 +1026,25 @@ const considerSeasonValue = document.getElementById('considerSeasonCheckbox').ch
   }
 
 window.renderSummary = function() {
-    summaryPanel.innerHTML = '';
-    const title = document.createElement('h3');
-    title.textContent = '設定サマリー';
-    summaryPanel.appendChild(title);
+  summaryPanel.innerHTML = '';
+  const title = document.createElement('h3');
+  title.textContent = '設定サマリー';
+  summaryPanel.appendChild(title);
 
-    for (let i = 1; i <= window.mealcount; i++) {
-        const meal = window.mealSettings[i];
-        if (!meal) continue;
-
-        const difficulty = meal.difficulty || '指定なし';
-        const time = meal.time === 'custom' ? (meal.timeCustom || '指定なし') : (meal.time || '指定なし');
-        const cost = meal.cost === 'custom' ? (meal.costCustom || '指定なし') : (meal.cost || '指定なし');
-        const season = meal.considerSeason ? 'する' : 'しない';
-
-        const card = document.createElement('div');
-        card.className = 'summary-card';
-        card.innerHTML = `
-          <h4>${i}食目</h4>
-          <p><strong>使いたい魚:</strong> ${Array.from(meal.include).join('、') || '指定なし'}</p>
-          <p><strong>除外する魚:</strong> ${Array.from(meal.exclude).join('、') || '指定なし'}</p>
-          <p><strong>難易度:</strong> ${difficulty}</p>
-          <p><strong>時間:</strong> ${time}</p>
-          <p><strong>費用:</strong> ¥${cost}</p>
-          <p><strong>季節考慮:</strong> ${season}</p>
-        `;
-        summaryPanel.appendChild(card);
-    }
-}
-
+  const m = window.mealSettings[1] || window.makeDefaultMeal(); // 全食共通設定
+  const div = document.createElement('div');
+  div.className = 'summary-single';
+  div.innerHTML = `
+    <h4>全食共通設定</h4>
+    <p><strong>使いたい魚:</strong> ${Array.from(m.include).join('、') || '指定なし'}</p>
+    <p><strong>除外する魚:</strong> ${Array.from(m.exclude).join('、') || '指定なし'}</p>
+    <p><strong>難易度:</strong> ${m.difficulty || '指定なし'}</p>
+    <p><strong>時間:</strong> ${m.time || '指定なし'}</p>
+    <p><strong>費用:</strong> ¥${m.cost || '指定なし'}</p>
+    <p><strong>季節考慮:</strong> ${m.considerSeason ? 'する' : 'しない'}</p>
+  `;
+  summaryPanel.appendChild(div);
+};
 
 
 
