@@ -935,142 +935,206 @@ if(activeFilters.seasonMode === 'select'){
         activeFilters: activeFilters 
     };
 })();
-// ===== レシピ提案モーダル制御（全食共通設定版） =====
+// ===== レシピ提案モーダル制御（完全修正版 3.0 - デバッグログ挿入済み） =====
 (function(){
-  // --- 要素 ---
-  const proposeBtn = document.getElementById('proposeOpenBtn');
-  const proposeModal = document.getElementById('proposeModal');
-  const closeProposeBtn = document.getElementById('closeProposeBtn');
+  // --- 要素 ---
+  const proposeBtn = document.getElementById('proposeOpenBtn');
+  const proposeModal = document.getElementById('proposeModal');
+  const closeProposeBtn = document.getElementById('closeProposeBtn');
 
-  const mealRadios = document.querySelectorAll('input[name="meals"]');
-  const customMealInput = document.getElementById('customMealInput');
-  const customMealRow = document.getElementById('customMealRow');
-  const customMealConfirm = document.getElementById('customMealConfirm');
+  const mealRadios = document.querySelectorAll('input[name="meals"]');
+  const customMealInput = document.getElementById('customMealInput');
+  const customMealRow = document.getElementById('customMealRow');
+  const customMealConfirm = document.getElementById('customMealConfirm');
 
-  const includeFishModeRadios = document.getElementsByName('includeFishMode');
-  const excludeFishModeRadios = document.getElementsByName('excludeFishMode');
-  const includeFishRow = document.getElementById('includeFishRow');
-  const excludeFishRow = document.getElementById('excludeFishRow');
-  const includeFishContainer = document.getElementById('includeFishContainer');
-  const excludeFishContainer = document.getElementById('excludeFishContainer');
+  const modeFieldset = document.getElementById('modeFieldset');
+  const modeRadios = document.querySelectorAll('input[name="mode"]');
+  const modeAllRadio = document.querySelector('input[name="mode"][value="all"]');
 
-  window.timeRadios = document.querySelectorAll('input[name="time"]');
-  const customTimeRow = document.getElementById('customTimeRow');
-  const customTimeInput = document.getElementById('customTimeInput');
-  const customTimeConfirm = document.getElementById('customTimeConfirm');
+  const counterContainer = document.getElementById('counterContainer');
+  const leftBtn = document.getElementById('leftBtn');
+  const rightBtn = document.getElementById('rightBtn');
+  const counterValue = document.getElementById('counterValue');
 
-  window.costRadios = document.querySelectorAll('input[name="cost"]');
-  const customCostRow = document.getElementById('customCostRow');
-  const customCostInput = document.getElementById('customCostInput');
-  const customCostConfirm = document.getElementById('customCostConfirm');
+  const includeFishModeRadios = document.getElementsByName('includeFishMode');
+  const excludeFishModeRadios = document.getElementsByName('excludeFishMode');
+  const includeFishRow = document.getElementById('includeFishRow');
+  const excludeFishRow = document.getElementById('excludeFishRow');
+  const includeFishContainer = document.getElementById('includeFishContainer');
+  const excludeFishContainer = document.getElementById('excludeFishContainer');
+    
+  window.timeRadios = document.querySelectorAll('input[name="time"]');
+  const customTimeRow = document.getElementById('customTimeRow');
+  const customTimeInput = document.getElementById('customTimeInput');
+  const customTimeConfirm = document.getElementById('customTimeConfirm');
 
-  const summaryPanel = document.getElementById('summaryPanel');
+  window.costRadios = document.querySelectorAll('input[name="cost"]');
+  const customCostRow = document.getElementById('customCostRow');
+  const customCostInput = document.getElementById('customCostInput');
+  const customCostConfirm = document.getElementById('customCostConfirm');
 
-// 難易度
-const diffInput = document.querySelector('input[name="difficulty"]:checked');
-const difficultyValue = diffInput ? diffInput.value : '';
+  const summaryPanel = document.getElementById('summaryPanel');
+ 
+  // --- 状態 ---
+window.mealcount = 1;
+  let currentCount = 1; // 現在の設定対象の食数 (1から始まる)
+  let fishList = [];
+  // mealSettings[1], mealSettings[2], ... を使用し、0インデックスは使用しない (1ベースインデックス)
+  window.mealSettings = []; 
+  // --- 初期設定 ---
+window.makeDefaultMeal = function() {
+    return {
+      include: new Set(),
+      exclude: new Set(),
+      difficulty: "",
+      difficultyCustom: null,
+      time: "",
+      timeCustom: null,
+      cost: "",
+      costCustom: null,
+    };
+  }
+  // 食数 mealcount に合わせて mealSettings の長さを保証（1ベースインデックスに対応）
+window.ensureMealSettings = function(len) {
+    const newArr = [];
+    // window. を明示
+    for (let i = 1; i <= len; i++) newArr[i] = window.mealSettings[i] || window.makeDefaultMeal();
+    window.mealSettings = newArr;
+  }
+// --- IIFE 内で参照される補助関数を先に定義 ---
 
-// 季節
-const considerSeasonValue = document.getElementById('considerSeasonCheckbox').checked;
+  // --- 補助関数（ローカル） ---
+  function closeModal() {
+    proposeModal.style.display = 'none';
+  }
+  // applyResetRulesAfterModeChange が定義されていないため、resetCriteria に仮変更
+  function applyResetRulesAfterModeChange() {
+    resetCriteria();
+  }
 
-  // --- 状態 ---
-  window.mealcount = 1;
-  window.mealSettings = [];
-  let fishList = [];
+  // --- 魚リスト読込（ローカル） ---
+  async function loadFishList() {
+    try {
+      const res = await fetch('./docs/recipes.json');
+      const json = await res.json();
+      const set = new Set();
+      for (const cat of ['recipes','preparations']) {
+        const group = json[cat];
+        if (!group) continue;
+        for (const k in group) {
+          const entry = group[k];
+          if (Array.isArray(entry['fish-name'])) entry['fish-name'].forEach(f => set.add(f));
+        }
+      }
+      fishList = Array.from(set).sort();
+    } catch (err) {
+      console.error('魚リスト読み込み失敗', err);
+      fishList = [];
+    }
+  }
+  
+  // --- 評価テキスト生成ヘルパー関数（ローカル） ---
+  function getCriterionText(key, value) {
+    const numValue = Number(value);
+    if (isNaN(numValue) || numValue < 1 || numValue > 3) return String(value);
 
-  // --- 初期設定 ---
-  window.makeDefaultMeal = function() {
-    return {
-      include: new Set(),
-      exclude: new Set(),
-      difficulty: "",
-      difficultyCustom: null,
-      time: "",
-      timeCustom: null,
-      cost: "",
-      costCustom: null,
-      considerSeason: false
-    };
-  }
+    const stars = '★'.repeat(numValue) + '☆'.repeat(3 - numValue);
 
-  window.ensureMealSettings = function(len) {
-    const newArr = [];
-    for (let i = 1; i <= len; i++) newArr[i] = window.mealSettings[i] || window.makeDefaultMeal();
-    window.mealSettings = newArr;
-  }
+    switch (key) {
+      case 'difficulty':
+        if (numValue === 1) return `${stars}（やさしい）`;
+        if (numValue === 2) return `${stars}（ふつう）`;
+        if (numValue === 3) return `${stars}（むずかしい）`;
+        break;
+      case 'time':
+        if (numValue === 1) return `${stars}（短い）`;
+        if (numValue === 2) return `${stars}（ふつう）`;
+        if (numValue === 3) return `${stars}（長い）`;
+        break;
+      case 'cost':
+        if (numValue === 1) return `${stars}（安い）`;
+        if (numValue === 2) return `${stars}（ふつう）`;
+        if (numValue === 3) return `${stars}（高い）`;
+        break;
+    }
+    return String(value);
+  } 
 
-  // --- モーダル閉じる ---
-  function closeModal() {
-    proposeModal.style.display = 'none';
-  }
-
-  // --- 魚リスト読込 ---
-  async function loadFishList() {
-    try {
-      const res = await fetch('./docs/recipes.json');
-      const json = await res.json();
-      const set = new Set();
-      for (const cat of ['recipes','preparations']) {
-        const group = json[cat];
-        if (!group) continue;
-        for (const k in group) {
-          const entry = group[k];
-          if (Array.isArray(entry['fish-name'])) entry['fish-name'].forEach(f => set.add(f));
-        }
-      }
-      fishList = Array.from(set).sort();
-    } catch (err) {
-      console.error('魚リスト読み込み失敗', err);
-      fishList = [];
-    }
-  }
-
+  // --- サマリー表示（グローバルに公開） ---
 window.renderSummary = function() {
-  summaryPanel.innerHTML = '';
-  const title = document.createElement('h3');
-  title.textContent = '設定サマリー';
-  summaryPanel.appendChild(title);
+    summaryPanel.innerHTML = '';
+    const title = document.createElement('h3');
+    title.textContent = '設定サマリー';
+    summaryPanel.appendChild(title);
 
-  const m = window.mealSettings[1] || window.makeDefaultMeal(); // 全食共通設定
-  const div = document.createElement('div');
-  div.className = 'summary-single';
-  div.innerHTML = `
-    <h4>全食共通設定</h4>
-    <p><strong>使いたい魚:</strong> ${Array.from(m.include).join('、') || '指定なし'}</p>
-    <p><strong>除外する魚:</strong> ${Array.from(m.exclude).join('、') || '指定なし'}</p>
-    <p><strong>難易度:</strong> ${m.difficulty || '指定なし'}</p>
-    <p><strong>時間:</strong> ${m.time || '指定なし'}</p>
-    <p><strong>費用:</strong> ¥${m.cost || '指定なし'}</p>
-    <p><strong>季節考慮:</strong> ${m.considerSeason ? 'する' : 'しない'}</p>
-  `;
-  summaryPanel.appendChild(div);
-};
+    if (window.mealcount === 1) {
+      const m = window.mealSettings[1] || window.makeDefaultMeal();
+      const div = document.createElement('div');
+      div.className = 'summary-single';
+      div.innerHTML = `
+        <h4>1食分の設定</h4>
+        <p><strong>使いたい魚:</strong> ${Array.from(m.include).join('、') || '指定なし'}</p>
+        <p><strong>除外する魚:</strong> ${Array.from(m.exclude).join('、') || '指定なし'}</p>
+        <p><strong>難易度:</strong> ${m.difficulty || '指定なし'}</p>
+        <p><strong>時間:</strong> ${m.time || '指定なし'}</p>
+        <p><strong>費用:</strong> ¥${m.cost || '指定なし'}</p>
+        <p><strong>季節考慮:</strong> ${m.considerSeason ? 'する' : 'しない'}</p>
+      `;
+      summaryPanel.appendChild(div);
+    } else {
+      for (let i = 1; i <= window.mealcount; i++) {
+        const m = window.mealSettings[i];
+        const card = document.createElement('div');
+        card.className = 'summary-card' + (i === currentCount ? ' active' : '');
+        card.innerHTML = `
+          <h4>${i}食目 ${i===currentCount ? '(現在)' : ''}</h4>
+          <p><strong>使いたい魚:</strong> ${Array.from(m.include).join('、') || '指定なし'}</p>
+          <p><strong>除外する魚:</strong> ${Array.from(m.exclude).join('、') || '指定なし'}</p>
+          <p><strong>難易度:</strong> ${m.difficulty || '指定なし'}</p>
+          <p><strong>時間:</strong> ${m.time || '指定なし'}</p>
+          <p><strong>費用:</strong> ¥${m.cost || '指定なし'}</p>
+          <p><strong>季節考慮:</strong> ${m.considerSeason ? 'する' : 'しない'}</p>
+        `;
+        summaryPanel.appendChild(card);
+      }
+    }
+}
 
 
+  // --- 初期化・リセット処理（ローカル） ---
+  function resetCriteria() {
+    for (let i = 1; i <= window.mealcount; i++) {
+      const defaultMeal = window.makeDefaultMeal(); 
+      defaultMeal.considerSeason = false; 
+      window.mealSettings[i] = defaultMeal;
+    }
 
-  // --- 初期化 ---
-  function resetCriteria() {
-    for (let i = 1; i <= window.mealcount; i++) {
-      window.mealSettings[i] = window.makeDefaultMeal();
-    }
+    // UIのラジオ・チェックを初期状態に戻す
+    document.querySelector('input[name="includeFishMode"][value="none"]').checked = true;
+    document.querySelector('input[name="excludeFishMode"][value="none"]').checked = true;
+    includeFishRow.style.display = 'none';
+    excludeFishRow.style.display = 'none';
 
-    // UI初期化
-    if (includeFishModeRadios.length > 0) includeFishModeRadios[0].checked = true;
-    if (excludeFishModeRadios.length > 0) excludeFishModeRadios[0].checked = true;
-    if (includeFishRow) includeFishRow.style.display = 'none';
-    if (excludeFishRow) excludeFishRow.style.display = 'none';
-    if (window.timeRadios && window.timeRadios.length > 0) window.timeRadios[0].checked = true;
-    if (window.costRadios && window.costRadios.length > 0) window.costRadios[0].checked = true;
+    // 難易度/時間/費用をデフォルト
+    if (window.diffRadios && window.diffRadios.length > 0) window.diffRadios[0].checked = true;
+    if (window.timeRadios && window.timeRadios.length > 0) window.timeRadios[0].checked = true;
+    if (window.costRadios && window.costRadios.length > 0) window.costRadios[0].checked = true;
 
-    const seasonCheckbox = document.getElementById('considerSeasonCheckbox');
-    if (seasonCheckbox) seasonCheckbox.checked = false;
+  
+    // 季節考慮用チェックボックスも初期化
+    const seasonCheckbox = document.getElementById('considerSeasonCheckbox');
+    if (seasonCheckbox) seasonCheckbox.checked = true;
 
-    renderIncludeExcludeUI();
-    window.renderSummary();
-  }
+    // カウンター初期化
+    currentCount = 1;
+    counterValue.textContent = currentCount;
 
-  // --- include/exclude UI ---
-  function renderIncludeExcludeUI() {
+    window.renderSummary(); 
+  }
+
+// --- include/exclude UI（ローカル） ---
+function renderIncludeExcludeUI() {
+    // 1. 表示/非表示の切り替え
     const incMode = document.querySelector('input[name="includeFishMode"]:checked')?.value || 'none';
     const excMode = document.querySelector('input[name="excludeFishMode"]:checked')?.value || 'none';
 
@@ -1082,217 +1146,272 @@ window.renderSummary = function() {
     includeFishContainer.innerHTML = '';
     excludeFishContainer.innerHTML = '';
 
+    // 2. 対象の食を決定
+    const mode = document.querySelector('input[name="mode"]:checked')?.value || 'all';
+    const targetMeals = (mode === 'each') ? [currentCount] : Array.from({length: window.mealcount}, (_, i) => i + 1);
+
+    // 3. 現在の設定値を集める
     const currentIncludeSet = new Set();
     const currentExcludeSet = new Set();
-for (let i = 1; i <= window.mealcount; i++) {
-    const meal = window.mealSettings[i];  // ← ここが抜けていた
-    if (!meal) continue;                  // null や undefined の保護
-    meal.include.forEach(f => currentIncludeSet.add(f));
-    meal.exclude.forEach(f => currentExcludeSet.add(f));
-}
+    targetMeals.forEach(i => {
+        const meal = window.mealSettings[i];
+        if (!meal) return;
+        meal.include.forEach(f => currentIncludeSet.add(f));
+        meal.exclude.forEach(f => currentExcludeSet.add(f));
+    });
 
-
+    // 4. fishList が存在しない場合は空配列に
     if (!Array.isArray(fishList)) fishList = [];
 
+    // 5. チェックボックスを生成
     fishList.forEach(fish => {
-      if (!fish) return;
+        if (!fish || typeof fish !== 'string') return;
 
-      // Include
-      const incCheckbox = document.createElement('input');
-      incCheckbox.type = 'checkbox';
-      incCheckbox.id = `inc-${fish}`;
-      incCheckbox.checked = currentIncludeSet.has(fish);
-      incCheckbox.disabled = currentExcludeSet.has(fish);
-      incCheckbox.addEventListener('change', () => {
-     for (let i = 1; i <= window.mealcount; i++) {
-  if (!window.mealSettings[i]) window.mealSettings[i] = window.makeDefaultMeal(); // 初期化
-  const meal = window.mealSettings[i];
-  if (excCheckbox.checked) {
-    meal.exclude.add(fish);
-    meal.include.delete(fish);
-  } else {
-    meal.exclude.delete(fish);
-  }
-}
+        // Include チェックボックス
+        const incCheckbox = document.createElement('input');
+        incCheckbox.type = 'checkbox';
+        incCheckbox.id = `inc-${fish}`;
+        incCheckbox.checked = currentIncludeSet.has(fish);
+        incCheckbox.disabled = currentExcludeSet.has(fish); // ← 追加
+        incCheckbox.addEventListener('change', () => {
+            targetMeals.forEach(i => {
+                const meal = window.mealSettings[i];
+                if (!meal) return;
+                if (incCheckbox.checked) {
+                    meal.include.add(fish);
+                    meal.exclude.delete(fish);
+                } else {
+                    meal.include.delete(fish);
+                }
+            });
+            // Exclude 側のチェックボックスを無効/有効にする
+            const excCheckbox = document.getElementById(`exc-${fish}`);
+            if (excCheckbox) excCheckbox.disabled = incCheckbox.checked;
+            window.renderSummary();
+        });
+        const incLabel = document.createElement('label');
+        incLabel.htmlFor = `inc-${fish}`;
+        incLabel.textContent = fish;
+        includeFishContainer.appendChild(incCheckbox);
+        includeFishContainer.appendChild(incLabel);
 
-        const excCheckbox = document.getElementById(`exc-${fish}`);
-        if (excCheckbox) excCheckbox.disabled = incCheckbox.checked;
-        window.renderSummary();
-      });
-      const incLabel = document.createElement('label');
-      incLabel.htmlFor = `inc-${fish}`;
-      incLabel.textContent = fish;
-      includeFishContainer.appendChild(incCheckbox);
-      includeFishContainer.appendChild(incLabel);
-
-      // Exclude
-      const excCheckbox = document.createElement('input');
-      excCheckbox.type = 'checkbox';
-      excCheckbox.id = `exc-${fish}`;
-      excCheckbox.checked = currentExcludeSet.has(fish);
-      excCheckbox.disabled = currentIncludeSet.has(fish);
-      excCheckbox.addEventListener('change', () => {
-        for (let i = 1; i <= window.mealcount; i++) {
-          const meal = window.mealSettings[i];
-          if (!meal) continue;
-          if (excCheckbox.checked) {
-            meal.exclude.add(fish);
-            meal.include.delete(fish);
-          } else {
-            meal.exclude.delete(fish);
-          }
-        }
-        const incCheckbox = document.getElementById(`inc-${fish}`);
-        if (incCheckbox) incCheckbox.disabled = excCheckbox.checked;
-        window.renderSummary();
-      });
-      const excLabel = document.createElement('label');
-      excLabel.htmlFor = `exc-${fish}`;
-      excLabel.textContent = fish;
-      excludeFishContainer.appendChild(excCheckbox);
-      excludeFishContainer.appendChild(excLabel);
+        // Exclude チェックボックス
+        const excCheckbox = document.createElement('input');
+        excCheckbox.type = 'checkbox';
+        excCheckbox.id = `exc-${fish}`;
+        excCheckbox.checked = currentExcludeSet.has(fish);
+        excCheckbox.disabled = currentIncludeSet.has(fish); // ← 追加
+        excCheckbox.addEventListener('change', () => {
+            targetMeals.forEach(i => {
+                const meal = window.mealSettings[i];
+                if (!meal) return;
+                if (excCheckbox.checked) {
+                    meal.exclude.add(fish);
+                    meal.include.delete(fish);
+                } else {
+                    meal.exclude.delete(fish);
+                }
+            });
+            // Include 側のチェックボックスを無効/有効にする
+            const incCheckbox = document.getElementById(`inc-${fish}`);
+            if (incCheckbox) incCheckbox.disabled = excCheckbox.checked;
+            window.renderSummary();
+        });
+        const excLabel = document.createElement('label');
+        excLabel.htmlFor = `exc-${fish}`;
+        excLabel.textContent = fish;
+        excludeFishContainer.appendChild(excCheckbox);
+        excludeFishContainer.appendChild(excLabel);
     });
 
+    // 最後にサマリーを更新
     window.renderSummary();
-  }
-
-  // --- 基準値適用 ---
-function applyCriterionToMeals(kind, value, customVal) {
-  for (let i = 1; i <= window.mealcount; i++) {
-    if (!window.mealSettings[i]) window.mealSettings[i] = window.makeDefaultMeal();
-
-    if (kind === 'time' || kind === 'cost') {
-      window.mealSettings[i][kind] = (value === 'custom') ? customVal : value;
-    } else if (kind === 'considerSeason') {
-      window.mealSettings[i][kind] = !!value;
-    } else {
-      window.mealSettings[i][kind] = value;
-    }
-
-    console.log(`meal ${i} 更新:`, JSON.stringify(window.mealSettings[i], null, 2));
-  }
-
-  window.renderSummary();
 }
 
+  
+  // --- 基準値適用（ローカル） ---
+  function applyCriterionToMeals(kind, value, customVal) {
+    const mode = document.querySelector('input[name="mode"]:checked')?.value || 'all';
+    const mealsToUpdate = (mode === 'each') ? [currentCount] : Array.from({length: window.mealcount}, (_, i) => i + 1);
+    
+    mealsToUpdate.forEach(i => {
+      if (window.mealSettings[i]) {
+        window.mealSettings[i][kind] = value;
+        window.mealSettings[i][kind + 'Custom'] = (value === 'custom') ? customVal : null;
+      }
+    });
+    window.renderSummary();
+  }
+  
+  // --- 食数変更適用（ローカル） ---
+  function applyOnMealCountChange(newP) {
+    window.mealcount = newP;
+    window.ensureMealSettings(window.mealcount); 
+    resetCriteria();
+    renderIncludeExcludeUI();
+    window.renderSummary(); 
+  }
+  
 
 
+  // --- モーダル開閉リスナー ---
+  proposeBtn.addEventListener('click', async () => {
+    proposeModal.style.display = 'flex';
+    await loadFishList();
+    
+    const selected = document.querySelector('input[name="meals"]:checked');
+    const initialP = selected && selected.value !== 'custom' ? Number(selected.value) || 1 : (Number(customMealInput.value) || 1);
+    
+    window.mealcount = initialP;
+    window.ensureMealSettings(window.mealcount);
+    
+    if (selected && selected.value === 'custom') {
+      customMealRow.style.display = 'grid';
+    } else {
+      customMealRow.style.display = 'none';
+    }
 
-  // --- 食数変更 ---
-  function applyOnMealCountChange(newP) {
-    window.mealcount = newP;
-    window.ensureMealSettings(window.mealcount);
-    resetCriteria();
+    currentCount = 1;
+    counterValue.textContent = currentCount;
+    
+    resetCriteria();
+    renderIncludeExcludeUI();
+    window.renderSummary();
+  });
+
+  closeProposeBtn.addEventListener('click', closeModal);
+  proposeModal.addEventListener('click', (e) => { 
+    if (e.target === proposeModal) closeModal(); 
+  });
+ 
+
+  // --- 各種ラジオボタン/カウンターリスナー ---
+  includeFishModeRadios.forEach(r => r.addEventListener('change', (e) => {
+    const v = e.target.value;
+    if (v === 'specify') {
+      includeFishRow.style.display = 'grid';
+    } else {
+      for (let i = 1; i <= window.mealcount; i++) window.mealSettings[i].include.clear();
+      includeFishRow.style.display = 'none';
+    }
+    renderIncludeExcludeUI();
+    window.renderSummary();
+  }));
+
+  excludeFishModeRadios.forEach(r => r.addEventListener('change', (e) => {
+    const v = e.target.value;
+    if (v === 'specify') {
+      excludeFishRow.style.display = 'grid';
+    } else {
+      for (let i = 1; i <= window.mealcount; i++) window.mealSettings[i].exclude.clear();
+      excludeFishRow.style.display = 'none';
+    }
+    renderIncludeExcludeUI();
+    window.renderSummary();
+  }));
+
+  mealRadios.forEach(r => r.addEventListener('change', (e) => {
+    if (modeFieldset) {
+    modeFieldset.style.display = (Number(e.target.value) > 1 || e.target.value === 'custom') ? 'block' : 'none';
   }
 
-  // --- モーダル開閉 ---
-  proposeBtn.addEventListener('click', async () => {
-    proposeModal.style.display = 'flex';
-    await loadFishList();
+    if (e.target.value === 'custom') {
+      customMealRow.style.display = 'grid';
+    } else {
+      const newP = Number(e.target.value) || 1;
+      customMealRow.style.display = 'none';
+      applyOnMealCountChange(newP);
+    }
+  }));
 
-    const selected = document.querySelector('input[name="meals"]:checked');
-    const initialP = selected && selected.value !== 'custom' ? Number(selected.value) || 1 : (Number(customMealInput.value) || 1);
+  customMealConfirm.addEventListener('click', () => {
+    const v = Math.max(1, Number(customMealInput.value) || 1);
+    const customRadio = document.querySelector('input[name="meals"][value="custom"]');
+    if (customRadio) customRadio.checked = true;
+    applyOnMealCountChange(v);
+  });
 
-    window.mealcount = initialP;
-    window.ensureMealSettings(window.mealcount);
+  modeRadios.forEach(r => r.addEventListener('change', (e) => {
+    const mode = e.target.value;
+    if (window.mealcount > 1 && mode === 'each') {
+      counterContainer.style.display = 'flex';
+    } else {
+      counterContainer.style.display = 'none';
+    }
+    applyResetRulesAfterModeChange();
+    renderIncludeExcludeUI();
+    window.renderSummary();
+  }));
 
-    if (selected && selected.value === 'custom') {
-      customMealRow.style.display = 'grid';
-    } else {
-      customMealRow.style.display = 'none';
-    }
+  leftBtn.addEventListener('click', () => {
+    if (currentCount > 1) {
+      currentCount--;
+      counterValue.textContent = currentCount;
+      renderIncludeExcludeUI();
+      window.renderSummary();
+    }
+  });
+  rightBtn.addEventListener('click', () => {
+    if (currentCount < window.mealcount) {
+      currentCount++;
+      counterValue.textContent = currentCount;
+      renderIncludeExcludeUI();
+      window.renderSummary();
+    }
+  });
 
-    resetCriteria();
-  });
+  function handleCriterionRadioChange(radios, customRow, kind) {
+    radios.forEach(r => r.addEventListener('change', (e) => {
+      customRow.style.display = (e.target.value === 'custom') ? 'grid' : 'none';
+      if (e.target.value !== 'custom') applyCriterionToMeals(kind, e.target.value, null);
+    }));
+  }
 
-  closeProposeBtn.addEventListener('click', closeModal);
-  proposeModal.addEventListener('click', (e) => { 
-    if (e.target === proposeModal) closeModal(); 
-  });
+  function handleCriterionCustomConfirm(confirmBtn, input, kind) {
+    confirmBtn.addEventListener('click', () => {
+      const customRadio = document.querySelector(`input[name="${kind}"][value="custom"]`);
+      if (customRadio) customRadio.checked = true;
+      applyCriterionToMeals(kind, 'custom', input.value);
+    });
+  }
 
-  // --- 食数選択 ---
-  mealRadios.forEach(r => r.addEventListener('change', (e) => {
-    if (e.target.value === 'custom') {
-      customMealRow.style.display = 'grid';
-    } else {
-      const newP = Number(e.target.value) || 1;
-      customMealRow.style.display = 'none';
-      applyOnMealCountChange(newP);
-    }
-  }));
+  handleCriterionRadioChange(window.timeRadios, customTimeRow, 'time');
+  handleCriterionCustomConfirm(customTimeConfirm, customTimeInput, 'time');
 
-  customMealConfirm.addEventListener('click', () => {
-    const v = Math.max(1, Number(customMealInput.value) || 1);
-    const customRadio = document.querySelector('input[name="meals"][value="custom"]');
-    if (customRadio) customRadio.checked = true;
-    applyOnMealCountChange(v);
-  });
+  handleCriterionRadioChange(window.costRadios, customCostRow, 'cost');
+  handleCriterionCustomConfirm(customCostConfirm, customCostInput, 'cost');
 
-  // --- include/excludeラジオ ---
-  includeFishModeRadios.forEach(r => r.addEventListener('change', () => renderIncludeExcludeUI()));
-  excludeFishModeRadios.forEach(r => r.addEventListener('change', () => renderIncludeExcludeUI()));
-
-  // --- 基準値ラジオ/カスタム ---
-  function handleCriterionRadioChange(radios, customRow, kind) {
-    radios.forEach(r => r.addEventListener('change', (e) => {
-      customRow.style.display = (e.target.value === 'custom') ? 'grid' : 'none';
-      if (e.target.value !== 'custom') applyCriterionToMeals(kind, e.target.value, null);
-    }));
-  }
-
-  function handleCriterionCustomConfirm(confirmBtn, input, kind) {
-    confirmBtn.addEventListener('click', () => {
-      const customRadio = document.querySelector(`input[name="${kind}"][value="custom"]`);
-      if (customRadio) customRadio.checked = true;
-      applyCriterionToMeals(kind, 'custom', input.value);
-    });
-  }
-    // 難易度変更時
-document.querySelectorAll('input[name="difficulty"]').forEach(radio => {
-  radio.addEventListener('change', () => {
-    const value = document.querySelector('input[name="difficulty"]:checked').value;
-    applyCriterionToMeals('difficulty', value);
-  });
-});
-
-// 季節チェックボックス変更時
-document.getElementById('considerSeasonCheckbox').addEventListener('change', (e) => {
-  applyCriterionToMeals('considerSeason', e.target.checked);
-});
-
-
-  handleCriterionRadioChange(window.timeRadios, customTimeRow, 'time');
-  handleCriterionCustomConfirm(customTimeConfirm, customTimeInput, 'time');
-
-  handleCriterionRadioChange(window.costRadios, customCostRow, 'cost');
-  handleCriterionCustomConfirm(customCostConfirm, customCostInput, 'cost');
-
-})();
-
-// --- 初期化 ---
+ 
+})(); // ⬅️ IIFE の終了
+    // --- 初期化 ---
 document.addEventListener('DOMContentLoaded', () => {
-  window.mealcount = 1;
-  window.ensureMealSettings(1);
-  window.renderSummary();
-
-  const customMealRow = document.getElementById('customMealRow');
-  const customTimeRow = document.getElementById('customTimeRow');
-  const customCostRow = document.getElementById('customCostRow');
-  const includeFishRow = document.getElementById('includeFishRow');
-  const excludeFishRow = document.getElementById('excludeFishRow');
-
-  if (customMealRow) customMealRow.style.display = 'none';
-  if (customTimeRow) customTimeRow.style.display = 'none';
-  if (customCostRow) customCostRow.style.display = 'none';
-  if (includeFishRow) includeFishRow.style.display = 'none';
-  if (excludeFishRow) excludeFishRow.style.display = 'none';
+  
+  // 変数定義を修正 (要素は IIFE の中で取得されているため、ここでもう一度取得するか window. を使う必要があります)
+  const modeFieldset = document.getElementById('modeFieldset');
+  const counterContainer = document.getElementById('counterContainer');
+  const customMealRow = document.getElementById('customMealRow');
+  const customTimeRow = document.getElementById('customTimeRow');
+  const customCostRow = document.getElementById('customCostRow');
+  const includeFishRow = document.getElementById('includeFishRow');
+  const excludeFishRow = document.getElementById('excludeFishRow');
+    
+  window.mealcount = 1;
+  
+  // グローバル関数は window. をつけて呼び出す
+  window.ensureMealSettings(1);
+  
+  // 非表示要素 (存在チェックを追加)
+  if (modeFieldset) modeFieldset.style.display = 'none';
+  if (counterContainer) counterContainer.style.display = 'none';
+  if (customMealRow) customMealRow.style.display = 'none';
+  if (customTimeRow) customTimeRow.style.display = 'none';
+  if (customCostRow) customCostRow.style.display = 'none';
+  if (includeFishRow) includeFishRow.style.display = 'none';
+  if (excludeFishRow) excludeFishRow.style.display = 'none';
 
   // グローバル関数は window. をつけて呼び出す
   window.renderSummary(); 
 });
-
-
-
 
 
 // ===== レシピ提案モーダル =====
@@ -1326,11 +1445,7 @@ document.addEventListener('DOMContentLoaded', () => {
                    (month <= 8) ? "夏" : "秋";
 
     const selectedRecipes = [];
-const meals = [];
-for (let i = 1; i <= (window.mealcount || 1); i++) {
-  meals[i] = window.mealSettings[i] || window.makeDefaultMeal();
-}
-
+    const meals = window.mealSettings || [];
 
 for (let i = 1; i < meals.length; i++) {
   const m = meals[i];
