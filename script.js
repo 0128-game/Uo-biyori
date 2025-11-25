@@ -1078,7 +1078,7 @@ window.renderSummary = function() {
     const currentIncludeSet = new Set();
     const currentExcludeSet = new Set();
     for (let i = 1; i <= window.mealcount; i++) {
-      const meal = window.mealSettings[i];
+      = window.mealSettings[i];
       meal.include.forEach(f => currentIncludeSet.add(f));
       meal.exclude.forEach(f => currentExcludeSet.add(f));
     }
@@ -1095,16 +1095,17 @@ window.renderSummary = function() {
       incCheckbox.checked = currentIncludeSet.has(fish);
       incCheckbox.disabled = currentExcludeSet.has(fish);
       incCheckbox.addEventListener('change', () => {
-        for (let i = 1; i <= window.mealcount; i++) {
-          const meal = window.mealSettings[i];
-          if (!meal) continue;
-          if (incCheckbox.checked) {
-            meal.include.add(fish);
-            meal.exclude.delete(fish);
-          } else {
-            meal.include.delete(fish);
-          }
-        }
+     for (let i = 1; i <= window.mealcount; i++) {
+  if (!window.mealSettings[i]) window.mealSettings[i] = window.makeDefaultMeal(); // 初期化
+  const meal = window.mealSettings[i];
+  if (excCheckbox.checked) {
+    meal.exclude.add(fish);
+    meal.include.delete(fish);
+  } else {
+    meal.exclude.delete(fish);
+  }
+}
+
         const excCheckbox = document.getElementById(`exc-${fish}`);
         if (excCheckbox) excCheckbox.disabled = incCheckbox.checked;
         window.renderSummary();
@@ -1148,10 +1149,11 @@ window.renderSummary = function() {
 
   // --- 基準値適用 ---
   function applyCriterionToMeals(kind, value, customVal) {
-    for (let i = 1; i <= window.mealcount; i++) {
-      window.mealSettings[i][kind] = value;
-      window.mealSettings[i][kind + 'Custom'] = (value === 'custom') ? customVal : null;
-    }
+ for (let i = 1; i <= window.mealcount; i++) {
+  if (!window.mealSettings[i]) window.mealSettings[i] = window.makeDefaultMeal(); // 初期化
+  window.mealSettings[i][kind] = value;
+  window.mealSettings[i][kind + 'Custom'] = (value === 'custom') ? customVal : null;
+}
     window.renderSummary();
   }
 
@@ -1290,7 +1292,11 @@ document.addEventListener('DOMContentLoaded', () => {
                    (month <= 8) ? "夏" : "秋";
 
     const selectedRecipes = [];
-    const meals = window.mealSettings || [];
+const meals = [];
+for (let i = 1; i <= (window.mealcount || 1); i++) {
+  meals[i] = window.mealSettings[i] || window.makeDefaultMeal();
+}
+
 
 for (let i = 1; i < meals.length; i++) {
   const m = meals[i];
