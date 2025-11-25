@@ -1077,11 +1077,13 @@ window.renderSummary = function() {
 
     const currentIncludeSet = new Set();
     const currentExcludeSet = new Set();
-    for (let i = 1; i <= window.mealcount; i++) {
-      = window.mealSettings[i];
-      meal.include.forEach(f => currentIncludeSet.add(f));
-      meal.exclude.forEach(f => currentExcludeSet.add(f));
-    }
+for (let i = 1; i <= window.mealcount; i++) {
+    const meal = window.mealSettings[i];  // ← ここが抜けていた
+    if (!meal) continue;                  // null や undefined の保護
+    meal.include.forEach(f => currentIncludeSet.add(f));
+    meal.exclude.forEach(f => currentExcludeSet.add(f));
+}
+
 
     if (!Array.isArray(fishList)) fishList = [];
 
