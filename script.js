@@ -1165,7 +1165,6 @@ function applyCriterionToMeals(kind, value, customVal) {
     if (!window.mealSettings[i]) window.mealSettings[i] = window.makeDefaultMeal(); // 初期化
 
     if (kind === 'time' || kind === 'cost') {
-      // custom の場合は customVal を使う
       window.mealSettings[i][kind] = (value === 'custom') ? customVal : value;
     } else if (kind === 'considerSeason') {
       window.mealSettings[i][kind] = !!value;
@@ -1173,16 +1172,13 @@ function applyCriterionToMeals(kind, value, customVal) {
       window.mealSettings[i][kind] = value;
     }
 
-    // --- コンソール出力 ---
+    // コンソール出力
     console.log(`meal ${i} 更新:`, JSON.stringify(window.mealSettings[i], null, 2));
   }
 
   window.renderSummary();
 }
 
-
-  window.renderSummary();
-}
 
 
   // --- 食数変更 ---
