@@ -1028,21 +1028,21 @@ window.renderSummary = function() {
         const meal = window.mealSettings[i];
         if (!meal) continue;
 
-        // 難易度/時間/費用は custom の場合は custom 値を表示
-        const difficulty = meal.difficulty === 'custom' ? (meal.difficultyCustom || '指定なし') : (meal.difficulty || '指定なし');
+        const difficulty = meal.difficulty || '指定なし';
         const time = meal.time === 'custom' ? (meal.timeCustom || '指定なし') : (meal.time || '指定なし');
         const cost = meal.cost === 'custom' ? (meal.costCustom || '指定なし') : (meal.cost || '指定なし');
+        const season = meal.considerSeason ? 'する' : 'しない';
 
         const card = document.createElement('div');
         card.className = 'summary-card';
         card.innerHTML = `
-            <h4>${i}食目</h4>
-            <p><strong>使いたい魚:</strong> ${Array.from(meal.include).join('、') || '指定なし'}</p>
-            <p><strong>除外する魚:</strong> ${Array.from(meal.exclude).join('、') || '指定なし'}</p>
-            <p><strong>難易度:</strong> ${difficulty}</p>
-            <p><strong>時間:</strong> ${time}</p>
-            <p><strong>費用:</strong> ¥${cost}</p>
-            <p><strong>季節考慮:</strong> ${meal.considerSeason ? 'する' : 'しない'}</p>
+          <h4>${i}食目</h4>
+          <p><strong>使いたい魚:</strong> ${Array.from(meal.include).join('、') || '指定なし'}</p>
+          <p><strong>除外する魚:</strong> ${Array.from(meal.exclude).join('、') || '指定なし'}</p>
+          <p><strong>難易度:</strong> ${difficulty}</p>
+          <p><strong>時間:</strong> ${time}</p>
+          <p><strong>費用:</strong> ¥${cost}</p>
+          <p><strong>季節考慮:</strong> ${season}</p>
         `;
         summaryPanel.appendChild(card);
     }
