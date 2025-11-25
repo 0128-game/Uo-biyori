@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>魚日和 ~あなたの日常にお魚を~</title>
+<title>魚日和</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="wrap" id="wrap">
     <header>
-        <h1>魚日和 <span class="small-text"> ~あなたの日常にお魚を~</span></h1>
+        <h1>魚日和</h1>
        <div class="controls">
             <input type="search" id="q" placeholder="タイトル, 材料, 魚名などで検索">
             
@@ -35,7 +35,7 @@
                 <option value="title">タイトル</option>
             </select>
             <button id="reloadBtn">データ再読み込み</button>
-       </div>
+        </div>
     </header>
 
     <main id="app">
@@ -115,7 +115,7 @@
     <fieldset class="propose-group" id="timeFilterFieldset">
   <legend>調理時間 (分)</legend>
   <div class="grid-row">
-    <div class="grid-label">上限を選択</div>
+    <div class="grid-label">上限</div>
     <div class="grid-control">
       <label><input type="radio" name="time" value=""> 制限なし</label>
       <label><input type="radio" name="time" value="15"> 15分以内</label>
@@ -134,7 +134,7 @@
    <fieldset class="propose-group" id="costFilterFieldset">
   <legend>費用 (円)</legend>
   <div class="grid-row">
-    <div class="grid-label">上限を選択</div>
+    <div class="grid-label">上限</div>
     <div class="grid-control">
       <label><input type="radio" name="cost" value=""> 制限なし</label>
       <label><input type="radio" name="cost" value="500"> 500円以下</label>
@@ -181,6 +181,27 @@
                 <div class="grid-control">
                     <input type="number" id="customMealInput" min="1" max="99" value="1">
                     <button id="customMealConfirm">決定</button>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="propose-group" id="modeFieldset">
+            <legend>提案設定方法</legend>
+            <div class="grid-row">
+                <div class="grid-label">方法</div>
+                <div class="grid-control">
+                    <label><input type="radio" name="mode" value="all" checked> 一斉設定</label>
+                    <label><input type="radio" name="mode" value="each"> 個別設定</label>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="propose-group" id="counterContainer" style="display:none;">
+            <legend>設定中の食数</legend>
+            <div class="grid-row">
+                <div class="grid-label">現在</div>
+                <div class="grid-control counter">
+                    <button id="leftBtn">←</button>
+                    <span id="counterValue">1</span>
+                    <button id="rightBtn">→</button>
                 </div>
             </div>
         </fieldset>
@@ -282,7 +303,7 @@
 
       <!-- スコア同値時の優先基準 -->
       <fieldset class="propose-group">
-        <legend>優先基準</legend>
+        <legend>スコア同値時の優先基準</legend>
         <div class="grid-row">
           <div class="grid-label">優先</div>
           <div class="grid-control">
