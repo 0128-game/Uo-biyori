@@ -1115,11 +1115,11 @@ function renderIncludeExcludeUI() {
 
   // 魚リスト分生成
   fishList.forEach(fish => {
-    console.log("✏️ チェックボックス生成:", fish);
     if (!fish) return;
 
     // Include
     const incCheckbox = document.createElement('input');
+    console.log("✏️ 使いたいチェックボックス生成:", fish);
     incCheckbox.type = 'checkbox';
     incCheckbox.id = `inc-${fish}`;
     incCheckbox.checked = currentIncludeSet.has(fish);
@@ -1134,6 +1134,7 @@ function renderIncludeExcludeUI() {
 
     // Exclude
     const excCheckbox = document.createElement('input');
+    console.log("✏️ 除外チェックボックス生成:", fish);
     excCheckbox.type = 'checkbox';
     excCheckbox.id = `exc-${fish}`;
     excCheckbox.checked = currentExcludeSet.has(fish);
