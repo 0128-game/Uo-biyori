@@ -1055,10 +1055,6 @@ window.renderSummary = function() {
     }
 
     // UI初期化
-    if (includeFishModeRadios.length > 0) includeFishModeRadios[0].checked = true;
-    if (excludeFishModeRadios.length > 0) excludeFishModeRadios[0].checked = true;
-    if (includeFishRow) includeFishRow.style.display = 'none';
-    if (excludeFishRow) excludeFishRow.style.display = 'none';
     if (window.timeRadios && window.timeRadios.length > 0) window.timeRadios[0].checked = true;
     if (window.costRadios && window.costRadios.length > 0) window.costRadios[0].checked = true;
 
@@ -1071,12 +1067,6 @@ window.renderSummary = function() {
 
 // --- include/exclude UI ---
 function renderIncludeExcludeUI() {
-  const incMode = document.querySelector('input[name="includeFishMode"]:checked')?.value || 'none';
-  const excMode = document.querySelector('input[name="excludeFishMode"]:checked')?.value || 'none';
-
-  if (includeFishRow) includeFishRow.style.display = (incMode === 'specify') ? 'grid' : 'none';
-  if (excludeFishRow) excludeFishRow.style.display = (excMode === 'specify') ? 'grid' : 'none';
-
   if (!includeFishContainer || !excludeFishContainer) return;
 
   includeFishContainer.innerHTML = '';
