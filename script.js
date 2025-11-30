@@ -1127,7 +1127,6 @@ for (let i = 1; i <= window.mealcount; i++) {
       includeFishContainer.appendChild(incLabel);
 
       // Exclude
-      const excCheckbox = document.createElement('input');
       excCheckbox.type = 'checkbox';
       excCheckbox.id = `exc-${fish}`;
       excCheckbox.checked = currentExcludeSet.has(fish);
